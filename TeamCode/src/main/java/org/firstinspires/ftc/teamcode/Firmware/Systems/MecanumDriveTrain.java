@@ -18,7 +18,7 @@ public class MecanumDriveTrain {
 
     public final double mediumSpeedMultiplier = 0.6;
     double speedMultiplier = 1;
-    public boolean fieldCentricDriving = true;
+    public boolean fieldCentricDriving = false;
     private Telemetry telemetry;
 
     private double avgDrivePower = 0;
@@ -31,10 +31,10 @@ public class MecanumDriveTrain {
      */
     public MecanumDriveTrain(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
-        motorFL = hardwareMap.get(DcMotor.class, "FL");
-        motorFR = hardwareMap.get(DcMotor.class, "FR");
-        motorBL = hardwareMap.get(DcMotor.class, "BL");
-        motorBR = hardwareMap.get(DcMotor.class, "BR");
+        motorFL = hardwareMap.get(DcMotor.class, "fl");
+        motorFR = hardwareMap.get(DcMotor.class, "fr");
+        motorBL = hardwareMap.get(DcMotor.class, "bl");
+        motorBR = hardwareMap.get(DcMotor.class, "br");
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

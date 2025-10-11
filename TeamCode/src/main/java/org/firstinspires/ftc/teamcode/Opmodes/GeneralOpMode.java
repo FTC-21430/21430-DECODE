@@ -19,7 +19,7 @@ abstract public class GeneralOpMode extends LinearOpMode {
     public void initialize(boolean reset, boolean isAuto) {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot = new DecodeBot();
-        robot.init(hardwareMap,telemetry,0,0,0,this,true,false);
+        robot.init(hardwareMap,telemetry,0,0,0,this,reset,isAuto);
         
     }
     
