@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Firmware;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 
 //TODO - Refactor this class to be season non-specific and move all specific details to the DecodeBot class and override information in this class.
+
+@Config
 public class Robot {
   
   public enum Speed {
@@ -34,6 +38,8 @@ public class Robot {
   //TODO Tune the pConstant and d Constant numbers, these are place holders.
   public PIDController anglePID = new PIDController(pCon, 0, dCon, runtime);
 
+  public FtcDashboard ftcDashboard;
+
   public Telemetry telemetry;
   public LinearOpMode opMode;
   public double P_CONSTANT, I_CONSTANT, D_CONSTANT;
@@ -41,9 +47,9 @@ public class Robot {
 
   private double currentLoopTime, previousLoopTime;
   public PathFollowing pathFollowing;
-  public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMpde, boolean reset, boolean isAuto) {
+  public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto) {
 
-    this.opMode = opMpde;
+    this.opMode = opMode;
 
     this.telemetry = telemetry;
 
@@ -80,7 +86,7 @@ public class Robot {
 
   
     public double distanceCircle(double x, double y){
-      return 0
+      return 0;
   }
 
 
@@ -95,24 +101,11 @@ public class Robot {
       }
     }
 
-    public void setRobotSpeed(Speed robotSpeed){
-    switch(robotSpeed) {
-      case SLOW:
-        driveTrain.setSpeedMultiplier(SPEED_MULTIPLIER_SLOW);
-        pathFollowing.setAutoSpeed(P_CONSTANT_SLOW, I_CONSTANT_SLOW, D_CONSTANT_SLOW);
-        break;
-      case FAST:
-        driveTrain.setSpeedMultiplier(SPEED_MULTIPLIER_FAST);
-        pathFollowing.setAutoSpeed(P_CONSTANT_FAST, I_CONSTANT_FAST, D_CONSTANT_FAST);
-        break;
-    }
-    }
     public void setTurnPIntake(boolean intakeOn){
       if (intakeOn) {
         anglePID.updateConstants(pConIntake, 0, dCon);
       }else{
         anglePID.updateConstants(pCon, 0, dCon);
       }
-
     }
   }
