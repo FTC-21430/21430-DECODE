@@ -19,6 +19,6 @@ public class DecodeBot extends Robot{
 
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
-        launcher.flywheel.setAccuracyThreshold(0.5);
+
     }
 }
