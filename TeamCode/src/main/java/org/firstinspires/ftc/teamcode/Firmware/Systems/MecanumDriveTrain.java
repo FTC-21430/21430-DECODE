@@ -9,19 +9,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumDriveTrain {
 
-    public double mediumSpeed = 0.6;
-
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor motorBL;
-    DcMotor motorBR;
-
-    public final double mediumSpeedMultiplier = 0.6;
-    double speedMultiplier = 1;
-    public boolean fieldCentricDriving = true;
+    // motor objects
+    private DcMotor motorFL;
+    private DcMotor motorFR;
+    private DcMotor motorBL;
+    private DcMotor motorBR;
+    private boolean fieldCentricDriving = true;
     private Telemetry telemetry;
 
-    private double avgDrivePower = 0;
     /**
      * constructor for mecanum drive train
      * -assigns motors from hardware map
@@ -36,6 +31,7 @@ public class MecanumDriveTrain {
         motorBL = hardwareMap.get(DcMotor.class, "BL");
         motorBR = hardwareMap.get(DcMotor.class, "BR");
 
+    // We do not plan to use the encoders but we reset them just in case
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -87,36 +83,6 @@ public class MecanumDriveTrain {
         fieldCentricDriving = fcd;
     }
 
-    /**
-     * Sets the speed multiplier
-     *
-     * @param speedMultiplier speed multiplier (between 0 and 1)
-     */
-    public void setSpeedMultiplier(double speedMultiplier) {
-
-        // ensure valid speed multiplier
-        if (speedMultiplier < 0 || speedMultiplier > 1) {
-
-            speedMultiplier = 1;
-
-        }
-
-        // sets speed multiplier
-        this.speedMultiplier = speedMultiplier;
-
-    }
-
-    public double getSpeedMultiplier(){
-        return speedMultiplier;
-    }
-
-    /**
-     * sets the motor powers
-     *
-     * @param forwardPower  amount it goes forward
-     * @param sidewaysPower amount it goes sideways
-     * @param turnPower     amount it turns
-     */
     public void setDrivePower(double forwardPower, double sidewaysPower, double turnPower, double robotHeading) {
         // Field Centric Driving aligns all robot movements with the player's perspective from the field, rather than the robot's
         // Added math equation to change from degrees to radians on the robot
@@ -126,18 +92,10 @@ public class MecanumDriveTrain {
             forwardPower = temp;
         }
         
-        motorFL.setPower(Range.clip(forwardPower + sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-        motorFR.setPower(Range.clip(forwardPower - sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
-        motorBL.setPower(Range.clip(forwardPower - sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-        motorBR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
+        motorFL.setPower(Range.clip(forwardPower + sidewaysPower - turnPower, -1.0, 1.0));
+        motorFR.setPower(Range.clip(forwardPower - sidewaysPower + turnPower, -1.0, 1.0));
+        motorBL.setPower(Range.clip(forwardPower - sidewaysPower - turnPower, -1.0, 1.0));
+        motorBR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0));
 
-        //divided by 2 on purpose, I think it will help give us closer values to the use case
-        avgDrivePower = (Math.abs(forwardPower) + Math.abs(sidewaysPower) + Math.abs(turnPower))/2;
-
-    }
-    public double getAvgDrivePower(){
-        return avgDrivePower;
     }
 }
-
-
