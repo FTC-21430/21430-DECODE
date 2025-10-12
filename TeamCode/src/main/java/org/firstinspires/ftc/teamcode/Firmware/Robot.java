@@ -20,24 +20,22 @@ public class Robot {
   public enum Speed {
     SLOW, FAST
   }
+
+  // TODO: Refoctar this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
   // used for how fast the turning input is used.
   // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
   public static double maxTurnDegPerSecond = 280;
   public static double pCon = 0.025;
-
   public static double pConIntake = 0.05;
   public static double dCon = 0;
   
   private double drive;
   private double slide;
   private double turn;
-  //TODO Make more permanent system to detect turning
-  public boolean turningBoolean;
   public MecanumDriveTrain driveTrain;
   public ElapsedTime runtime = new ElapsedTime();
-  //TODO Tune the pConstant and d Constant numbers, these are place holders.
   public PIDController anglePID = new PIDController(pCon, 0, dCon, runtime);
-
+ // TODO: put the new Gobilda pinpoint odometry class into here, blocked by lack of existing PP odometry class. - Tobin 10/11/2025
   public FtcDashboard ftcDashboard;
 
   public Telemetry telemetry;
@@ -52,7 +50,6 @@ public class Robot {
     this.opMode = opMode;
 
     this.telemetry = telemetry;
-//
     driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
 
     pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
