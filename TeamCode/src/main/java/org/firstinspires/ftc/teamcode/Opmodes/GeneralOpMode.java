@@ -13,20 +13,13 @@ abstract public class GeneralOpMode extends LinearOpMode {
     public DecodeBot robot;
 
     public ElapsedTime runtime = new ElapsedTime();
-    
-    
-    // variables for state machine logic
 
-    
-
-    
 
     // normal functions
-    
     public void initialize(boolean reset, boolean isAuto) {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        robot = new ITDbot();
-        robot.Init(hardwareMap,telemetry,runtime, this, reset, isAuto);
+        robot = new DecodeBot();
+        robot.init(hardwareMap,telemetry,0,0,0,this,reset,isAuto);
         
     }
     
