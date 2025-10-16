@@ -73,11 +73,14 @@ public class Robot {
 
   public Climber climber;
 
+  public BulkSensorBucket bulkSensorBucket = null;
   public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMpde, boolean reset, boolean isAuto) {
 
     this.opMode = opMpde;
 
     this.telemetry = telemetry;
+
+    bulkSensorBucket = new BulkSensorBucket(hardwareMap);
 
     driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
 
@@ -90,6 +93,7 @@ public class Robot {
 
     climber =  new Climber(hardwareMap,telemetry);
 
+    bulkSensorBucket.clearCache();
   }
   
   // you call this function in a main auto opMode to make the robot move somewhere.
