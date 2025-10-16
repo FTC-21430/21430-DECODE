@@ -57,34 +57,8 @@ public class MecanumDriveTrain {
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
-
-    /**
-     * used to change whether or not you use feedback from encoders
-     * to keep the motors at the correct speed
-     *
-     * @param velocityMode the boolean that tells if you want to use "RUN_USING_ENCODER" mode
-     */
-    public void setVelocityMode(boolean velocityMode) {
-
-        if (velocityMode) {
-
-            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        } else {
-
-            motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        }
-    }
-
-    public void setFieldCentricDriving(boolean fcd){
-        fieldCentricDriving = fcd;
+    public void fieldCentricDriving(boolean enabled){
+        fieldCentricDriving = enabled;
     }
 
     /**
@@ -117,11 +91,14 @@ public class MecanumDriveTrain {
      * @param sidewaysPower amount it goes sideways
      * @param turnPower     amount it turns
      */
+    private double calculateFieldCentricDriving(double forwardPower, double sidewaysPower, double turnPower,double robotHeading){
+        return (forwardPower* Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)));
+    }
     public void setDrivePower(double forwardPower, double sidewaysPower, double turnPower, double robotHeading) {
         // Field Centric Driving aligns all robot movements with the player's perspective from the field, rather than the robot's
         // Added math equation to change from degrees to radians on the robot
         if (fieldCentricDriving) {
-            double temp = forwardPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading));
+            double temp = calculateFieldCentricDriving(forwardPower,sidewaysPower,turnPower, robotHeading);
             sidewaysPower = -forwardPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
             forwardPower = temp;
         }

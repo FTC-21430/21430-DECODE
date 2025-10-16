@@ -52,7 +52,7 @@ public class Robot {
     this.telemetry = telemetry;
     driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
 
-    pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
+    pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime, hardwareMap);
   }
   
   // you call this function in a main auto opMode to make the robot move somewhere.
