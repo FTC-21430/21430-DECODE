@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Firmware;
 
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.List;
@@ -45,6 +44,7 @@ public class BulkSensorBucket {
      * At the end of every main loop iteration, this function must be called!
      * If you do not clear the bulk cache before the next iteration, all sensor values will be stale.
      * Stale means that it will still be what it was last iteration, and not representative of what it is during this iteration.
+     * Cache means a stored set of data that is easier to access than what it is normally It is like programming short hand.
      */
     public void clearCache(){
         for (LynxModule hub : allHubs){
