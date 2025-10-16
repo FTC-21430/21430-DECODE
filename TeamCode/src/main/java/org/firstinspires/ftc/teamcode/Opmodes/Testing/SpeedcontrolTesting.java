@@ -26,6 +26,8 @@ public class SpeedcontrolTesting extends BaseTeleOp {
             telemetry.addData("Current Speed: ", robot.launcher.getSpeed());
             telemetry.addData("At speed: ", robot.launcher.isUpToSpeed());
             telemetry.update();
+
+            robot.bulkSensorBucket.clearCache();
         }
 
 

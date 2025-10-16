@@ -17,6 +17,7 @@ public class DecodeBot extends Robot{
 
         this.telemetry = telemetry;
 
+        bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
 
