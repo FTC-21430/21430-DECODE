@@ -91,14 +91,17 @@ public class MecanumDriveTrain {
      * @param sidewaysPower amount it goes sideways
      * @param turnPower     amount it turns
      */
-    private double calculateFieldCentricDriving(double forwardPower, double sidewaysPower, double turnPower,double robotHeading){
-        return (forwardPower* Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)));
+    private double[] calculateFieldCentricDriving(double forwardPower, double sidewaysPower,double robotHeading){
+        double fwdPower = (forwardPower* Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
+        double sidePower = sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading));
+        double[] power = {fwdPower,sidePower};
+        return power;
     }
     public void setDrivePower(double forwardPower, double sidewaysPower, double turnPower, double robotHeading) {
         // Field Centric Driving aligns all robot movements with the player's perspective from the field, rather than the robot's
         // Added math equation to change from degrees to radians on the robot
         if (fieldCentricDriving) {
-            double temp = calculateFieldCentricDriving(forwardPower,sidewaysPower,turnPower, robotHeading);
+            double temp = calculateFieldCentricDriving(forwardPower,sidewaysPower, robotHeading);
             sidewaysPower = -forwardPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
             forwardPower = temp;
         }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 // this class is for autonomous movement of the drivetrain.
@@ -18,12 +17,7 @@ public class PathFollowing {
   // these are the tuning variables for both PID controllers.
   private double pXConstant, pYConstant;
   private double dXConstant, dYConstant;
-  private HardwareMap hardwareMap;
-//initializing motors
-  DcMotor motorFL;
-  DcMotor motorFR;
-  DcMotor motorBL;
-  DcMotor motorBR;
+  //initializing motors
   // the output power we use from this class to move the drive train.
   // Stands for powerSideways and power Forwards
   double powerS, powerF;
@@ -38,17 +32,13 @@ public class PathFollowing {
    * @param dY derivative constant Y
    * @param runtime the runtime object from the first SDK
    */
-  public PathFollowing(double pX, double pY, double iX, double iY, double dX, double dY, ElapsedTime runtime, HardwareMap hardwareMap){
+  public PathFollowing(double pX, double pY, double iX, double iY, double dX, double dY, ElapsedTime runtime){
    pXConstant = pX;
    pYConstant = pY;
    dXConstant = dX;
    dYConstant = dY;
     xPID = new PIDController(pXConstant, 0.2, dXConstant, runtime);
     yPID = new PIDController(pYConstant, 0.2, dYConstant, runtime);
-    motorFL = hardwareMap.get(DcMotor.class, "fl");
-    motorFR = hardwareMap.get(DcMotor.class, "fr");
-    motorBL = hardwareMap.get(DcMotor.class, "bl");
-    motorBR = hardwareMap.get(DcMotor.class, "br");
 
   }
   
@@ -85,30 +75,6 @@ public class PathFollowing {
   public void setTargetPosition(double x, double y){
     xPID.setTarget(x);
     yPID.setTarget(y);
-  }
-  /*
-   * used to change whether or not you use feedback from encoders
-   * to keep the motors at the correct speed
-   *
-   * @param velocityMode the boolean that tells if you want to use "RUN_USING_ENCODER" mode
-   */
-  public void setVelocityMode(boolean velocityMode) {
-
-    if (velocityMode) {
-
-      motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    } else {
-
-      motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-    }
   }
 
   // used to set followSpeed
