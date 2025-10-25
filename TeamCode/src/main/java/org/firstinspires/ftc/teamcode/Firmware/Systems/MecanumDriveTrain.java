@@ -3,20 +3,18 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MecanumDriveTrain {
-
-    public double mediumSpeed = 0.6;
-
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
 
-    public final double mediumSpeedMultiplier = 0.6;
     double speedMultiplier = 1;
     public boolean fieldCentricDriving = false;
     private Telemetry telemetry;
@@ -84,26 +82,32 @@ public class MecanumDriveTrain {
         return speedMultiplier;
     }
 
+
+    private List<Double> calculateFieldCentricDriving(double forwardPower, double sidewaysPower,double robotHeading){
+        double fwdPower = (forwardPower* Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)));
+        double sidePower = (sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)));
+        List<Double> power = new ArrayList<Double>();
+        power.add(fwdPower);
+        power.add(sidePower);
+        return power;
+    }
+
     /**
      * sets the motor powers
      *
      * @param forwardPower  amount it goes forward
      * @param sidewaysPower amount it goes sideways
      * @param turnPower     amount it turns
+     * @param robotHeading current heading of the robot in degrees
      */
-    private double[] calculateFieldCentricDriving(double forwardPower, double sidewaysPower,double robotHeading){
-        double fwdPower = (forwardPower* Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
-        double sidePower = sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading));
-        double[] power = {fwdPower,sidePower};
-        return power;
-    }
     public void setDrivePower(double forwardPower, double sidewaysPower, double turnPower, double robotHeading) {
         // Field Centric Driving aligns all robot movements with the player's perspective from the field, rather than the robot's
         // Added math equation to change from degrees to radians on the robot
         if (fieldCentricDriving) {
-            double temp = calculateFieldCentricDriving(forwardPower,sidewaysPower, robotHeading);
-            sidewaysPower = -forwardPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
-            forwardPower = temp;
+            List<Double> transformedMovementVectors = calculateFieldCentricDriving(forwardPower,sidewaysPower, robotHeading);
+            forwardPower = transformedMovementVectors.get(0);
+            sidewaysPower = transformedMovementVectors.get(1);
+
         }
         
         motorFL.setPower(Range.clip(forwardPower + sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
