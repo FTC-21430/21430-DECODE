@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
-
+@Config
 @TeleOp
 public class SpeedcontrolTesting extends BaseTeleOp {
 
+    public static double targetSpeed = 0.0;
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true, false);
@@ -17,7 +19,7 @@ public class SpeedcontrolTesting extends BaseTeleOp {
 
         while (opModeIsActive()){
             // Adjust the flywheel target speed using the left stick Y axis
-            robot.launcher.setSpeed(robot.launcher.getTargetSpeed() + (gamepad1.left_stick_y * 10));
+            robot.launcher.setSpeed(targetSpeed);
             // Update the flywheel's speed control
             robot.launcher.updateSpeedControl();
 
