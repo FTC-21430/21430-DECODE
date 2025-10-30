@@ -44,8 +44,8 @@ public class RotationControl {
         return angleControler.getTarget();
     }
     //It changes values based on what the joystick tells it to do
-    public void setChangeTargetByJoystick(double joystickControler){
-        angleControler.setTarget(angleControler.getTarget()+(joystickControler*turnRate));
+    public void changeTargetByJoystick(double joystickValue){
+        angleControler.setTarget(angleControler.getTarget()+(joystickValue*turnRate));
     }
 }
 

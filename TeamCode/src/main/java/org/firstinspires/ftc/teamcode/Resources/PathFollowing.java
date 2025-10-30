@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Resources;
 
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 // this class is for autonomous movement of the drivetrain.
 public class PathFollowing {
   
