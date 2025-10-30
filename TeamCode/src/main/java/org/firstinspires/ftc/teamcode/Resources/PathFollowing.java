@@ -17,7 +17,6 @@ public class PathFollowing {
   // these are the tuning variables for both PID controllers.
   private double pXConstant, pYConstant;
   private double dXConstant, dYConstant;
-  //initializing motors
   // the output power we use from this class to move the drive train.
   // Stands for powerSideways and power Forwards
   double powerS, powerF;
