@@ -7,13 +7,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 
 public class DecodeBot extends Robot{
 
     public Launcher launcher = null;
+    //The PID values are a public because we need to tune it later and public makes it easier to do that
+    public static final double P_CONSTANT = 0.15;
+    public static final double I_CONSTANT = 0.1;
+    public static final double D_CONSTANT = 0.02;
     @Override
     public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto){
-
+        pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
 
         this.telemetry = telemetry;

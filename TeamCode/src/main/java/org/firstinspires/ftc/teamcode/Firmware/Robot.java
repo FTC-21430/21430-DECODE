@@ -46,10 +46,7 @@ public class Robot {
   public BulkSensorBucket bulkSensorBucket = null;
 
   public GobildaPinpointModuleFirmware odometry;
-//The PID values are a public because we need to tune it later and public makes it easier to do that
-  public static final double P_CONSTANT = 0.15;
-  public static final double I_CONSTANT = 0.1;
-  public static final double D_CONSTANT = 0.02;
+
 
   public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto) {
 
@@ -63,7 +60,7 @@ public class Robot {
     
     driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
 
-    pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
+
     
      bulkSensorBucket.clearCache();
 
