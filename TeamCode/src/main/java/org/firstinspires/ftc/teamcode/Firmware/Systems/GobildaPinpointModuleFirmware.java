@@ -22,17 +22,17 @@ public class GobildaPinpointModuleFirmware {
     /**
      * Constructor for this class.
      * @param hardwareMap used to get the module from hardware map
-     * @param xPodOffset configures the pinpoint for how we have set it up to ensure current results
-     * @param yPodOffset configures the pinpoint for how we have set it up to ensure current results
+     * @param xPodOffset configures the pinpoint for how we have set it up to ensure current results -CM
+     * @param yPodOffset configures the pinpoint for how we have set it up to ensure current results -CM
      * @param reset should we reset and recalibrate the sensor and its positions / angles? false for transition between auto and teleop to avoid transition error (non-fatal, just difference of value)
      */
     public GobildaPinpointModuleFirmware(HardwareMap hardwareMap, double xPodOffset, double yPodOffset, boolean reset){
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.INCH);
+        pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.CM);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED
         );
 
@@ -50,8 +50,9 @@ public class GobildaPinpointModuleFirmware {
     public void updateOdometry(){
         pinpoint.update();
         Pose2D position =  pinpoint.getPosition();
-        robotX = position.getX(DistanceUnit.INCH);
-        robotY = position.getY(DistanceUnit.INCH);
+//        Our frame of reference and the gobilda frame of reference is different, so you units needed to change.
+        robotY = position.getX(DistanceUnit.INCH);
+        robotX = -position.getY(DistanceUnit.INCH);
         robotAngle = position.getHeading(AngleUnit.DEGREES);
     }
 
