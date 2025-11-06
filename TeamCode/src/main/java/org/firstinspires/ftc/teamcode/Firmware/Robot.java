@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 
@@ -42,13 +43,18 @@ public class Robot {
 
   private double currentLoopTime, previousLoopTime;
   public PathFollowing pathFollowing;
-    public BulkSensorBucket bulkSensorBucket = null;
+  public BulkSensorBucket bulkSensorBucket = null;
+
+  public GobildaPinpointModuleFirmware odometry;
+
   public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto) {
 
     this.opMode = opMode;
 
     this.telemetry = telemetry;
-    
+
+    odometry = new GobildaPinpointModuleFirmware(hardwareMap, 0,0,reset);
+
     bulkSensorBucket = new BulkSensorBucket(hardwareMap);
     
     driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
