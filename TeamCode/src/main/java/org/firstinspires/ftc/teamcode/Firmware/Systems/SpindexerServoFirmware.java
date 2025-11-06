@@ -64,7 +64,7 @@ public class SpindexerServoFirmware {
 
     // valid for slots 1-3
     public void setSpindexerSlot(int slot){
-        if (slot > 0 && slot < 4)
+        slot = slot % 3;
         setSpindexerPosition(slots[slot-1]);
     }
 

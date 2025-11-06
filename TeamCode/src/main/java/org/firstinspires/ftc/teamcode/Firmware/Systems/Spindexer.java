@@ -79,6 +79,11 @@ public class Spindexer {
     public boolean isAtRest(){
         return paddleServo.isAtTarget();
     }
+
+    public void moveToNextIndex(){
+       double pos = getCurrentIndexInIntake() + 1;
+       paddleServo.setSpindexerPosition(pos);
+    }
     private void moveRacket(boolean pushOut){
         if (pushOut){
             racketServo.setServoPos(racketOutPos);
@@ -88,11 +93,15 @@ public class Spindexer {
             ejecting = false;
         }
     }
+    // returns -1 if it is not at a slot.
     private int getCurrentIndexInIntake(){
         if (paddleServo.getTargetPosition()%120 == 0){
-            
+            return ((int)paddleServo.getTargetPosition() / slotIncrement) + 1;
         }else{
             return -1;
         }
     }
+
+    p
+
 }
