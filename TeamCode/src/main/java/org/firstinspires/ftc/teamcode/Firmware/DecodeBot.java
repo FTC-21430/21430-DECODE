@@ -7,10 +7,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerServoFirmware;
 
 public class DecodeBot extends Robot{
 
     public Launcher launcher = null;
+    public Spindexer spindexer = null;
+
 
     @Override
     public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto){
@@ -26,6 +30,7 @@ public class DecodeBot extends Robot{
 
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
+        spindexer = new Spindexer(hardwareMap);
         
         bulkSensorBucket.clearCache();
 
@@ -33,6 +38,7 @@ public class DecodeBot extends Robot{
     @Override
     //TODO:Call updates for sensors and actuators
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
-
+        spindexer.updateSpindexer();
+        launcher.updateSpeedControl();
     }
 }
