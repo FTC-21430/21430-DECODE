@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 public class DecodeBot extends Robot{
 
     public Launcher launcher = null;
+    public Intake intake = null;
     //The PID values are a public because we need to tune it later and public makes it easier to do that
     public static final double P_CONSTANT = 0.15;
     public static final double I_CONSTANT = 0.1;
@@ -30,6 +32,7 @@ public class DecodeBot extends Robot{
 
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
+        intake = new Intake(hardwareMap, telemetry);
 
         bulkSensorBucket.clearCache();
 
