@@ -16,6 +16,12 @@ public class TestingTeleop extends BaseTeleOp{
 
         while(opModeIsActive()) {
 
+            if (gamepad2.square){
+                robot.spindexer.moveToNextIndex();
+            }
+            if (gamepad2.share) {
+                robot.spindexer.eject();
+            }
             // get and update functions
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
