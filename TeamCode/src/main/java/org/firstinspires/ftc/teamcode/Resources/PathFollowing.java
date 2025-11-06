@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Resources;
 
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 // this class is for autonomous movement of the drivetrain.
 public class PathFollowing {
   
@@ -17,7 +16,6 @@ public class PathFollowing {
   // these are the tuning variables for both PID controllers.
   private double pXConstant, pYConstant;
   private double dXConstant, dYConstant;
-  
   // the output power we use from this class to move the drive train.
   // Stands for powerSideways and power Forwards
   double powerS, powerF;
@@ -37,9 +35,9 @@ public class PathFollowing {
    pYConstant = pY;
    dXConstant = dX;
    dYConstant = dY;
-  
     xPID = new PIDController(pXConstant, 0.2, dXConstant, runtime);
     yPID = new PIDController(pYConstant, 0.2, dYConstant, runtime);
+
   }
   
   
@@ -76,7 +74,7 @@ public class PathFollowing {
     xPID.setTarget(x);
     yPID.setTarget(y);
   }
-  
+
   // used to set followSpeed
   public void setFollowSpeed(double speed){
     followSpeed = speed;
