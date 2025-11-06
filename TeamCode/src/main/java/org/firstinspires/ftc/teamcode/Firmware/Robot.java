@@ -93,7 +93,8 @@ public class Robot {
   }
 
 
-    public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
+    //ToDo: finish coding updateRobot
+  public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
 
     }
 
