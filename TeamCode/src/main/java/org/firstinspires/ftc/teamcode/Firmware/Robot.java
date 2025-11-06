@@ -22,7 +22,7 @@ public class Robot {
     SLOW, FAST
   }
 
-  // TODO: Refoctar this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
+  // TODO: Refactor this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
   // used for how fast the turning input is used.
   // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
   public static double maxTurnDegPerSecond = 280;

@@ -25,6 +25,7 @@ public class TestingTeleop extends BaseTeleOp{
                 robot.odometry.resetIMU();
             }
 
+            //sets drive power and what gamepad does
             robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.anglePID.getPower(), robot.odometry.getRobotAngle());
             robot.updateRobot(false, false, false);
         }
