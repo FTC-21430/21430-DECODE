@@ -52,7 +52,7 @@ public class Spindexer {
         // move that index to launch pos
     }
 //    zero is index 1 at intake, positive moves counterclockwise facing intake, so 120 will be index 1 at launcher
-    public void prepIndexForLaunch(int index){
+    public void moveIndexToLaunch(int index){
         if (index < 1 || index > 3){
             return;
         }
