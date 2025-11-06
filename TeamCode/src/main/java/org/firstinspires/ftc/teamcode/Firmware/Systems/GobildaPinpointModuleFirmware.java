@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
@@ -16,6 +17,8 @@ public class GobildaPinpointModuleFirmware {
     private double robotX, robotY; // in inches
     private double robotAngle; // in degrees
 
+
+    private Telemetry telemetry;
     /**
      * Constructor for this class.
      * @param hardwareMap used to get the module from hardware map
@@ -29,8 +32,8 @@ public class GobildaPinpointModuleFirmware {
         pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.FORWARD
+                GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED
         );
 
         if (reset) {
@@ -45,6 +48,7 @@ public class GobildaPinpointModuleFirmware {
      * Call this every iteration to ensure non-stale values (stale = old from a different moment in time)
      */
     public void updateOdometry(){
+        pinpoint.update();
         Pose2D position =  pinpoint.getPosition();
         robotX = position.getX(DistanceUnit.INCH);
         robotY = position.getY(DistanceUnit.INCH);

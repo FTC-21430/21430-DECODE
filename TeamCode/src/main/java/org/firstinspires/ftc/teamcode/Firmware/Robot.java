@@ -49,20 +49,6 @@ public class Robot {
 
   public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto) {
 
-    this.opMode = opMode;
-
-    this.telemetry = telemetry;
-
-    odometry = new GobildaPinpointModuleFirmware(hardwareMap, 0,0,reset);
-
-    bulkSensorBucket = new BulkSensorBucket(hardwareMap);
-    
-    driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
-
-    pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
-    
-     bulkSensorBucket.clearCache();
-
   }
   
   // you call this function in a main auto opMode to make the robot move somewhere.
