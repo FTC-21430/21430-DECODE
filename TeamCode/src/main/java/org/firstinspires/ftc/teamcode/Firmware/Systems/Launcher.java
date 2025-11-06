@@ -13,9 +13,15 @@ public class Launcher {
     // Hardware map for accessing robot hardware
     private HardwareMap hardwareMap = null;
     // Telemetry for reporting data to the driver station
+
     private Telemetry telemetry = null;
+
     // Flywheel subsystem instance
     private Flywheel flywheel = null;
+
+    // Launcher Ramp subsystem instance
+    private LauncherRamp ramp = null;
+
     // PID constants for flywheel speed control (values can be overridden)
     private double flywheelSpeedControlP = 300;
     private double flywheelSpeedControlI = 1;
@@ -34,6 +40,10 @@ public class Launcher {
                 flywheelSpeedControlP, flywheelSpeedControlI, flywheelSpeedControlD);
         // Set the accuracy threshold for speed control (in degrees per second)
         flywheel.setAccuracyThreshold(20);
+
+        // Initialize the ramp and have it move to starting configuration of retracted
+        ramp = new LauncherRamp(hardwareMap);
+        ramp.retract();
     }
 
     /**
@@ -68,7 +78,40 @@ public class Launcher {
         return flywheel.isAtSpeed();
     }
 
+    /**
+     * must be called every loop iteration in order to keep the wheel up to speed
+     */
     public void updateSpeedControl(){
         flywheel.updateSpeedControl();
     }
+
+    /**
+     * Set the angle of the ramp.
+     * @param angle Degrees Up from Horizontal in the launcher direction. Will get clipped to allowed range if value is outside of mechanical limits.
+     */
+    public void setLaunchAngle(double angle){
+        ramp.setLaunchAngle(angle);
+    }
+
+    /**
+     * Bring the ramp as close to robot or as low a launch angle as possible
+     */
+    public void retractRamp(){
+        ramp.retract();
+    }
+
+    /**
+     * Steepest preset launch angle
+     */
+    public void fullyExtendRamp(){
+        ramp.extendFull();
+    }
+
+    /**
+     * preset directly in the middle of all possible launch angles
+     */
+    public void halfExtendRamp(){
+        ramp.midAngle();
+    }
+
 }
