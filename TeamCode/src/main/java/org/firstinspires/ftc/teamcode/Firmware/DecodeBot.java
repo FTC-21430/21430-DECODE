@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 public class DecodeBot extends Robot{
 
     public Launcher launcher = null;
+
     @Override
     public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto){
 
@@ -25,8 +26,13 @@ public class DecodeBot extends Robot{
 
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
-
+        
         bulkSensorBucket.clearCache();
+
+    }
+    @Override
+    //TODO:Call updates for sensors and actuators
+    public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
 
     }
 }
