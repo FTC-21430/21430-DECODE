@@ -16,15 +16,17 @@ public class TestingTeleop extends BaseTeleOp{
 
         while(opModeIsActive()) {
 
+            // get and update functions
+            robot.updateLoopTime();
+            robot.odometry.updateOdometry();
+
             if (gamepad2.square){
                 robot.spindexer.moveToNextIndex();
             }
             if (gamepad2.share) {
                 robot.spindexer.eject();
             }
-            // get and update functions
-            robot.updateLoopTime();
-            robot.odometry.updateOdometry();
+
 
             // resets Field Centric Driving
             if (gamepad1.share) {
@@ -34,6 +36,8 @@ public class TestingTeleop extends BaseTeleOp{
             //sets drive power and what gamepad does
             robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.anglePID.getPower(), robot.odometry.getRobotAngle());
             robot.updateRobot(false, false, false);
+
+            robot.bulkSensorBucket.clearCache();
         }
     }
 }
