@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 
@@ -25,33 +26,35 @@ public class Robot {
   // used for how fast the turning input is used.
   // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
   public static double maxTurnDegPerSecond = 280;
-  public static double pCon = 0.025;
-  public static double pConIntake = 0.05;
-  public static double dCon = 0;
+
   
   private double drive;
   private double slide;
   private double turn;
   public MecanumDriveTrain driveTrain;
   public ElapsedTime runtime = new ElapsedTime();
-  public PIDController anglePID = new PIDController(pCon, 0, dCon, runtime);
- // TODO: put the new Gobilda pinpoint odometry class into here, blocked by lack of existing PP odometry class. - Tobin 10/11/2025
+
   public FtcDashboard ftcDashboard;
 
   public Telemetry telemetry;
   public LinearOpMode opMode;
-  public double P_CONSTANT, I_CONSTANT, D_CONSTANT;
+
 
 
   private double currentLoopTime, previousLoopTime;
   public PathFollowing pathFollowing;
-    public BulkSensorBucket bulkSensorBucket = null;
+  public BulkSensorBucket bulkSensorBucket = null;
+
+  public GobildaPinpointModuleFirmware odometry;
+
   public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto) {
 
     this.opMode = opMode;
 
     this.telemetry = telemetry;
-    
+
+    odometry = new GobildaPinpointModuleFirmware(hardwareMap, 0,0,reset);
+
     bulkSensorBucket = new BulkSensorBucket(hardwareMap);
     
     driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
@@ -79,14 +82,7 @@ public class Robot {
 
   }
 
-  public void IMUReset() {
 
-  }
-
-  
-  public void turnUpdate() {
-
-  }
 
   
     public double distanceCircle(double x, double y){
@@ -105,11 +101,5 @@ public class Robot {
       }
     }
 
-    public void setTurnPIntake(boolean intakeOn){
-      if (intakeOn) {
-        anglePID.updateConstants(pConIntake, 0, dCon);
-      }else{
-        anglePID.updateConstants(pCon, 0, dCon);
-      }
-    }
+
   }
