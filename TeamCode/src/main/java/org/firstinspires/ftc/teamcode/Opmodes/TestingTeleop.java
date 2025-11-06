@@ -22,7 +22,7 @@ public class TestingTeleop extends BaseTeleOp{
 
             // resets Field Centric Driving
             if (gamepad1.share) {
-                robot.IMUReset();
+                robot.odometry.resetIMU();
             }
 
             robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.anglePID.getPower(), robot.odometry.getRobotAngle());

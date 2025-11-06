@@ -26,14 +26,17 @@ public class Robot {
   // used for how fast the turning input is used.
   // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
   public static double maxTurnDegPerSecond = 280;
-
+  //TODO: Find values for these to tune PID constants
+  //TODO: Also make final once values have been found
+  public static double pCon;
+  public static double dCon;
   
   private double drive;
   private double slide;
   private double turn;
   public MecanumDriveTrain driveTrain;
   public ElapsedTime runtime = new ElapsedTime();
-
+  public PIDController anglePID = new PIDController(pCon, 0, dCon, runtime);
   public FtcDashboard ftcDashboard;
 
   public Telemetry telemetry;
@@ -59,7 +62,7 @@ public class Robot {
     
     driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
 
-    pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
+    //pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
     
      bulkSensorBucket.clearCache();
 
