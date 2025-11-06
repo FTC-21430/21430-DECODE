@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
-import com.acmerobotics.dashboard.config.Config;
+// Written by Tobin
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,22 +11,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Controls the launcher system, including the flywheel speed.
  */
 public class Launcher {
-    // Hardware map for accessing robot hardware
-    private HardwareMap hardwareMap = null;
-    // Telemetry for reporting data to the driver station
-
-    private Telemetry telemetry = null;
-
     // Flywheel subsystem instance
-    private Flywheel flywheel = null;
+    private final Flywheel flywheel;
 
     // Launcher Ramp subsystem instance
-    private LauncherRamp ramp = null;
-
-    // PID constants for flywheel speed control (values can be overridden)
-    private double flywheelSpeedControlP = 300;
-    private double flywheelSpeedControlI = 1;
-    private double flywheelSpeedControlD = 10;
+    private final LauncherRamp ramp;
 
     /**
      * Constructs a Launcher with the given hardware map and telemetry.
@@ -33,8 +23,12 @@ public class Launcher {
      * @param telemetry the telemetry to use
      */
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry){
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
+
+        // PID constants for flywheel speed control (values can be overridden with a different function) used only for flywheel initialization
+        final double flywheelSpeedControlP = 300;
+        final double flywheelSpeedControlI = 1;
+        final double flywheelSpeedControlD = 10;
+
         // Initialize the flywheel with PID constants
         flywheel = new Flywheel(hardwareMap, telemetry, new ElapsedTime(),
                 flywheelSpeedControlP, flywheelSpeedControlI, flywheelSpeedControlD);
