@@ -7,9 +7,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 
+/**
+ * Spindexer class manages the spindexer mechanism, including its servo and ejector.
+ * It handles movement between slots, ejection, and calibration.
+ */
 public class Spindexer {
 
-    private final SpindexerServoFirmware paddleServo;
+    private final SpindexerServoFirmware paddleServo; // Firmware for controlling the spindexer servo.
 
 //    private final SpindexerColorSensor colorSensor; - Not needed for scrimmage - Tobin 11/6
 
@@ -19,36 +23,44 @@ public class Spindexer {
 //      COLORS.NONE
 //    };
 
-    private final ElapsedTime runtime;
-    private boolean ejecting = false;
-    private double ejectionTimeout = 0.6;
-    private final int slotIncrement = 120; // there is a new slot every 120 degrees
+    private final ElapsedTime runtime; // Timer for managing ejection and calibration timeouts.
+    private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
+    private double ejectionTimeout = 0.6; // Timeout duration for ejection in seconds.
+    private final int slotIncrement = 120; // Degrees between slots.
 
-    private final ServoPlus racketServo;
-    private double racketOutPos = 0.0;
-    private double racketInPos = 0.0;
-    private boolean calibrating = false;
-    private double calibrationTimeout = 0.7;
-    public Spindexer(HardwareMap hardwareMap){
-        paddleServo = new SpindexerServoFirmware(hardwareMap,false,0,120,240,"intake");
+    private final ServoPlus ejectorServo; // Servo for controlling the ejector mechanism.
+    private double ejectorOutPos = 0.0; // Position of the ejector when pushed out.
+    private double ejectorInPos = 0.0; // Position of the ejector when retracted.
+    private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
+    private double calibrationTimeout = 0.7; // Timeout duration for calibration in seconds.
+
+    /**
+     * Constructor initializes the spindexer components.
+     * @param hardwareMap Hardware map to retrieve hardware instances.
+     */
+    public Spindexer(HardwareMap hardwareMap) {
+        paddleServo = new SpindexerServoFirmware(hardwareMap, false, 0, 120, 240, "intake");
         runtime = new ElapsedTime();
-//        range of motion does not just need to be in degrees for the ServoPLus class. In this case, we are using inches because this should be linear.
-        racketServo = new ServoPlus(hardwareMap.get(Servo.class,"racket"),5,0,5);
+        // Range of motion for the ServoPlus class is in inches for linear movement.
+        ejectorServo = new ServoPlus(hardwareMap.get(Servo.class, "ejector"), 5, 0, 5);
 //        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
     }
 
-    public void updateSpindexer(){
-        if (!calibrating){
-            if (runtime.seconds() >= ejectionTimeout){
-                moveRacket(false);
+    /**
+     * Updates the spindexer state, handling ejection and calibration timeouts.
+     */
+    public void updateSpindexer() {
+        if (!calibrating) {
+            if (runtime.seconds() >= ejectionTimeout) {
+                moveEjector(false); // Retracts the ejector after ejection timeout.
             }
-        }else{
-            if (runtime.seconds() >= calibrationTimeout){
-                calibrating = false;
+        } else {
+            if (runtime.seconds() >= calibrationTimeout) {
+                calibrating = false; // Ends calibration mode after timeout.
                 paddleServo.resetEncoderPosition();
             }
         }
-            paddleServo.update();
+            paddleServo.update(); // Updates the spindexer servo position.
     }
 
 //    public void prepColor(COLORS color){ - Not needed for scrimmage - Tobin 11/6
@@ -77,53 +89,77 @@ public class Spindexer {
 //        double pos = ((index-1) * slotIncrement);
 //        paddleServo.setSpindexerPosition(pos);
 //    }
+    /**
+     * Ejects the current item if the spindexer is at a valid slot.
+     */
     public void eject(){
         if (paddleServo.isAtTarget() && paddleServo.getTargetPosition() % slotIncrement == 0){
-            moveRacket(true);
-            runtime.reset();
+            moveEjector(true); // Pushes the ejector out for ejection.
+            runtime.reset(); // Resets the timer for ejection timeout.
         }
     }
 
+    /**
+     * Recalibrates the spindexer position to the starting point.
+     */
     public void recalibrateSpindexerPosition(){
-        moveRacket(false);
-        paddleServo.calibrationPosition();
-        calibrating = true;
-        runtime.reset();
+        moveEjector(false); // Ensures the ejector is retracted.
+        paddleServo.calibrationPosition(); // Moves the spindexer to the calibration position.
+        calibrating = true; // Sets the spindexer to calibration mode.
+        runtime.reset(); // Resets the timer for calibration timeout.
     }
+    /**
+     * Checks if the spindexer is at rest (not moving).
+     * @return True if at rest, false otherwise.
+     */
     public boolean isAtRest(){
         return paddleServo.isAtTarget();
     }
 
-    // returns -1 if it is not at a slot.
+    /**
+     * Gets the current index of the spindexer in the intake position.
+     * @return Index number (1-3) or -1 if not at a valid slot.
+     */
     public int getCurrentIndexInIntake(){
         if (paddleServo.getTargetPosition()%120 == 0){
             return ((int)paddleServo.getTargetPosition() / slotIncrement) + 1;
         }else{
-            return -1;
+            return -1; // Indicates the spindexer is not at a valid slot.
         }
     }
 
-    // returns -1 if it is not at a slot.
+    /**
+     * Gets the current index of the spindexer in the launch position.
+     * @return Index number (1-3) or -1 if not at a valid slot.
+     */
     public int getCurrentIndexInLaunch(){
         if (paddleServo.getTargetPosition()%120 == 0){
             return ((int)paddleServo.getTargetPosition() / slotIncrement) + 2;
         }else{
-            return -1;
+            return -1; // Indicates the spindexer is not at a valid slot.
         }
     }
+
+    /**
+     * Moves the spindexer to the next index position.
+     */
     public void moveToNextIndex(){
-       double pos = getCurrentIndexInIntake() + 1;
-       paddleServo.setSpindexerPosition(pos);
+       double pos = getCurrentIndexInIntake() + 1; // Calculates the next index position.
+       paddleServo.setSpindexerPosition(pos); // Moves the spindexer to the calculated position.
     }
 
 
-    private void moveRacket(boolean pushOut){
+    /**
+     * Moves the ejector to the specified position (out or in).
+     * @param pushOut True to push the ejector out, false to retract it.
+     */
+    private void moveEjector(boolean pushOut){
         if (pushOut){
-            racketServo.setServoPos(racketOutPos);
-            ejecting = true;
+            ejectorServo.setServoPos(ejectorOutPos); // Sets the ejector to the out position.
+            ejecting = true; // Marks the spindexer as ejecting.
         }else{
-            racketServo.setServoPos(racketInPos);
-            ejecting = false;
+            ejectorServo.setServoPos(ejectorInPos); // Sets the ejector to the in position.
+            ejecting = false; // Marks the spindexer as not ejecting.
         }
     }
 

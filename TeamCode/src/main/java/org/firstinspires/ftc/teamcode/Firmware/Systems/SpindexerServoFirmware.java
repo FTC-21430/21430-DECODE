@@ -6,14 +6,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * Current class assumptions:
- *The servo has a "dead spot"
+ * SpindexerServoFirmware class controls the spindexer servo and its associated encoder.
+ * It manages the servo's movement to specific positions and ensures accurate calibration.
  */
 public class SpindexerServoFirmware {
-    private final Servo spindexerServo;
-    // the degree values for each slot
-    private final double[] slots;
-    private final double direction;
+    private final Servo spindexerServo; // Servo controlling the spindexer.
+    private final double[] slots; // Degree values for each slot.
+    private final double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
 
     // The servo degree that is the current target
     private double targetPosition = 0;
@@ -27,24 +26,34 @@ public class SpindexerServoFirmware {
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
 
 
-    private final DcMotor spindexerEncoderMotorInstance;
+    private final DcMotor spindexerEncoderMotorInstance; // Encoder motor instance for position tracking.
 
-
+    /**
+     * Constructor initializes the spindexer servo and encoder.
+     * @param hardwareMap Hardware map to retrieve servo and encoder instances.
+     * @param spinClockwise Direction of servo movement (true for clockwise).
+     * @param slot1 Degree value for slot 1.
+     * @param slot2 Degree value for slot 2.
+     * @param slot3 Degree value for slot 3.
+     * @param encoderConfigAddress Configuration address for the encoder motor.
+     */
     public SpindexerServoFirmware(HardwareMap hardwareMap, boolean spinClockwise, double slot1, double slot2, double slot3, String encoderConfigAddress){
         this.slots = new double[] {slot1,slot2,slot3};
         spindexerServo = hardwareMap.get(Servo.class, "spindexer servo");
         spindexerEncoderMotorInstance = hardwareMap.get(DcMotor.class, encoderConfigAddress);
 
-        if (spinClockwise){
-            direction = -1;
-        } else{
-            direction = 1;
-        }
+        // Set direction based on spinClockwise parameter.
+        direction = spinClockwise ? -1 : 1;
     }
 
+    /**
+     * Updates the servo position based on the target position and tolerance.
+     */
     public void update(){
-        final double warpSpeedExitTolerance = 15;
+        final double warpSpeedExitTolerance = 15; // Tolerance for exiting warp speed.
         double encoderPosition = getEncoderPosition();
+
+        // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
         if (Math.abs(encoderPosition - targetPosition) <= warpSpeedExitTolerance){
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
         } else {
@@ -52,76 +61,121 @@ public class SpindexerServoFirmware {
         }
     }
 
+    /**
+     * Sets the spindexer to a specific position in degrees.
+     * @param position Target position in degrees.
+     */
     public void setSpindexerPosition(double position){
         if (position > 360){
-            position = position % 360;
+            position = position % 360; // Wraps position within 360 degrees.
         }
         position = clipPositionToRange(position);
         targetPosition = position;
         update();
     }
 
-    // valid for slots 1-3
+    /**
+     * Sets the spindexer to a predefined slot position.
+     * @param slot Slot number (1-3).
+     */
     public void setSpindexerSlot(int slot){
-        slot = slot % 3;
+        slot = slot % 3; // Ensures slot number is within valid range.
         setSpindexerPosition(slots[slot-1]);
     }
 
+    /**
+     * Sets the tolerance for position accuracy.
+     * @param toleranceTicks Tolerance in encoder ticks.
+     */
     public void setPositionTolerance(int toleranceTicks){
         positionTolerance = toleranceTicks;
     }
+
+    /**
+     * Checks if the spindexer is at the target position within the tolerance.
+     * @return True if at target, false otherwise.
+     */
     public boolean isAtTarget(){
         return Math.abs(getEncoderPosition()-targetPosition) < positionTolerance;
     }
 
+    /**
+     * Gets the current target position of the spindexer.
+     * @return Target position in degrees.
+     */
     public double getTargetPosition() {
         return targetPosition;
     }
 
+    /**
+     * Retrieves the current position of the encoder in degrees.
+     * @return Encoder position in degrees.
+     */
     public double getEncoderPosition(){
         return this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition());
     }
+
+    /**
+     * Moves the spindexer to the calibration position (0 degrees).
+     */
     public void calibrationPosition(){
         spindexerServo.setPosition(degreesToServoPWM(0));
     }
+
+    /**
+     * Resets the encoder position to zero.
+     */
     public void resetEncoderPosition(){
         spindexerEncoderMotorInstance.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         spindexerEncoderMotorInstance.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+    /**
+     * Converts encoder ticks to degrees.
+     * @param ticks Encoder ticks.
+     * @return Equivalent position in degrees.
+     */
     private double encoderTicksToDegrees(int ticks){
         // According to product page [https://www.revrobotics.com/rev-11-1271/] There are 8192 ticks per full revolution in this encoder. 360 degrees in a rotation, and the spindexer rotation to the encoder is 1:1.
-        double rotationsPerTick = 1.0/8192.0;
-        double degreesPerRotation = 360;
-        return ((double)ticks * rotationsPerTick * degreesPerRotation);
+        final double rotationsPerTick = 1.0/8192.0; // Encoder resolution.
+        final double degreesPerRotation = 360; // Degrees in one rotation.
+        return ticks * rotationsPerTick * degreesPerRotation;
     }
 
+    /**
+     * Converts degrees to servo PWM values.
+     * @param degrees Target position in degrees.
+     * @return Equivalent PWM value.
+     */
     private double degreesToServoPWM(double degrees){
-
 
 //        Assuming that the product page for the SWYFT Balance servo (the one used here) is correct: Full range is 270.
 //        We want 15 degrees of space on each side of our main target points ( (270-(120 * 2) )/ 2
 
-        double rangeSpacing = 15; // degrees
+        final double rangeSpacing = 15; // Spacing in degrees for safety.
+        final double servoRange = 270; // Full range of the servo in degrees.
 
-        double servoRange = 270;
-
-        // ensure the input of this function returns the correct range of values and
-
+        // Adjust degrees to fit within the servo's range.
         degrees = Range.clip(degrees, 0, servoRange - rangeSpacing) + rangeSpacing;
 
-        double degreesToPWM = (double) 1 / servoRange;
-
+        final double degreesToPWM = 1.0 / servoRange; // Conversion factor.
         double originalPWM = degrees * degreesToPWM ;
 
         // TODO: find these values using the servo tuning testing op-mode!
-        double minimumPWM = 0.05;
-        double maximumPWM = 0.95;
+        final double minimumPWM = 0.05; // Minimum PWM value.
+        final double maximumPWM = 0.95; // Maximum PWM value.
 
         return Range.clip(originalPWM,minimumPWM,maximumPWM);
     }
+
+    /**
+     * Clips the position to a controlled range.
+     * @param position Target position in degrees.
+     * @return Clipped position within the valid range.
+     */
     private double clipPositionToRange( double position){
-        final double controlledRangeMinDegree = 10;
-        final double controlledRangeMaxDegree = 250;
+        final double controlledRangeMinDegree = 10; // Minimum valid degree.
+        final double controlledRangeMaxDegree = 250; // Maximum valid degree.
         return Range.clip(position, controlledRangeMinDegree, controlledRangeMaxDegree);
     }
 

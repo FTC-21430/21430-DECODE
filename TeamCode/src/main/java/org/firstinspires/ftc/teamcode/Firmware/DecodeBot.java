@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirm
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerServoFirmware;
 
 public class DecodeBot extends Robot{
 
@@ -19,18 +18,21 @@ public class DecodeBot extends Robot{
     @Override
     public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto){
 
+        this.opMode = opMode;
 
+        this.telemetry = telemetry;
 
+        // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
+        odometry = new GobildaPinpointModuleFirmware(hardwareMap, 8.18,8.18,reset);
 
+        bulkSensorBucket = new BulkSensorBucket(hardwareMap);
 
-
-
-
-        
-
-
-
+        driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
+        launcher = new Launcher(hardwareMap,telemetry);
         spindexer = new Spindexer(hardwareMap);
+
+        bulkSensorBucket.clearCache();
+
     }
     @Override
     //TODO:Call updates for sensors and actuators
