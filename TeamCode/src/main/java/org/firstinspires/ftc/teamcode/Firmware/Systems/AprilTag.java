@@ -24,8 +24,32 @@ public class AprilTag {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
-    public void displayDetectionTelemetry(AprilTagDetection detectedID){
-        if (detectedID == null){return;}
+
+    private Telemetry telemetry;
+
+
+    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.telemetry = telemetry;
+
+
+        aprilTagProcessor = new AprilTagProcessor.Builder()
+                .setLensIntrinsics(736.952533347, 736.952533347, 951.225875883, 540.574797136)
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .build();
+
+
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        builder.setCameraResolution(new Size(1280, 960));
+        builder.addProcessor(aprilTagProcessor);
+        builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
+        visionPortal = builder.build();
+    }
+
+    public void displayDetectionTelemetry(AprilTagDetection detectedID) {
+        if (detectedID == null) {
+            return;
+        }
         if (detectedID.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
             telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detectedID.ftcPose.x, detectedID.ftcPose.y, detectedID.ftcPose.z));
@@ -36,27 +60,8 @@ public class AprilTag {
             telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detectedID.center.x, detectedID.center.y));
         }
     }
-    private Telemetry telemetry;
 
-
-    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.telemetry = telemetry;
-
-
-        aprilTagProcessor = new AprilTagProcessor.Builder()
-                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-                .build();
-
-
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        builder.setCameraResolution(new Size(640,480));
-        builder.addProcessor(aprilTagProcessor);
-        visionPortal = builder.build();
-    }
-
-
-    public void update(){
+    public void update() {
         tagsDetected = aprilTagProcessor.getDetections();
     }
 
@@ -64,18 +69,50 @@ public class AprilTag {
     public List<AprilTagDetection> getTagsDetected() {
         return tagsDetected;
     }
-    public AprilTagDetection getSpecific(int id){
-        for (AprilTagDetection detection : tagsDetected){
-            if (detection.id == id){
+
+    public AprilTagDetection getSpecific(int id) {
+        for (AprilTagDetection detection : tagsDetected) {
+            if (detection.id == id) {
                 return detection;
             }
         }
         return null;
     }
+
+    public int locateAprilTags(String side) {
+        if (side == "red") {
+            //Red april tags
+            update();
+            AprilTagDetection id24 = getSpecific(24);
+            displayDetectionTelemetry(id24);
+            return 24;
+        }
+        else if(side == "blue")
+        {
+            //Blue april tags
+            update();
+            AprilTagDetection id23 = getSpecific(23);
+            displayDetectionTelemetry(id23);
+            return 23;
+        }
+        else
+        {
+        telemetry.addLine("aprilTagFalse");
+        telemetry.update();
+    }
+}
+
+public double getDistance(String side){
+        locateAprilTags(side);
+        return.
+}
     public void stop(){
         if (visionPortal !=null){
             visionPortal.close();
         }
     }
 
+    public Telemetry getTelemetry() {
+        return telemetry;
+    }
 }
