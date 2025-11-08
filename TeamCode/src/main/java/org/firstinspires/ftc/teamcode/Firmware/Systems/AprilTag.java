@@ -24,6 +24,7 @@ public class AprilTag {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
+    private int aprilTagID;
 
     private Telemetry telemetry;
 
@@ -79,13 +80,13 @@ public class AprilTag {
         return null;
     }
 
-    public int locateAprilTags(String side) {
+    public void locateAprilTags(String side) {
         if (side == "red") {
             //Red april tags
             update();
             AprilTagDetection id24 = getSpecific(24);
             displayDetectionTelemetry(id24);
-            return 24;
+            aprilTagID = 24;
         }
         else if(side == "blue")
         {
@@ -93,7 +94,7 @@ public class AprilTag {
             update();
             AprilTagDetection id23 = getSpecific(23);
             displayDetectionTelemetry(id23);
-            return 23;
+            aprilTagID = 23;
         }
         else
         {
@@ -104,7 +105,7 @@ public class AprilTag {
 
 public double getDistance(String side){
         locateAprilTags(side);
-        return.
+        return getSpecific(aprilTagID).ftcPose.range;
 }
     public void stop(){
         if (visionPortal !=null){
