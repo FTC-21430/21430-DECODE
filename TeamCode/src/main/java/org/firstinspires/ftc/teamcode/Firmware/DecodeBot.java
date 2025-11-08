@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerServoFirmware;
+import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 
 public class DecodeBot extends Robot{
 
@@ -31,8 +32,10 @@ public class DecodeBot extends Robot{
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
         spindexer = new Spindexer(hardwareMap);
-        
+        rotationControl = new RotationControl(300,0.025,0,0.0001,robotAngle);
         bulkSensorBucket.clearCache();
+
+
 
     }
     @Override

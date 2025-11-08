@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 
 //TODO - Refactor this class to be season non-specific and move all specific details to the DecodeBot class and override information in this class.
 
@@ -36,7 +37,7 @@ public class Robot {
   private double turn;
   public MecanumDriveTrain driveTrain;
   public ElapsedTime runtime = new ElapsedTime();
-  public PIDController anglePID = new PIDController(pCon, 0, dCon, runtime);
+  public RotationControl rotationControl;
   public FtcDashboard ftcDashboard;
 
   public Telemetry telemetry;
