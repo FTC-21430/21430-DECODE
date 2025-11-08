@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 
@@ -32,18 +33,22 @@ public class Spindexer {
     private double ejectorOutPos = 0.0; // Position of the ejector when pushed out.
     private double ejectorInPos = 0.0; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
-    private double calibrationTimeout = 0.7; // Timeout duration for calibration in seconds.
+    private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
 
+
+    private Telemetry telemetry;
     /**
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
      */
-    public Spindexer(HardwareMap hardwareMap) {
-        paddleServo = new SpindexerServoFirmware(hardwareMap, false, 0, 120, 240, "intake");
+    public Spindexer(HardwareMap hardwareMap, Telemetry telemetry) {
+        paddleServo = new SpindexerServoFirmware(hardwareMap, false, 0, 120, 240, "intake",telemetry);
         runtime = new ElapsedTime();
+        this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
         ejectorServo = new ServoPlus(hardwareMap.get(Servo.class, "ejector"), 5, 0, 5);
 //        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
+        recalibrateSpindexerPosition();
     }
 
     /**
@@ -61,6 +66,7 @@ public class Spindexer {
             }
         }
             paddleServo.update(); // Updates the spindexer servo position.
+        telemetry.addData("slot in intake", getCurrentIndexInIntake());
     }
 
 //    public void prepColor(COLORS color){ - Not needed for scrimmage - Tobin 11/6
@@ -144,8 +150,8 @@ public class Spindexer {
      * Moves the spindexer to the next index position.
      */
     public void moveToNextIndex(){
-       double pos = getCurrentIndexInIntake() + 1; // Calculates the next index position.
-       paddleServo.setSpindexerPosition(pos); // Moves the spindexer to the calculated position.
+       int pos = getCurrentIndexInIntake() + 1; // Calculates the next index position.
+       paddleServo.setSpindexerSlot(pos); // Moves the spindexer to the calculated position.
     }
 
 
@@ -163,5 +169,8 @@ public class Spindexer {
         }
     }
 
+    public void setSpindexerPos(double degree){
+        paddleServo.setSpindexerPosition(degree);
+    }
 
 }

@@ -34,7 +34,7 @@ public class DecodeBot extends Robot{
 
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
-        spindexer = new Spindexer(hardwareMap);
+        spindexer = new Spindexer(hardwareMap,telemetry);
 
         bulkSensorBucket.clearCache();
 
