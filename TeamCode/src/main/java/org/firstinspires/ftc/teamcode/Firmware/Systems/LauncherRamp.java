@@ -17,19 +17,23 @@ public class LauncherRamp {
     // servo instance
     private ServoPlus rampServo = null;
 
+
+    //TODO: as said on line 13, All of these values have been guesstimated by Tobin based on the CAD models.
+
     // the full range of motion of the servo - note that this is usually a little different than what it is on the spec sheet, double check values.
-    private final double servoROM = 300; // degrees
+    private final double servoROM = 300; // degrees - Based from the specs of a gobilda torque servo - need to identify correct range.
 
     // The range of motion the ramp can move, from completely retracted to farthest mechanical limit
-    private final double rampROM = 23.6; // degrees
-
-    // The gear ratio between the launcher hood and the servo gear
+//    Took radius from pivot point to end of ramp and the circumference segment of the movable ramp segment. Took that ratio of full circumference and part to find ROM
+    private final double rampROM = 23.6; // degrees guessed based on CAD.
+    // The gear ratio between the launcher hood and the servo gear - Provided by the chief engineer in training who designed this part on hardware.
     private final double servoToRampRatio = (double) 1 / 6;
 
     // The minimum angle of the ramp up from Horizontal
+    // measured from CAD - eyeballed
     private final double minRampAngle = 6.97;
 
-    // The maximum angle of the ramp up from Horizontal
+    // The maximum angle of the ramp up from Horizontal used previous values
     private final double maxRampAngle = minRampAngle + rampROM;
 
 
