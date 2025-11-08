@@ -10,7 +10,7 @@ public class TestingTeleop extends BaseTeleOp{
     public void runOpMode() throws InterruptedException {
 
         // initializes the robot without resetting the odometry
-        initialize(false, false);
+        initialize(true, false);
 
         waitForStart();
 
@@ -20,6 +20,10 @@ public class TestingTeleop extends BaseTeleOp{
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
 
+            // resets Field Centric Driving
+            if (gamepad1.share) {
+                robot.odometry.resetIMU();
+            }
             if (gamepad2.square){
                 robot.spindexer.moveToNextIndex();
             }
@@ -27,14 +31,9 @@ public class TestingTeleop extends BaseTeleOp{
                 robot.spindexer.eject();
             }
 
-
-            // resets Field Centric Driving
-            if (gamepad1.share) {
-                robot.odometry.resetIMU();
-            }
-
+            robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x);
             //sets drive power and what gamepad does
-            robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.anglePID.getPower(), robot.odometry.getRobotAngle());
+            robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.updateRobot(false, false, false);
 
             robot.bulkSensorBucket.clearCache();
