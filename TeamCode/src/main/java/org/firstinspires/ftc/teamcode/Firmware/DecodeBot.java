@@ -8,7 +8,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerServoFirmware;
+import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 @Config
@@ -18,6 +21,9 @@ public class DecodeBot extends Robot{
     // the conversion ratio of the speed of the ball's movement to the robots flywheel speed
     public static double velocityMetersToDegrees = 0.03;
     public Launcher launcher = null;
+    public Spindexer spindexer = null;
+
+
     public TrajectoryKinematics trajectoryKinematics;
 
     public String alliance = "red";
@@ -26,7 +32,7 @@ public class DecodeBot extends Robot{
     public static final double I_CONSTANT = 0.1;
     public static final double D_CONSTANT = 0.02;
     @Override
-    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance){
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
 
@@ -42,14 +48,26 @@ public class DecodeBot extends Robot{
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
 
+        spindexer = new Spindexer(hardwareMap,telemetry);
+        spindexer = new Spindexer(hardwareMap);
+        rotationControl = new RotationControl(300,0.025,0,0.0001,robotAngle);
+
         bulkSensorBucket.clearCache();
 
+
+
+    }
+    @Override
+    //TODO:Call updates for sensors and actuators
+    public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
+        spindexer.updateSpindexer();
+        launcher.updateSpeedControl();
     }
 
     public void aimBasedOnTags(){
         // TODO: replace the 0.0 to the output of april tags
         trajectoryKinematics.calculateTrajectory(0.0);
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude() * velocityMetersToDegrees);
-        
+
     }
 }
