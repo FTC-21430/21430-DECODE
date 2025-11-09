@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
+// Written by Tobin
+
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
-@Config
+//@Config
+@Disabled
 @TeleOp
 public class ColorSensorTesting extends BaseTeleOp {
 

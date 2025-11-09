@@ -8,12 +8,17 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirm
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerServoFirmware;
+import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 
 public class DecodeBot extends Robot{
 
     public Launcher launcher = null;
+    public Spindexer spindexer = null;
     public Intake intake = null;
+  
     //The PID values are a public because we need to tune it later and public makes it easier to do that
     public static final double P_CONSTANT = 0.15;
     public static final double I_CONSTANT = 0.1;
@@ -34,7 +39,23 @@ public class DecodeBot extends Robot{
         launcher = new Launcher(hardwareMap,telemetry);
         intake = new Intake(hardwareMap, telemetry);
 
+        spindexer = new Spindexer(hardwareMap,telemetry);
+        rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle);
+
+
+
+
         bulkSensorBucket.clearCache();
 
+
+
+
+
+    }
+    @Override
+    //TODO:Call updates for sensors and actuators
+    public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
+        spindexer.updateSpindexer();
+        launcher.updateSpeedControl();
     }
 }
