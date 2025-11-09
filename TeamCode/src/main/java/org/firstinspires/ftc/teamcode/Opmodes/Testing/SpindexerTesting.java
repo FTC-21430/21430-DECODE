@@ -1,0 +1,35 @@
+package org.firstinspires.ftc.teamcode.Opmodes.Testing;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
+
+@Config
+@TeleOp
+public class SpindexerTesting extends BaseTeleOp {
+
+    public static double pos = 0;
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initialize(true,false);
+        waitForStart();
+        while(opModeIsActive()){
+            if (gamepad1.circleWasPressed()){
+                robot.spindexer.moveToNextIndex();
+            }
+            if (gamepad1.triangleWasPressed()){
+                robot.spindexer.recalibrateSpindexerPosition();
+            }
+            if (gamepad1.squareWasPressed()){
+                robot.spindexer.eject();
+            }
+            if (gamepad1.crossWasPressed()){
+                robot.spindexer.setSpindexerPos(pos);
+            }
+            robot.updateRobot(false,false,false);
+            robot.bulkSensorBucket.clearCache();
+            telemetry.update();
+        }
+    }
+}

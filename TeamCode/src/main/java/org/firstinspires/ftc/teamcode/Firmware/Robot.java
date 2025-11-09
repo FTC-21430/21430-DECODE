@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 
 //TODO - Refactor this class to be season non-specific and move all specific details to the DecodeBot class and override information in this class.
 
@@ -22,7 +23,7 @@ public class Robot {
     SLOW, FAST
   }
 
-  // TODO: Refoctar this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
+  // TODO: Refactor this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
   // used for how fast the turning input is used.
   // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
   public static double maxTurnDegPerSecond = 280;
@@ -36,7 +37,7 @@ public class Robot {
   private double turn;
   public MecanumDriveTrain driveTrain;
   public ElapsedTime runtime = new ElapsedTime();
-  public PIDController anglePID = new PIDController(pCon, 0, dCon, runtime);
+  public RotationControl rotationControl;
   public FtcDashboard ftcDashboard;
 
   public Telemetry telemetry;
@@ -80,7 +81,8 @@ public class Robot {
   }
 
 
-    public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
+    //ToDo: finish coding updateRobot
+  public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
 
     }
 
