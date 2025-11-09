@@ -24,10 +24,12 @@ public class TestingTeleop extends BaseTeleOp{
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
 
+
+
             // resets Field Centric Driving
             if (gamepad1.shareWasPressed()) {
-//                robot.odometry.resetIMU();
-//                robot.rotationControl.setTargetAngle(0);
+                robot.odometry.resetIMU();
+                robot.rotationControl.setTargetAngle(0);
             }
             if (gamepad2.squareWasPressed()){
                 robot.spindexer.moveToNextIndex();
@@ -40,6 +42,12 @@ public class TestingTeleop extends BaseTeleOp{
                 robot.driveTrain.setSpeedMultiplier(0.5);
             } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                 robot.driveTrain.setSpeedMultiplier(1);
+            }
+
+            if (gamepad2.left_bumper){
+                robot.intake.setIntakePower(1);
+            } else {
+                robot.intake.setIntakePower(0);
             }
 
             robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
