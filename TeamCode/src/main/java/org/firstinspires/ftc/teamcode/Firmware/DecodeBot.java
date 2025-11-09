@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerServoFirmware;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
@@ -31,8 +30,9 @@ public class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.15;
     public static final double I_CONSTANT = 0.1;
     public static final double D_CONSTANT = 0.02;
+
     @Override
-    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto){
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
 
@@ -49,7 +49,6 @@ public class DecodeBot extends Robot{
         launcher = new Launcher(hardwareMap,telemetry);
 
         spindexer = new Spindexer(hardwareMap,telemetry);
-        spindexer = new Spindexer(hardwareMap);
         rotationControl = new RotationControl(300,0.025,0,0.0001,robotAngle);
 
         bulkSensorBucket.clearCache();
@@ -64,10 +63,26 @@ public class DecodeBot extends Robot{
         launcher.updateSpeedControl();
     }
 
+    // red or blue
+    public void setAlliance(String alliance){
+        this.alliance = alliance;
+    }
     public void aimBasedOnTags(){
-        // TODO: replace the 0.0 to the output of april tags
-        trajectoryKinematics.calculateTrajectory(0.0);
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude() * velocityMetersToDegrees);
+        // TODO: replace the 0.0 values to the output of april tags
 
+        // but don't change this one
+        double distanceToGoal = 0.0;
+
+        switch (alliance){
+            case "red":
+                distanceToGoal = 0.0;
+                break;
+            case "blue":
+                distanceToGoal = 0.0;
+                break;
+        }
+        trajectoryKinematics.calculateTrajectory(distanceToGoal);
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude() * velocityMetersToDegrees);
+        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
     }
 }

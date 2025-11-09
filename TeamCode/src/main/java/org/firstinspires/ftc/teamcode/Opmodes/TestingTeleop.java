@@ -30,6 +30,9 @@ public class TestingTeleop extends BaseTeleOp{
             if (gamepad2.share) {
                 robot.spindexer.eject();
             }
+            if (gamepad2.left_trigger > 0.4){
+                robot.aimBasedOnTags();
+            }
 
             robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x);
             //sets drive power and what gamepad does

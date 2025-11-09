@@ -52,7 +52,7 @@ public class Robot {
   public GobildaPinpointModuleFirmware odometry;
 
 
-  public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto) {
+  public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance) {
 
   }
   
