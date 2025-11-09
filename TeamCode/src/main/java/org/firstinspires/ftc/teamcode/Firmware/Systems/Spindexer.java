@@ -150,6 +150,7 @@ public class Spindexer {
      * Moves the spindexer to the next index position.
      */
     public void moveToNextIndex(){
+        if (ejecting) return;
        int pos = getCurrentIndexInIntake() + 1; // Calculates the next index position.
        paddleServo.setSpindexerSlot(pos); // Moves the spindexer to the calculated position.
     }
@@ -170,6 +171,7 @@ public class Spindexer {
     }
 
     public void setSpindexerPos(double degree){
+        if (ejecting) return;
         paddleServo.setSpindexerPosition(degree);
     }
 
