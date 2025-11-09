@@ -22,7 +22,7 @@ public class ServoTuningTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         // Change this value to match the config value of the servo you want to tune
-        String address = "spindexer servo";
+        String address = "ejector";
 
         // get the servo object from the config files
         servo = hardwareMap.get(Servo.class, address);

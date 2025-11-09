@@ -68,17 +68,17 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        // TODO: replace the 0.0 values to the output of april tags
+        // TODO: replace the 68.0 values to the output of april tags (these are temp values that mark a general distance from the goal around (0,0)
 
         // but don't change this one
-        double distanceToGoal = 0.0;
+        double distanceToGoal = 68.0;
 
         switch (alliance){
             case "red":
-                distanceToGoal = 0.0;
+                distanceToGoal = 68.0;
                 break;
             case "blue":
-                distanceToGoal = 0.0;
+                distanceToGoal = 68.0;
                 break;
         }
         trajectoryKinematics.calculateTrajectory(distanceToGoal);

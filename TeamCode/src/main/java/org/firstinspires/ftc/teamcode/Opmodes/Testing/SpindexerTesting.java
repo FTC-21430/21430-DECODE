@@ -27,6 +27,10 @@ public class SpindexerTesting extends BaseTeleOp {
             if (gamepad1.crossWasPressed()){
                 robot.spindexer.setSpindexerPos(pos);
             }
+
+            if (gamepad1.rightBumperWasPressed()){
+                robot.spindexer.eject();
+            }
             robot.updateRobot(false,false,false);
             robot.bulkSensorBucket.clearCache();
             telemetry.update();

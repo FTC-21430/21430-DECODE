@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 // uncomment Config to use FTC dashboard
-//@Config
+@Config
 //comment disabled to be able to run this test code
-@Disabled
+//@Disabled
 
 // Used for testing the functionality of the launcher ramp
 @TeleOp
@@ -20,7 +20,8 @@ public class LauncherRampTesting extends BaseTeleOp {
 
     Launcher launcher;
 
-    public static double angle = 0;
+    public static double angle = 10;
+    public static double speed = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -46,8 +47,10 @@ public class LauncherRampTesting extends BaseTeleOp {
             if (gamepad1.triangleWasPressed()){
                 launcher.setLaunchAngle(angle);
             }
+            launcher.setSpeed(speed);
             // update the launcher speed control so it does feel neglected.
             launcher.updateSpeedControl();
+
         }
     }
 }

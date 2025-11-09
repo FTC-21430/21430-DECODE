@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -21,7 +22,7 @@ public class SpindexerServoFirmware {
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
     private int positionTolerance = 4;
-    private final double pwmAtZeroDegrees = 0.3;
+    private final double pwmAtZeroDegrees = 0.308;
 
     // Warp speed exit tolerance - The servo will always spin in one direction at full continuous speed until
     // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
@@ -47,9 +48,10 @@ public class SpindexerServoFirmware {
     public SpindexerServoFirmware(HardwareMap hardwareMap, boolean spinClockwise, double slot1, double slot2, double slot3, String encoderConfigAddress, Telemetry telemetry){
         this.slots = new double[] {slot1,slot2,slot3};
         this.telemetry = telemetry;
-        spindexerServo = hardwareMap.get(Servo.class, "spindexer servo");
+        spindexerServo = hardwareMap.get(Servo.class, "spindexer");
         spindexerEncoderMotorInstance = hardwareMap.get(DcMotor.class, encoderConfigAddress);
-
+        spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.REVERSE);
+        spindexerServo.setDirection(Servo.Direction.FORWARD);
         // Set direction based on spinClockwise parameter.
         direction = spinClockwise ? 0.17 : 0.83;
 
