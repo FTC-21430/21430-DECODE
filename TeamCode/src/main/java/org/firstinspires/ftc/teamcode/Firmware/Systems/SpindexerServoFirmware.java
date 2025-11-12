@@ -50,8 +50,8 @@ public class SpindexerServoFirmware {
         this.telemetry = telemetry;
         spindexerServo = hardwareMap.get(Servo.class, "spindexer");
         spindexerEncoderMotorInstance = hardwareMap.get(DcMotor.class, encoderConfigAddress);
-        spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.REVERSE);
-        spindexerServo.setDirection(Servo.Direction.FORWARD);
+        spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.FORWARD);
+        spindexerServo.setDirection(Servo.Direction.REVERSE);
         // Set direction based on spinClockwise parameter.
         direction = spinClockwise ? 0.17 : 0.83;
 
