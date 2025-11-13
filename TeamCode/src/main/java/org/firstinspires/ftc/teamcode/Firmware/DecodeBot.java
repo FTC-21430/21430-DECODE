@@ -81,8 +81,8 @@ public class DecodeBot extends Robot{
                 distanceToGoal = 68.0;
                 break;
         }
-        trajectoryKinematics.calculateTrajectory(distanceToGoal);
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude() * velocityMetersToDegrees);
-        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+//        trajectoryKinematics.calculateTrajectory(distanceToGoal);
+//        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude() * velocityMetersToDegrees);
+//        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
     }
 }

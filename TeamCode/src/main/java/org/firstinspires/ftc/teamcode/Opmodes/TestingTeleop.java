@@ -24,10 +24,10 @@ public class TestingTeleop extends BaseTeleOp{
             if (gamepad1.share) {
                 robot.odometry.resetIMU();
             }
-            if (gamepad2.square){
+            if (gamepad2.squareWasPressed()){
                 robot.spindexer.moveToNextIndex();
             }
-            if (gamepad2.share) {
+            if (gamepad2.rightBumperWasPressed()) {
                 robot.spindexer.eject();
             }
             if (gamepad2.left_trigger > 0.4){
