@@ -82,6 +82,9 @@ public class Robot {
 
 
     //ToDo: finish coding updateRobot
+  /*Do we even need updateRobot? It isn't doing anything currently.
+  We use this in opmode but it doesn't do anything so should we take it out?
+   */
   public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
 
     }
