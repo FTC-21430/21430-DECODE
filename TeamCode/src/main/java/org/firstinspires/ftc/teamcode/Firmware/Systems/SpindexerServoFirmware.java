@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@Config
 
 /**
  * SpindexerServoFirmware class controls the spindexer servo and its associated encoder.
@@ -20,8 +24,8 @@ public class SpindexerServoFirmware {
     private double targetPosition = 0;
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
-    private int positionTolerance = 4;
-    private final double pwmAtZeroDegrees = 0.3;
+    private int positionTolerance = 30;
+    private final double pwmAtZeroDegrees = 0.74;
 
     // Warp speed exit tolerance - The servo will always spin in one direction at full continuous speed until
     // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
@@ -47,20 +51,23 @@ public class SpindexerServoFirmware {
     public SpindexerServoFirmware(HardwareMap hardwareMap, boolean spinClockwise, double slot1, double slot2, double slot3, String encoderConfigAddress, Telemetry telemetry){
         this.slots = new double[] {slot1,slot2,slot3};
         this.telemetry = telemetry;
-        spindexerServo = hardwareMap.get(Servo.class, "spindexer servo");
+        spindexerServo = hardwareMap.get(Servo.class, "spindexer");
         spindexerEncoderMotorInstance = hardwareMap.get(DcMotor.class, encoderConfigAddress);
-
+        spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.REVERSE);
+        spindexerServo.setDirection(Servo.Direction.FORWARD);
         // Set direction based on spinClockwise parameter.
         direction = spinClockwise ? 0.17 : 0.83;
 
 
     }
 
+
+    public static double warpSpeedExitTolerance = 50; // Tolerance for exiting warp speed.
     /**
      * Updates the servo position based on the target position and tolerance.
      */
     public void update(){
-        final double warpSpeedExitTolerance = 60; // Tolerance for exiting warp speed.
+
         double encoderPosition = getEncoderPosition();
 
         // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
@@ -184,7 +191,7 @@ public class SpindexerServoFirmware {
 
         final double minimumPWM = 0.223; // Minimum PWM value.
         final double maximumPWM = 0.785; // Maximum PWM value.
-        final double degreesToPWM =  (maximumPWM-minimumPWM)/ servoRange; // Conversion factor.
+        final double degreesToPWM =  -(maximumPWM-minimumPWM)/ servoRange; // Conversion factor.
         double resultingPWM = degrees * degreesToPWM + pwmAtZeroDegrees;
 
         return Range.clip(resultingPWM,minimumPWM,maximumPWM);
