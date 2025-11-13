@@ -13,10 +13,10 @@ public class IntakeTesting extends BaseTeleOp {
             robot.bulkSensorBucket.clearCache();
 
             if(gamepad1.b){
-                robot.intake.setIntakePower(1);
+                robot.intake.setIntakePower(-1);
 
             }else if (gamepad1.a) {
-                robot.intake.setIntakePower(0.5);
+                robot.intake.setIntakePower(-0.5);
 
             }else {
                     robot.intake.setIntakePower(0);

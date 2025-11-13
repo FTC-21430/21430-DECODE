@@ -94,4 +94,26 @@ public class DecodeBot extends Robot{
 //        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude() * velocityMetersToDegrees);
 //        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
     }
+
+    /**
+     *
+     * @param distance can be: "close" or "mid" or "far"
+     *
+     */
+    public void launchFrom(String distance){
+        switch (distance){
+            case "close":
+                launcher.setSpeed(1100);
+                launcher.setLaunchAngle(70);
+                break;
+            case "mid":
+                launcher.setSpeed(1400);
+                launcher.setLaunchAngle(55);
+                break;
+            case "far":
+                launcher.setSpeed(1750);
+                launcher.setLaunchAngle(55);
+                break;
+        }
+    }
 }

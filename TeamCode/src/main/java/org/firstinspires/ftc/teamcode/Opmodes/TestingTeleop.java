@@ -37,8 +37,15 @@ public class TestingTeleop extends BaseTeleOp{
             if (gamepad2.rightBumperWasPressed()) {
                 robot.spindexer.eject();
             }
-            if (gamepad2.left_trigger > 0.4){
-                robot.aimBasedOnTags();
+            if (gamepad2.dpadDownWasPressed()){
+                robot.launchFrom("close");
+            } else if(gamepad2.dpadLeftWasPressed()){
+                robot.launchFrom("mid");
+            } else if(gamepad2.dpadUpWasPressed()){
+                robot.launchFrom("far");
+            } else if (gamepad2.dpadRightWasPressed()){
+                robot.launcher.retractRamp();
+                robot.launcher.setSpeed(600);
             }
 
             if (gamepad1.right_trigger > 0.4){
@@ -48,7 +55,7 @@ public class TestingTeleop extends BaseTeleOp{
             }
 
             if (gamepad2.left_bumper){
-                robot.intake.setIntakePower(1);
+                robot.intake.setIntakePower(-1);
             } else {
                 robot.intake.setIntakePower(0);
             }

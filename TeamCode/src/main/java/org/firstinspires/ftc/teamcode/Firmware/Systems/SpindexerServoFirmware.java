@@ -25,7 +25,7 @@ public class SpindexerServoFirmware {
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
     private int positionTolerance = 30;
-    private final double pwmAtZeroDegrees = 0.74;
+    private final double pwmAtZeroDegrees = 0.73;
 
     // Warp speed exit tolerance - The servo will always spin in one direction at full continuous speed until
     // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
