@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
@@ -7,14 +8,15 @@ import java.util.List;
 import java.util.Random;
 
 //This class is used to take the current angle and caulcate what turn power you need to get there
+@Config
 public class RotationControl {
     //The turn Rate is used to determine the rate of turn you need
-    public double turnRate = 0;
+    public static double turnRate = 0;
+    private ElapsedTime runtime;
     //The Angler Controler gets information from the PID Controler in order to figure out the values
     public PIDController angleControler;
     //This function is used to establish the PID controller and setting the target angle
 
-    private ElapsedTime runtime;
     public RotationControl(double turnRate, double P,double I,double D, double targetAngle){
         this.turnRate = turnRate;
         angleControler = new PIDController(P, I, D, new ElapsedTime());
@@ -25,9 +27,8 @@ public class RotationControl {
     public double getOutputPower(double currentAngle){
         angleControler.update(currentAngle);
         return angleControler.getPower();
-
-
     }
+
     //This is a setter used to set what the PID values would be
     public void setPIDController(double P, double I, double D){
         angleControler.updateConstants(P, I, D);
@@ -49,7 +50,7 @@ public class RotationControl {
         return angleControler.getTarget();
     }
     //It changes values based on what the joystick tells it to do
-    public void changeTargetByJoystick(double joystickValue, double currentAngle){
+     public void changeTargetByJoystick(double joystickValue, double currentAngle){
         if (joystickValue == 0){
             angleControler.setTarget(currentAngle);
         }
@@ -61,4 +62,3 @@ public class RotationControl {
         return time;
     }
 }
-
