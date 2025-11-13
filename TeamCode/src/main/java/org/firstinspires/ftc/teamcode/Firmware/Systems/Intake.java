@@ -15,7 +15,7 @@ public class Intake {
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void setIntakePower (int power){
+    public void setIntakePower (double power){
         intake.setPower(power);
     }
 }
