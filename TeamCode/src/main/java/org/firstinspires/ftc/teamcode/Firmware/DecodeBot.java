@@ -40,7 +40,7 @@ public class DecodeBot extends Robot{
 
         this.alliance = alliance;
         // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
-        odometry = new GobildaPinpointModuleFirmware(hardwareMap, 7.2,-18,reset);
+        odometry = new GobildaPinpointModuleFirmware(hardwareMap, -14,-6.893,reset);
 
         trajectoryKinematics = new TrajectoryKinematics(40,30);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
