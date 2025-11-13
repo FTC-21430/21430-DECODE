@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
@@ -21,6 +22,8 @@ public class DecodeBot extends Robot{
     public static double velocityMetersToDegrees = 0.03;
     public Launcher launcher = null;
     public Spindexer spindexer = null;
+    public Intake intake = null;
+  
 
 
     public TrajectoryKinematics trajectoryKinematics;
@@ -47,11 +50,17 @@ public class DecodeBot extends Robot{
 
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
+        intake = new Intake(hardwareMap, telemetry);
 
         spindexer = new Spindexer(hardwareMap,telemetry);
-        rotationControl = new RotationControl(300,0.025,0,0.0001,robotAngle);
+        rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle);
+
+
+
 
         bulkSensorBucket.clearCache();
+
+
 
 
 

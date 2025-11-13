@@ -11,8 +11,12 @@ public class TestingTeleop extends BaseTeleOp{
 
         // initializes the robot without resetting the odometry
         initialize(true, false);
+        robot.driveTrain.fieldCentricDriving(true);
 
         waitForStart();
+
+        robot.launcher.setSpeed(1700);
+        robot.launcher.setLaunchAngle(13);
 
         while(opModeIsActive()) {
 
@@ -20,9 +24,12 @@ public class TestingTeleop extends BaseTeleOp{
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
 
+
+
             // resets Field Centric Driving
-            if (gamepad1.share) {
+            if (gamepad1.shareWasPressed()) {
                 robot.odometry.resetIMU();
+                robot.rotationControl.setTargetAngle(0);
             }
             if (gamepad2.squareWasPressed()){
                 robot.spindexer.moveToNextIndex();
@@ -34,12 +41,29 @@ public class TestingTeleop extends BaseTeleOp{
                 robot.aimBasedOnTags();
             }
 
-            robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x);
+            if (gamepad1.right_trigger > 0.4){
+                robot.driveTrain.setSpeedMultiplier(0.5);
+            } else if (robot.driveTrain.getSpeedMultiplier() != 1){
+                robot.driveTrain.setSpeedMultiplier(1);
+            }
+
+            if (gamepad2.left_bumper){
+                robot.intake.setIntakePower(1);
+            } else {
+                robot.intake.setIntakePower(0);
+            }
+
+            robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
             //sets drive power and what gamepad does
             robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.updateRobot(false, false, false);
 
+            telemetry.addData("heading", robot.odometry.getRobotAngle());
+            telemetry.update();
+
+
             robot.bulkSensorBucket.clearCache();
+
         }
     }
 }

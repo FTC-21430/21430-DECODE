@@ -85,8 +85,8 @@ public class MecanumDriveTrain {
 
 
     private List<Double> calculateFieldCentricDriving(double forwardPower, double sidewaysPower,double robotHeading){
-        double fwdPower = (forwardPower* Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)));
-        double sidePower = (sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)));
+        double fwdPower = forwardPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading));
+        double sidePower = -forwardPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
         List<Double> power = new ArrayList<Double>();
         power.add(fwdPower);
         power.add(sidePower);
@@ -102,19 +102,25 @@ public class MecanumDriveTrain {
      * @param robotHeading current heading of the robot in degrees
      */
     public void setDrivePower(double forwardPower, double sidewaysPower, double turnPower, double robotHeading) {
+
+
+
         // Field Centric Driving aligns all robot movements with the player's perspective from the field, rather than the robot's
         // Added math equation to change from degrees to radians on the robot
+        List<Double> transformedMovementVectors = calculateFieldCentricDriving(forwardPower,sidewaysPower, robotHeading);
         if (fieldCentricDriving) {
-            List<Double> transformedMovementVectors = calculateFieldCentricDriving(forwardPower,sidewaysPower, robotHeading);
+
             forwardPower = transformedMovementVectors.get(0);
             sidewaysPower = transformedMovementVectors.get(1);
 
         }
+
+
         
         motorFL.setPower(Range.clip(forwardPower + sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-        motorFR.setPower(Range.clip(forwardPower - sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
+        motorFR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
         motorBL.setPower(Range.clip(forwardPower - sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-        motorBR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
+        motorBR.setPower(Range.clip(forwardPower - sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
 
         //divided by 2 on purpose, I think it will help give us closer values to the use case
         avgDrivePower = (Math.abs(forwardPower) + Math.abs(sidewaysPower) + Math.abs(turnPower))/2;

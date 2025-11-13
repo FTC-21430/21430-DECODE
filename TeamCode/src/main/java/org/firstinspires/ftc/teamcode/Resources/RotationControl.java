@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 //This class is used to take the current angle and caulcate what turn power you need to get there
 public class RotationControl {
     //The turn Rate is used to determine the rate of turn you need
@@ -11,10 +13,13 @@ public class RotationControl {
     //The Angler Controler gets information from the PID Controler in order to figure out the values
     public PIDController angleControler;
     //This function is used to establish the PID controller and setting the target angle
+
+    private ElapsedTime runtime;
     public RotationControl(double turnRate, double P,double I,double D, double targetAngle){
         this.turnRate = turnRate;
         angleControler = new PIDController(P, I, D, new ElapsedTime());
         angleControler.setTarget(targetAngle);
+        runtime = new ElapsedTime();
     }
     //This is used to get the speed it needs to turn
     public double getOutputPower(double currentAngle){
@@ -44,8 +49,16 @@ public class RotationControl {
         return angleControler.getTarget();
     }
     //It changes values based on what the joystick tells it to do
-    public void changeTargetByJoystick(double joystickValue){
-        angleControler.setTarget(angleControler.getTarget()+(joystickValue*turnRate));
+    public void changeTargetByJoystick(double joystickValue, double currentAngle){
+        if (joystickValue == 0){
+            angleControler.setTarget(currentAngle);
+        }
+        angleControler.setTarget(angleControler.getTarget()+(-joystickValue*turnRate*getDeltaTime()));
+    }
+    private double getDeltaTime(){
+        double time = runtime.milliseconds();
+        runtime.reset();
+        return time;
     }
 }
 
