@@ -54,7 +54,7 @@ public class DecodeBot extends Robot{
 
         spindexer = new Spindexer(hardwareMap,telemetry);
         rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle);
-
+//
 
 
 
@@ -95,6 +95,17 @@ public class DecodeBot extends Robot{
 //        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
     }
 
+
+
+    public static double closeSpeed = 1200;
+    public static double midSpeed = 1400;
+    public static double farSpeed = 1750;
+    public static double closeRamp = 56;
+    public static double midRamp = 55;
+    public static double farRamp = 52;
+
+
+
     /**
      *
      * @param distance can be: "close" or "mid" or "far"
@@ -103,16 +114,16 @@ public class DecodeBot extends Robot{
     public void launchFrom(String distance){
         switch (distance){
             case "close":
-                launcher.setSpeed(1100);
-                launcher.setLaunchAngle(70);
+                launcher.setSpeed(closeSpeed);
+                launcher.setLaunchAngle(closeRamp);
                 break;
             case "mid":
-                launcher.setSpeed(1400);
-                launcher.setLaunchAngle(55);
+                launcher.setSpeed(midSpeed);
+                launcher.setLaunchAngle(midRamp);
                 break;
             case "far":
-                launcher.setSpeed(1750);
-                launcher.setLaunchAngle(55);
+                launcher.setSpeed(farSpeed);
+                launcher.setLaunchAngle(farRamp);
                 break;
         }
     }
