@@ -28,7 +28,6 @@ public class SpindexerServoFirmware {
     // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
 
-
     private final DcMotor spindexerEncoderMotorInstance; // Encoder motor instance for position tracking.
 
     //TODO remove telemetry
@@ -52,8 +51,6 @@ public class SpindexerServoFirmware {
 
         // Set direction based on spinClockwise parameter.
         direction = spinClockwise ? 0.17 : 0.83;
-
-
     }
 
     /**
@@ -74,8 +71,6 @@ public class SpindexerServoFirmware {
         telemetry.addData("target", targetPosition);
         telemetry.addData("encoder",getEncoderPosition());
         telemetry.addData("slot", savedSlotDebug);
-
-
     }
 
     /**
@@ -181,7 +176,6 @@ public class SpindexerServoFirmware {
         // Adjust degrees to fit within the servo's range.
         degrees = Range.clip(degrees, -rangeSpacing, servoRange - rangeSpacing);
 
-
         final double minimumPWM = 0.223; // Minimum PWM value.
         final double maximumPWM = 0.785; // Maximum PWM value.
         final double degreesToPWM =  (maximumPWM-minimumPWM)/ servoRange; // Conversion factor.
@@ -200,5 +194,4 @@ public class SpindexerServoFirmware {
         final double controlledRangeMaxDegree = 1000; // Maximum valid degree.
         return Range.clip(position, controlledRangeMinDegree, controlledRangeMaxDegree);
     }
-
 }

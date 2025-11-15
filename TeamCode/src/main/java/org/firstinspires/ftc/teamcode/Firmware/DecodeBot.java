@@ -26,24 +26,17 @@ public class DecodeBot extends Robot{
     public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
-
         this.telemetry = telemetry;
 
         // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
+
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, 7.2,-18,reset);
-
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
-
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
-
         spindexer = new Spindexer(hardwareMap,telemetry);
         rotationControl = new RotationControl(300,0.025,0,0.0001,robotAngle);
-
         bulkSensorBucket.clearCache();
-
-
-
     }
     @Override
     //TODO:Call updates for sensors and actuators

@@ -31,7 +31,6 @@ public class Robot {
   //TODO: Also make final once values have been found
   public static double pCon;
   public static double dCon;
-  
   private double drive;
   private double slide;
   private double turn;
@@ -42,18 +41,12 @@ public class Robot {
 
   public Telemetry telemetry;
   public LinearOpMode opMode;
-
-
-
   private double currentLoopTime, previousLoopTime;
   public PathFollowing pathFollowing;
   public BulkSensorBucket bulkSensorBucket = null;
-
   public GobildaPinpointModuleFirmware odometry;
 
-
   public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto) {
-
   }
   
   // you call this function in a main auto opMode to make the robot move somewhere.
@@ -70,16 +63,11 @@ public class Robot {
   public void updateLoopTime() {
     previousLoopTime = currentLoopTime;
     currentLoopTime = runtime.seconds();
-
   }
 
-
-
-  
     public double distanceCircle(double x, double y){
       return 0;
   }
-
 
     //ToDo: finish coding updateRobot
   public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
@@ -92,6 +80,4 @@ public class Robot {
         // run things robot specific
       }
     }
-
-
   }

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
-
 import com.qualcomm.robotcore.util.ElapsedTime;
 // this class is for autonomous movement of the drivetrain.
 public class PathFollowing {
@@ -20,7 +19,6 @@ public class PathFollowing {
   // Stands for powerSideways and power Forwards
   double powerS, powerF;
   
-  
   /**
    * the constructor for this class. this is used to set the class attributes
    * and run the constructors of both PID controllers
@@ -37,9 +35,7 @@ public class PathFollowing {
    dYConstant = dY;
     xPID = new PIDController(pXConstant, 0.2, dXConstant, runtime);
     yPID = new PIDController(pYConstant, 0.2, dYConstant, runtime);
-
   }
-  
   
   /**
    * this is used as the update method for this class. you should call this every iteration before getting the powers S & F
@@ -53,7 +49,7 @@ public class PathFollowing {
     yPID.update(robotY);
     
     // takes the output powers from the X and Y PID controllers and rotates them to be the robots X and Y movement.
-    // here we also affectthese powers with follow speed. when programming auto routes you should use
+    // here we also affect these powers with follow speed. when programming auto routes you should use
     // the setter for follow speed instead of changing the speed for the drivetrain
     powerS = xPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - yPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) * followSpeed;
     powerF = xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) * followSpeed;
@@ -81,7 +77,9 @@ public class PathFollowing {
   }
   
   // returns followSpeed just in case you need it somewhere.
-  public double getFollowSpeed(){ return followSpeed; }
+  public double getFollowSpeed(){
+      return followSpeed;
+  }
 
   public void setAutoSpeed(double p, double i, double d){
     xPID.updateConstants(p,i,d);

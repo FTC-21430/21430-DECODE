@@ -20,12 +20,5 @@ abstract public class GeneralOpMode extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot = new DecodeBot();
         robot.init(hardwareMap,telemetry,0,0,0,this,reset,isAuto);
-        
     }
-    
-
-    // Arm state machine logic is here because all Op-modes need to use it.
-    
-
-    
 }
