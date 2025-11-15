@@ -38,7 +38,6 @@ public class DecodeBot extends Robot{
         launcher = new Launcher(hardwareMap,telemetry);
 
         spindexer = new Spindexer(hardwareMap,telemetry);
-        spindexer = new Spindexer(hardwareMap);
         rotationControl = new RotationControl(300,0.025,0,0.0001,robotAngle);
 
         bulkSensorBucket.clearCache();
