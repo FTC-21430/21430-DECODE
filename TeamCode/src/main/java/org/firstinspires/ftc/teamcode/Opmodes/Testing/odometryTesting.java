@@ -13,6 +13,7 @@ public class odometryTesting extends BaseTeleOp {
         telemetry.update();
         waitForStart();
 
+        robot.odometry.resetPositionAndIMU();
         while(opModeIsActive()){
             robot.odometry.updateOdometry();
             telemetry.addData("X", robot.odometry.getRobotX());

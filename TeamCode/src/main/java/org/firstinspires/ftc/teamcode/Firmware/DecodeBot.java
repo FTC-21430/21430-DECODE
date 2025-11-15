@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
@@ -23,6 +24,8 @@ public class DecodeBot extends Robot{
     public Launcher launcher = null;
     public Spindexer spindexer = null;
     public Intake intake = null;
+
+    public AprilTag aprilTags = null;
   
 
 
@@ -34,6 +37,9 @@ public class DecodeBot extends Robot{
     public static final double I_CONSTANT = 0.1;
     public static final double D_CONSTANT = 0.02;
 
+    public static double yOffset = 5.118;
+    public static double xOffset = 2.713;
+
     @Override
     public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
@@ -43,7 +49,7 @@ public class DecodeBot extends Robot{
 
         this.alliance = alliance;
         // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
-        odometry = new GobildaPinpointModuleFirmware(hardwareMap, -14,-6.893,reset);
+        odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
 
         trajectoryKinematics = new TrajectoryKinematics(40,30);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
@@ -55,7 +61,8 @@ public class DecodeBot extends Robot{
         spindexer = new Spindexer(hardwareMap,telemetry);
         rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle);
 //
-
+        aprilTags = new AprilTag();
+        aprilTags.init(hardwareMap,telemetry);
 
 
         bulkSensorBucket.clearCache();
@@ -65,9 +72,37 @@ public class DecodeBot extends Robot{
 
 
     }
+
+
+
+    public void autoMoveTo(double targetX, double targetY, double robotAngle, double targetCircle){
+        telemetry.addData("distanceCircle", distanceCircle(targetX,targetY));
+        telemetry.addData("active", opMode.opModeIsActive());
+        pathFollowing.setTargetPosition(targetX,targetY);
+        rotationControl.setTargetAngle(robotAngle);
+        while(distanceCircle(targetX, targetY) > targetCircle&&opMode.opModeIsActive()){
+            updateRobot(false,false,false);
+            pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
+            driveTrain.setDrivePower(pathFollowing.getPowerF(),pathFollowing.getPowerS(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+
+        }
+    }
+    public void chill(boolean holdPos, double timeout){
+        double startTime = runtime.seconds();
+        while (runtime.seconds() < startTime + timeout){
+            updateRobot(false,false,false);
+            if (holdPos){
+                pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
+                driveTrain.setDrivePower(pathFollowing.getPowerF(),pathFollowing.getPowerS(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+
+            }
+        }
+    }
+
     @Override
     //TODO:Call updates for sensors and actuators
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
+        odometry.updateOdometry();
         spindexer.updateSpindexer();
         launcher.updateSpeedControl();
     }

@@ -109,6 +109,28 @@ public double getDistance(String side){
         locateAprilTags(side);
         return getSpecific(aprilTagID).ftcPose.range;
 }
+public int getMotifID() {
+
+    final int[] validIds = {
+            21,
+            22,
+            23
+    };
+
+        update();
+        List<Integer> ids = new ArrayList<Integer>();
+        for (AprilTagDetection tag : tagsDetected){
+            ids.add(tag.id);
+        }
+        for (int id: ids){
+            for (int validId : validIds){
+                if (id == validId){
+                    return id;
+                }
+            }
+        }
+        return 0;
+}
     public void stop(){
         if (visionPortal !=null){
             visionPortal.close();
