@@ -21,53 +21,52 @@ public class RedGoalBeaver extends BaseAuto {
                 motifId = tempId;
             }
             telemetry.addData("motif", motifId);
+            telemetry.update();
         }
-        robot.odometry.overridePosition(-51,51,110);
+        robot.odometry.overridePosition(-58,44,-175);
 
         robot.launchFrom("close");
 
-        robot.autoMoveTo(-32,20,45,2);
+//        robot.autoMoveTo(-39,16,35,2);
+        robot.driveTrain.setDrivePower(-0.4, 0, 0, 0);
+//        robot.chill(false,1);
+        robot.driveTrain.setDrivePower(0, 0, 0, 0);
+
 
         switch (motifId){
             case 21:
                 robot.spindexer.moveToNextIndex();
                 for (int i = 0; i < 3; i++){
 
-                    while (!robot.spindexer.isAtRest()){
-                        robot.chill(true,0.01);
-                    }
+                    robot.chill(false,1.5);
                     robot.spindexer.eject();
-                    robot.chill(true,0.3);
+                    robot.chill(false,1.5);
                     robot.spindexer.moveToNextIndex();
                 }
                 break;
             case 22:
-                for (int i = 0; i < 3; i++){
+                for (int i = 0; i < 4; i++){
 
-                    while (!robot.spindexer.isAtRest()){
-                        robot.chill(true,0.01);
-                    }
+                    robot.chill(false,1);
                     robot.spindexer.eject();
-                    robot.chill(true,0.3);
+                    robot.chill(false,1.5);
                     robot.spindexer.moveToNextIndex();
                 }
                 break;
             case 23:
                 robot.spindexer.moveToNextIndex();
                 robot.spindexer.moveToNextIndex();
-                robot.chill(true,0.8);
+                robot.chill(false,2);
                 for (int i = 0; i < 3; i++){
 
-                    while (!robot.spindexer.isAtRest()){
-                        robot.chill(true,0.01);
-                    }
+                    robot.chill(false,1);
                     robot.spindexer.eject();
-                    robot.chill(true,0.3);
+                    robot.chill(false,1.5);
                     robot.spindexer.moveToNextIndex();
                 }
                 break;
         }
-        robot.autoMoveTo(-58,14,0,2);
+//        robot.autoMoveTo(-58,14,180,2);
 
 
     }

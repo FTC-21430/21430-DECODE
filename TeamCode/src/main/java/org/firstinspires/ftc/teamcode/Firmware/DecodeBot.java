@@ -58,7 +58,7 @@ public class DecodeBot extends Robot{
         launcher = new Launcher(hardwareMap,telemetry);
         intake = new Intake(hardwareMap, telemetry);
 
-        spindexer = new Spindexer(hardwareMap,telemetry);
+        spindexer = new Spindexer(hardwareMap,telemetry,reset);
         rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle);
 //
         aprilTags = new AprilTag();
@@ -87,6 +87,7 @@ public class DecodeBot extends Robot{
 
         }
     }
+    @Override
     public void chill(boolean holdPos, double timeout){
         double startTime = runtime.seconds();
         while (runtime.seconds() < startTime + timeout){

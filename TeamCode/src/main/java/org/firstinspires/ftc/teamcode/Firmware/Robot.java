@@ -86,9 +86,9 @@ public class Robot {
 
     }
 
-    public void chill(double seconds, boolean holdPosition){
+    public void chill(boolean holdPos, double timeout){
     double startedTime = runtime.seconds();
-      while (runtime.seconds() - startedTime < seconds){
+      while (runtime.seconds() - startedTime < timeout){
         // run things robot specific
       }
     }

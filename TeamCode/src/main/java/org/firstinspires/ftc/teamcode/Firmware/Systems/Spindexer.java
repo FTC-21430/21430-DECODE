@@ -43,14 +43,17 @@ public class Spindexer {
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
      */
-    public Spindexer(HardwareMap hardwareMap, Telemetry telemetry) {
+    public Spindexer(HardwareMap hardwareMap, Telemetry telemetry, boolean reset) {
         paddleServo = new SpindexerServoFirmware(hardwareMap, true, 0, 120, 240, "intake",telemetry);
         runtime = new ElapsedTime();
         this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
         ejectorServo = hardwareMap.get(Servo.class, "ejector");
 //        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
-        recalibrateSpindexerPosition();
+        if (reset){
+            recalibrateSpindexerPosition();
+        }
+
     }
 
     /**
