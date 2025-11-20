@@ -76,34 +76,30 @@ public class AprilTag {
      * @param mode (options are: red, blue or obelisk)
      */
     public void locateAprilTags(String mode) {
-        if (mode == "red"){
+        if (mode == "red") {
             //Red april tags
             update();
             AprilTagDetection id24 = getSpecific(24);
             displayDetectionTelemetry(id24);
-        }
-        else if(mode == "blue"){
+        } else if (mode == "blue") {
             //Blue april tags
             update();
-            AprilTagDetection id23 = getSpecific(23);
+            AprilTagDetection id23 = getSpecific(20);
             displayDetectionTelemetry(id23);
-        }
-        else if(mode == "obelisk") {
+        } else if (mode == "obelisk") {
             // April tags 20-22 are for the Obelisk
             update();
-            AprilTagDetection id20 = getSpecific(20);
+            AprilTagDetection id20 = getSpecific(21);
             displayDetectionTelemetry(id20);
 
             update();
-            AprilTagDetection id21 = getSpecific(21);
+            AprilTagDetection id21 = getSpecific(22);
             displayDetectionTelemetry(id21);
 
             update();
-            AprilTagDetection id22 = getSpecific(22);
+            AprilTagDetection id22 = getSpecific(23);
             displayDetectionTelemetry(id22);
         }
-        telemetry.addLine("aprilTagFalse");
-        telemetry.update();
     }
     public double getDistance(String mode){
         locateAprilTags(mode);
