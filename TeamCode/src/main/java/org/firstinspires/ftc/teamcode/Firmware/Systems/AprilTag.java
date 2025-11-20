@@ -40,7 +40,7 @@ public class AprilTag {
     public void displayDetectionTelemetry(AprilTagDetection detectedID) {
         if (detectedID == null) {
             //why is this here?
-            return;
+            //return;
         }
         if (detectedID.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));

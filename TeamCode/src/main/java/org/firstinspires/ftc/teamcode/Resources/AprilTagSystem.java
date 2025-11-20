@@ -22,8 +22,7 @@ AprilTagSystem {
           0, -7.25, 4, 0);
   
   // the orientation of the camera lens relative to the orientation of the robot
-  private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-          -180, 0, 0, 0);
+  private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, -180, 0, 0, 0);
 
   // end of the todo values
   
@@ -106,6 +105,7 @@ AprilTagSystem {
   
   // the distance formula in a function
   public double calculateDistance(double robotX, double robotY, double projectedX, double projectedY) {
+      //TODO: Should we instead use: return  Math.hypot(a,b);
       return Math.sqrt(Math.pow(robotX - projectedX, 2) + Math.pow(robotY + projectedY, 2));
   }
   
