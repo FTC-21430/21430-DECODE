@@ -150,6 +150,7 @@ public class SpindexerServoFirmware {
      */
     public void calibrationPosition(){
         spindexerServo.setPosition(pwmAtZeroDegrees);
+        targetPosition = 0;
     }
 
     /**

@@ -50,9 +50,7 @@ public class Spindexer {
         // Range of motion for the ServoPlus class is in inches for linear movement.
         ejectorServo = hardwareMap.get(Servo.class, "ejector");
 //        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
-        if (reset){
-            recalibrateSpindexerPosition();
-        }
+        recalibrateSpindexerPosition();
 
     }
 
@@ -71,6 +69,8 @@ public class Spindexer {
             }
         }
             paddleServo.update(); // Updates the spindexer servo position.
+        telemetry.addData("calibrating", calibrating);
+        telemetry.addData("spindexer runtime", runtime.seconds());
         telemetry.addData("slot in intake", getCurrentIndexInIntake());
     }
 
