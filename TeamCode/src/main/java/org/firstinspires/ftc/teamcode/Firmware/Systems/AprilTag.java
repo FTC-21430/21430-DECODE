@@ -41,6 +41,7 @@ public class AprilTag {
     // The displayDetectionTelemetry is used to get telemetry back about what tag it is detecting
     public void displayDetectionTelemetry(AprilTagDetection detectedID) {
         if (detectedID == null) {
+            aprilTagID = 0;
             return;
         }
         /*This is used to actually display the telemetry
@@ -51,6 +52,8 @@ public class AprilTag {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
             telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detectedID.ftcPose.range, detectedID.ftcPose.bearing, detectedID.ftcPose.elevation));
             aprilTagID = detectedID.id;
+        }else{
+            aprilTagID = 0;
         }
     }
     //The update function is used to get tagDetected
@@ -102,11 +105,14 @@ public class AprilTag {
         }
     }
     public double getDistance(String mode){
+
         locateAprilTags(mode);
+        if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.range;
     }
     public double getBearingToTag(String mode){
         locateAprilTags(mode);
+        if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.bearing;
     }
     public int getMotifID(){

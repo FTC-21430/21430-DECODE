@@ -50,6 +50,9 @@ public class RedScrimmageTeleop extends BaseTeleOp {
             } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                 robot.driveTrain.setSpeedMultiplier(1);
             }
+            if (gamepad1.cross){
+                robot.aimBasedOnTags();
+            }
 
             if (gamepad2.left_bumper){
                 robot.intake.setIntakePower(-1);

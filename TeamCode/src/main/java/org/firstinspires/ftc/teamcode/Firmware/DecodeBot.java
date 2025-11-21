@@ -113,22 +113,19 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        // TODO: replace the 68.0 values to the output of april tags (these are temp values that mark a general distance from the goal around (0,0)
-
-        // but don't change this one
         double distanceToGoal = 68.0;
-
+        double bearingToTags = 0;
         switch (alliance){
             case "red":
-                distanceToGoal = 68.0;
+                distanceToGoal = aprilTags.getDistance("red");
+                bearingToTags = aprilTags.getBearingToTag("red");
                 break;
             case "blue":
-                distanceToGoal = 68.0;
+                distanceToGoal = aprilTags.getDistance("blue");
+                bearingToTags = aprilTags.getBearingToTag("blue");
                 break;
         }
-//        trajectoryKinematics.calculateTrajectory(distanceToGoal);
-//        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude() * velocityMetersToDegrees);
-//        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+        rotationControl.setTargetAngle(odometry.getRobotAngle()- bearingToTags);
     }
 
 
