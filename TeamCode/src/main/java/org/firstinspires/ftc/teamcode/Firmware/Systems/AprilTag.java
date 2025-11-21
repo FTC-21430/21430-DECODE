@@ -105,6 +105,10 @@ public class AprilTag {
         locateAprilTags(mode);
         return getSpecific(aprilTagID).ftcPose.range;
     }
+    public double getBearingToTag(String mode){
+        locateAprilTags(mode);
+        return getSpecific(aprilTagID).ftcPose.bearing;
+    }
     public int getMotifID(){
         //Still need to call detection telemetry for April tag id to be set
         locateAprilTags("obelisk");
