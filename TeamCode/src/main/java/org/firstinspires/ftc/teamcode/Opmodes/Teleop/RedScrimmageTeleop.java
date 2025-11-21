@@ -50,19 +50,21 @@ public class RedScrimmageTeleop extends BaseTeleOp {
             } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                 robot.driveTrain.setSpeedMultiplier(1);
             }
-            if (gamepad1.cross){
-                robot.aimBasedOnTags();
-            }
+
 
             if (gamepad2.left_bumper){
                 robot.intake.setIntakePower(-1);
             } else {
                 robot.intake.setIntakePower(0);
             }
+            if (gamepad1.cross){
+                robot.aimBasedOnTags();
+            }else{
+                robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
 
+            }
 
-            robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
-            //sets drive power and what gamepad does
+              //sets drive power and what gamepad does
             robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.updateRobot(false, false, false);
 

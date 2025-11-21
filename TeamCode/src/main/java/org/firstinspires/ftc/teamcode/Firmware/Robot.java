@@ -43,7 +43,7 @@ public class Robot {
   public Telemetry telemetry;
   public LinearOpMode opMode;
 
-
+  public boolean aiming = false;
 
   private double currentLoopTime, previousLoopTime;
   public PathFollowing pathFollowing;
@@ -75,7 +75,7 @@ public class Robot {
 
 
 
-  
+
     public double distanceCircle(double x, double y){
       return 0;
   }

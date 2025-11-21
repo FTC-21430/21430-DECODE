@@ -125,7 +125,7 @@ public class DecodeBot extends Robot{
                 bearingToTags = aprilTags.getBearingToTag("blue");
                 break;
         }
-        rotationControl.setTargetAngle(odometry.getRobotAngle()- bearingToTags);
+        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToTags);
     }
 
 
