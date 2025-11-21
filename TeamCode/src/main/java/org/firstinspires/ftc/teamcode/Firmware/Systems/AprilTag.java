@@ -1,46 +1,36 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
-
 import android.util.Size;
 
-
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Resources.AprilTagSystem;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-
 import java.util.ArrayList;
 import java.util.List;
-
-
 public class AprilTag {
+    private Telemetry telemetry;
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
     private int aprilTagID;
 
-    private Telemetry telemetry;
-
-
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+
         this.telemetry = telemetry;
-
-
+        //The builder class is used to access multiple configurations for the aprilTagProcessor
         aprilTagProcessor = new AprilTagProcessor.Builder()
                 .setLensIntrinsics(736.952533347, 736.952533347, 951.225875883, 540.574797136)
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
 
-
+        //The VisionPortal.Builder is used to access the vison processer for April Tags
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
         builder.setCameraResolution(new Size(1280, 960));
@@ -48,26 +38,25 @@ public class AprilTag {
         builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
         visionPortal = builder.build();
     }
-
+    // The displayDetectionTelemetry is used to get telemetry back about what tag it is detecting
     public void displayDetectionTelemetry(AprilTagDetection detectedID) {
         if (detectedID == null) {
             return;
         }
+        /*This is used to actually display the telemetry
+        If the detection ID is not equal to null then it will display the number of ID it is
+        If the detection is null then the detection ID is unknown
+         */
         if (detectedID.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
-            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detectedID.ftcPose.x, detectedID.ftcPose.y, detectedID.ftcPose.z));
-            telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detectedID.ftcPose.pitch, detectedID.ftcPose.roll, detectedID.ftcPose.yaw));
             telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detectedID.ftcPose.range, detectedID.ftcPose.bearing, detectedID.ftcPose.elevation));
-        } else {
-            telemetry.addLine(String.format("\n==== (ID %d) Unknown", detectedID.id));
-            telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detectedID.center.x, detectedID.center.y));
+            aprilTagID = detectedID.id;
         }
     }
-
+    //The update function is used to get tagDetected
     public void update() {
         tagsDetected = aprilTagProcessor.getDetections();
     }
-
 
     public List<AprilTagDetection> getTagsDetected() {
         return tagsDetected;
@@ -82,61 +71,56 @@ public class AprilTag {
         return null;
     }
 
-    public void locateAprilTags(String side) {
-        if (side == "red") {
+    /**
+     *
+     * @param mode (options are: red, blue or obelisk)
+     */
+    public void locateAprilTags(String mode) {
+        if (mode == "red") {
             //Red april tags
             update();
             AprilTagDetection id24 = getSpecific(24);
             displayDetectionTelemetry(id24);
-            aprilTagID = 24;
-        }
-        else if(side == "blue")
-        {
+        } else if (mode == "blue") {
             //Blue april tags
             update();
-            AprilTagDetection id23 = getSpecific(23);
+            AprilTagDetection id23 = getSpecific(20);
             displayDetectionTelemetry(id23);
-            aprilTagID = 23;
+        } else if (mode == "obelisk") {
+            // April tags 20-22 are for the Obelisk
+            update();
+            AprilTagDetection id20 = getSpecific(21);
+            displayDetectionTelemetry(id20);
+
+            update();
+            AprilTagDetection id21 = getSpecific(22);
+            displayDetectionTelemetry(id21);
+
+            update();
+            AprilTagDetection id22 = getSpecific(23);
+            displayDetectionTelemetry(id22);
         }
-        else
-        {
-        telemetry.addLine("aprilTagFalse");
-        telemetry.update();
     }
-}
-
-public double getDistance(String side){
-        locateAprilTags(side);
+    public double getDistance(String mode){
+        locateAprilTags(mode);
         return getSpecific(aprilTagID).ftcPose.range;
-}
-public int getMotifID() {
-
-    final int[] validIds = {
-            21,
-            22,
-            23
-    };
-
-        update();
-        List<Integer> ids = new ArrayList<Integer>();
-        for (AprilTagDetection tag : tagsDetected){
-            ids.add(tag.id);
-        }
-        for (int id: ids){
-            for (int validId : validIds){
-                if (id == validId){
-                    return id;
-                }
-            }
-        }
-        return 0;
-}
+    }
+    public double getBearingToTag(String mode){
+        locateAprilTags(mode);
+        return getSpecific(aprilTagID).ftcPose.bearing;
+    }
+    public int getMotifID(){
+        //Still need to call detection telemetry for April tag id to be set
+        locateAprilTags("obelisk");
+        return aprilTagID;
+    }
     public void stop(){
         if (visionPortal !=null){
             visionPortal.close();
         }
     }
 
+    //This function is just returning the telemetry
     public Telemetry getTelemetry() {
         return telemetry;
     }

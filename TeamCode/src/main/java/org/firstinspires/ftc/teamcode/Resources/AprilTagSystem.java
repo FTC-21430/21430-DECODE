@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Resources;
 // huge props to our mentor who also wrote this class in the FIRST SDK, Dryw Wade!
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -12,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
 import java.util.List;
 
 // used for figuring out the robots position with the april tags around the field.
@@ -24,10 +22,8 @@ AprilTagSystem {
           0, -7.25, 4, 0);
   
   // the orientation of the camera lens relative to the orientation of the robot
-  private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-          -180, 0, 0, 0);
-  
-  
+  private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, -180, 0, 0, 0);
+
   // end of the todo values
   
   // the latest detection the processor has found
@@ -56,20 +52,17 @@ AprilTagSystem {
     
     // Create the AprilTag processor.
     aprilTag = new AprilTagProcessor.Builder()
-            
+
             .setCameraPose(cameraPosition, cameraOrientation).build();
     
     // Create the vision portal by using a builder.
     VisionPortal.Builder builder = new VisionPortal.Builder();
     
     builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"));
-    
-    
     builder.addProcessor(aprilTag);
     
     // Build the Vision Portal, using the above settings.
     visionPortal = builder.build();
-    
   }
   
   /**
@@ -112,7 +105,8 @@ AprilTagSystem {
   
   // the distance formula in a function
   public double calculateDistance(double robotX, double robotY, double projectedX, double projectedY) {
-    return Math.sqrt(Math.pow(robotX - projectedX, 2) + Math.pow(robotY + projectedY, 2));
+      //TODO: Should we instead use: return  Math.hypot(a,b);
+      return Math.sqrt(Math.pow(robotX - projectedX, 2) + Math.pow(robotY + projectedY, 2));
   }
   
   //used to determine if there is an april tag detected so we don't use data that does not exist.
