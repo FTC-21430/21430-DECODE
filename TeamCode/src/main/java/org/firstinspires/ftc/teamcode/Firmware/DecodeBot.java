@@ -59,7 +59,7 @@ public class DecodeBot extends Robot{
         intake = new Intake(hardwareMap, telemetry);
 
         spindexer = new Spindexer(hardwareMap,telemetry,reset);
-        rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle);
+        rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle,telemetry);
 //
         aprilTags = new AprilTag();
         aprilTags.init(hardwareMap,telemetry);
