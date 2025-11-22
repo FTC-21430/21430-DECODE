@@ -3,11 +3,7 @@ package org.firstinspires.ftc.teamcode.Resources;
 // huge props to our mentor who also wrote this class in the FIRST SDK, Dryw Wade!
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-<<<<<<< Updated upstream
-=======
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
->>>>>>> Stashed changes
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;

@@ -51,6 +51,8 @@ public class AprilTag {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
             telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detectedID.ftcPose.range, detectedID.ftcPose.bearing, detectedID.ftcPose.elevation));
             aprilTagID = detectedID.id;
+        } else {
+            telemetry.addLine("No AprilTags");
         }
     }
     //The update function is used to get tagDetected
@@ -87,6 +89,12 @@ public class AprilTag {
             AprilTagDetection id23 = getSpecific(23);
             displayDetectionTelemetry(id23);
         } else if (mode == "obelisk") {
+            update();
+            AprilTagDetection id22 = getSpecific(22);
+            /*if(id22 != null) {
+                aprilTagID = id22.id;
+            }*/
+            displayDetectionTelemetry(id22);
             // April tags 20-22 are for the Obelisk
             update();
             AprilTagDetection id20 = getSpecific(20);
@@ -95,15 +103,15 @@ public class AprilTag {
             update();
             AprilTagDetection id21 = getSpecific(21);
             displayDetectionTelemetry(id21);
-
-            update();
-            AprilTagDetection id22 = getSpecific(22);
-            displayDetectionTelemetry(id22);
         }
     }
     public double getDistance(String mode){
         locateAprilTags(mode);
-        return getSpecific(aprilTagID).ftcPose.range;
+        telemetry.addData("AprilTag",aprilTagID);
+        //telemetry.addData("Return Value",getSpecific(aprilTagID).ftcPose.range);
+        telemetry.update();
+        return 1.0;
+        //return getSpecific(aprilTagID).ftcPose.range;
     }
     // the Bearing To Tag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode){
