@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 
 /**
@@ -37,7 +36,6 @@ public class LauncherRamp {
 
     // The maximum angle of the ramp up from Horizontal used previous values
     private final double maxRampAngle = minRampAngle + rampROM;
-
 
     /**
      * Construct function for this class, gets the servo reference
@@ -86,6 +84,4 @@ public class LauncherRamp {
     private double rampAngleToServo(double angle){
         return angle - minRampAngle;
     }
-
-
 }

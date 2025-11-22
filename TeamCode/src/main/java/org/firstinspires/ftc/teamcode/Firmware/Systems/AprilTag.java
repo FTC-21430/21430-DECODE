@@ -74,8 +74,7 @@ public class AprilTag {
         return null;
     }
 
-    /**
-     *
+    /*
      * @param mode (options are: red, blue or obelisk)
      */
     public void locateAprilTags(String mode) {

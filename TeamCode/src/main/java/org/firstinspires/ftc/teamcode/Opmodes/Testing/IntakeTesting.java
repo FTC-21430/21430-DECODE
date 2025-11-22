@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 @TeleOp
 public class IntakeTesting extends BaseTeleOp {
@@ -14,10 +13,8 @@ public class IntakeTesting extends BaseTeleOp {
 
             if(gamepad1.b){
                 robot.intake.setIntakePower(-1);
-
             }else if (gamepad1.a) {
                 robot.intake.setIntakePower(-0.5);
-
             }else {
                     robot.intake.setIntakePower(0);
                 }

@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.Firmware;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import java.util.List;
+
 // This class is an object to be used by Robot.Java to speed up loop times by using bulk sensor reads
 // By sending the very first sensor read through android as a read for everything on that hub, any future calls to that hub do not need to wait in androids event queue.
 // DOES NOT INCLUDE I2C Sensor Calls!
@@ -33,7 +33,7 @@ public class BulkSensorBucket {
                 hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             }
         } else {
-//            See comment on Line 32
+//            See comment on Line 31
             for (LynxModule hub : allHubs){
                 hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
             }

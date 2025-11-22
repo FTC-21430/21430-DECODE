@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
@@ -17,7 +16,6 @@ public class RedScrimmageTeleop extends BaseTeleOp {
         robot.driveTrain.fieldCentricDriving(true);
 
         waitForStart();
-
         while(opModeIsActive()) {
 
             // get and update functions
@@ -51,7 +49,6 @@ public class RedScrimmageTeleop extends BaseTeleOp {
                 robot.driveTrain.setSpeedMultiplier(1);
             }
 
-
             if (gamepad2.left_bumper){
                 robot.intake.setIntakePower(-1);
             } else {
@@ -61,13 +58,11 @@ public class RedScrimmageTeleop extends BaseTeleOp {
                 robot.aimBasedOnTags();
             }else{
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
-
             }
 
               //sets drive power and what gamepad does
             robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.updateRobot(false, false, false);
-
             telemetry.addData("current robot heading", robot.odometry.getRobotAngle());
 
             robot.bulkSensorBucket.clearCache();

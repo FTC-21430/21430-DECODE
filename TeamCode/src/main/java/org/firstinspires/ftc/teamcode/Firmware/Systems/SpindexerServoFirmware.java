@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
@@ -31,8 +30,6 @@ public class SpindexerServoFirmware {
     // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
     // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
-
-
     private final DcMotor spindexerEncoderMotorInstance; // Encoder motor instance for position tracking.
 
     //TODO remove telemetry
@@ -57,10 +54,7 @@ public class SpindexerServoFirmware {
         spindexerServo.setDirection(Servo.Direction.FORWARD);
         // Set direction based on spinClockwise parameter.
         direction = spinClockwise ? 0.17 : 0.83;
-
-
     }
-
 
     public static double warpSpeedExitTolerance = 50; // Tolerance for exiting warp speed.
     /**
@@ -81,8 +75,6 @@ public class SpindexerServoFirmware {
         telemetry.addData("target", targetPosition);
         telemetry.addData("encoder",getEncoderPosition());
         telemetry.addData("slot", savedSlotDebug);
-
-
     }
 
     /**
@@ -141,7 +133,6 @@ public class SpindexerServoFirmware {
 
         double pos = this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition()) % 360;
         if (pos > 290) pos = pos - 360;
-
         return pos;
     }
 
@@ -189,12 +180,10 @@ public class SpindexerServoFirmware {
         // Adjust degrees to fit within the servo's range.
         degrees = Range.clip(degrees, -rangeSpacing, servoRange - rangeSpacing);
 
-
         final double minimumPWM = 0.223; // Minimum PWM value.
         final double maximumPWM = 0.785; // Maximum PWM value.
         final double degreesToPWM =  -(maximumPWM-minimumPWM)/ servoRange; // Conversion factor.
         double resultingPWM = degrees * degreesToPWM + pwmAtZeroDegrees;
-
         return Range.clip(resultingPWM,minimumPWM,maximumPWM);
     }
 
@@ -208,5 +197,4 @@ public class SpindexerServoFirmware {
         final double controlledRangeMaxDegree = 1000; // Maximum valid degree.
         return Range.clip(position, controlledRangeMinDegree, controlledRangeMaxDegree);
     }
-
 }

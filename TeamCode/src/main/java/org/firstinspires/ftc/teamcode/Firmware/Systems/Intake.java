@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Intake {
@@ -14,7 +13,6 @@ public class Intake {
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-
     public void setIntakePower (double power){
         intake.setPower(power);
     }
