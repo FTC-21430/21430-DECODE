@@ -2,16 +2,17 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 // Written by Tobin
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 
 /**
  * Firmware to control the ramp of the launcher. Uses the ServoPlus resource to ensure easy logic.
  * TODO: Test and double check all of the constants, they were guessed based on the CAD and the specs of a Gobilda Torque Servo as found here https://www.gobilda.com/2000-series-dual-mode-servo-25-2-torque on 11/6/2025 - Tobin
  */
+@Config
 public class LauncherRamp {
 
     // servo instance
@@ -21,21 +22,20 @@ public class LauncherRamp {
     //TODO: as said on line 13, All of these values have been guesstimated by Tobin based on the CAD models.
 
     // the full range of motion of the servo - note that this is usually a little different than what it is on the spec sheet, double check values.
-    private final double servoROM = 300; // degrees - Based from the specs of a gobilda torque servo - need to identify correct range.
+    public static double servoROM = 288.5; // degrees - Based from the specs of a gobilda torque servo - need to identify correct range.
 
     // The range of motion the ramp can move, from completely retracted to farthest mechanical limit
 //    Took radius from pivot point to end of ramp and the circumference segment of the movable ramp segment. Took that ratio of full circumference and part to find ROM
-    private final double rampROM = 23.6; // degrees guessed based on CAD.
+    public static double rampROM = 27.5; // degrees guessed based on CAD.
     // The gear ratio between the launcher hood and the servo gear - Provided by the chief engineer in training who designed this part on hardware.
-    private final double servoToRampRatio = (double) 1 / 6;
+    public static double servoToRampRatio = (double) 1 / 6;
 
     // The minimum angle of the ramp up from Horizontal
     // measured from CAD - eyeballed
-    private final double minRampAngle = 6.97;
+    public static double minRampAngle = 37.5;
 
     // The maximum angle of the ramp up from Horizontal used previous values
     private final double maxRampAngle = minRampAngle + rampROM;
-
 
     /**
      * Construct function for this class, gets the servo reference
@@ -84,6 +84,4 @@ public class LauncherRamp {
     private double rampAngleToServo(double angle){
         return angle - minRampAngle;
     }
-
-
 }

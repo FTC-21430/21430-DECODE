@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -17,7 +16,6 @@ public class GobildaPinpointModuleFirmware {
     private double robotX, robotY; // in inches
     private double robotAngle; // in degrees
 
-
     private Telemetry telemetry;
     /**
      * Constructor for this class.
@@ -29,7 +27,7 @@ public class GobildaPinpointModuleFirmware {
     public GobildaPinpointModuleFirmware(HardwareMap hardwareMap, double xPodOffset, double yPodOffset, boolean reset){
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.CM);
+        pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,
@@ -42,7 +40,6 @@ public class GobildaPinpointModuleFirmware {
         }
     }
 
-
     /**
      * gets all new position values and sets the values to the corresponding variables.
      * Call this every iteration to ensure non-stale values (stale = old from a different moment in time)
@@ -52,7 +49,7 @@ public class GobildaPinpointModuleFirmware {
         Pose2D position =  pinpoint.getPosition();
 //        Our frame of reference and the gobilda frame of reference is different, so you units needed to change.
         robotY = position.getX(DistanceUnit.INCH);
-        robotX = -position.getY(DistanceUnit.INCH);
+        robotX = position.getY(DistanceUnit.INCH);
         robotAngle = position.getHeading(AngleUnit.DEGREES);
     }
 

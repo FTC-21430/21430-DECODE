@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
  * Spindexer class manages the spindexer mechanism, including its servo and ejector.
  * It handles movement between slots, ejection, and calibration.
  */
+@Config
 public class Spindexer {
 
     private final SpindexerServoFirmware paddleServo; // Firmware for controlling the spindexer servo.
@@ -26,27 +27,25 @@ public class Spindexer {
 
     private final ElapsedTime runtime; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    private double ejectionTimeout = 0.6; // Timeout duration for ejection in seconds.
+    public static double ejectionTimeout = 0.3; // Timeout duration for ejection in seconds.
     private final int slotIncrement = 120; // Degrees between slots.
-
-    private final ServoPlus ejectorServo; // Servo for controlling the ejector mechanism.
-    private double ejectorOutPos = 0.0; // Position of the ejector when pushed out.
-    private double ejectorInPos = 0.0; // Position of the ejector when retracted.
+    private final Servo ejectorServo; // Servo for controlling the ejector mechanism.
+    private double ejectorOutPos = 0.675; // Position of the ejector when pushed out.
+    private double ejectorInPos = 0.371; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
-
 
     private Telemetry telemetry;
     /**
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
      */
-    public Spindexer(HardwareMap hardwareMap, Telemetry telemetry) {
-        paddleServo = new SpindexerServoFirmware(hardwareMap, false, 0, 120, 240, "intake",telemetry);
+    public Spindexer(HardwareMap hardwareMap, Telemetry telemetry, boolean reset) {
+        paddleServo = new SpindexerServoFirmware(hardwareMap, true, 0, 120, 240, "intake",telemetry);
         runtime = new ElapsedTime();
         this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
-        ejectorServo = new ServoPlus(hardwareMap.get(Servo.class, "ejector"), 5, 0, 5);
+        ejectorServo = hardwareMap.get(Servo.class, "ejector");
 //        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
         recalibrateSpindexerPosition();
     }
@@ -66,6 +65,8 @@ public class Spindexer {
             }
         }
             paddleServo.update(); // Updates the spindexer servo position.
+        telemetry.addData("calibrating", calibrating);
+        telemetry.addData("spindexer runtime", runtime.seconds());
         telemetry.addData("slot in intake", getCurrentIndexInIntake());
     }
 
@@ -150,10 +151,10 @@ public class Spindexer {
      * Moves the spindexer to the next index position.
      */
     public void moveToNextIndex(){
+        if (ejecting) return;
        int pos = getCurrentIndexInIntake() + 1; // Calculates the next index position.
        paddleServo.setSpindexerSlot(pos); // Moves the spindexer to the calculated position.
     }
-
 
     /**
      * Moves the ejector to the specified position (out or in).
@@ -161,16 +162,20 @@ public class Spindexer {
      */
     private void moveEjector(boolean pushOut){
         if (pushOut){
-            ejectorServo.setServoPos(ejectorOutPos); // Sets the ejector to the out position.
+            ejectorServo.setPosition(ejectorOutPos); // Sets the ejector to the out position.
             ejecting = true; // Marks the spindexer as ejecting.
         }else{
-            ejectorServo.setServoPos(ejectorInPos); // Sets the ejector to the in position.
+            ejectorServo.setPosition(ejectorInPos); // Sets the ejector to the in position.
             ejecting = false; // Marks the spindexer as not ejecting.
         }
     }
 
     public void setSpindexerPos(double degree){
+        if (ejecting) return;
         paddleServo.setSpindexerPosition(degree);
     }
 
+    public double getEncoderPosition(){
+        return paddleServo.getEncoderPosition();
+    }
 }

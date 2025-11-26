@@ -4,7 +4,6 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
@@ -12,10 +11,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class Launcher {
     // Flywheel subsystem instance
-    private final Flywheel flywheel;
+    private final Flywheel FLYWHEEL;
 
     // Launcher Ramp subsystem instance
-    private final LauncherRamp ramp;
+    private final LauncherRamp RAMP;
 
     /**
      * Constructs a Launcher with the given hardware map and telemetry.
@@ -25,19 +24,18 @@ public class Launcher {
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry){
 
         // PID constants for flywheel speed control (values can be overridden with a different function) used only for flywheel initialization
-        final double flywheelSpeedControlP = 300;
-        final double flywheelSpeedControlI = 1;
-        final double flywheelSpeedControlD = 10;
+        final double FLYWHELLSPEEDCONTROLP = 300;
+        final double FLYWHELLSPEEDCONTROLI = 1;
+        final double FLYWHELLSPEEDCONTROLD = 10;
 
         // Initialize the flywheel with PID constants
-        flywheel = new Flywheel(hardwareMap, telemetry, new ElapsedTime(),
-                flywheelSpeedControlP, flywheelSpeedControlI, flywheelSpeedControlD);
+        FLYWHEEL = new Flywheel(hardwareMap, telemetry, new ElapsedTime(), FLYWHELLSPEEDCONTROLP, FLYWHELLSPEEDCONTROLI, FLYWHELLSPEEDCONTROLD);
         // Set the accuracy threshold for speed control (in degrees per second)
-        flywheel.setAccuracyThreshold(20);
+        FLYWHEEL.setAccuracyThreshold(20);
 
         // Initialize the ramp and have it move to starting configuration of retracted
-        ramp = new LauncherRamp(hardwareMap);
-        ramp.retract();
+        RAMP = new LauncherRamp(hardwareMap);
+        RAMP.retract();
     }
 
     /**
@@ -45,7 +43,7 @@ public class Launcher {
      * @param degreesPerSecond the target speed in degrees per second
      */
     public void setSpeed(double degreesPerSecond){
-        flywheel.setTargetSpeed(degreesPerSecond);
+        FLYWHEEL.setTargetSpeed(degreesPerSecond);
     }
 
     /**
@@ -53,7 +51,7 @@ public class Launcher {
      * @return the current speed in degrees per second
      */
     public double getSpeed(){
-        return flywheel.getCurrentSpeed();
+        return FLYWHEEL.getCurrentSpeed();
     }
 
     /**
@@ -61,7 +59,7 @@ public class Launcher {
      * @return the target speed in degrees per second
      */
     public double getTargetSpeed(){
-        return flywheel.getTargetSpeed();
+        return FLYWHEEL.getTargetSpeed();
     }
 
     /**
@@ -69,14 +67,14 @@ public class Launcher {
      * @return true if at speed, false otherwise
      */
     public boolean isUpToSpeed(){
-        return flywheel.isAtSpeed();
+        return FLYWHEEL.isAtSpeed();
     }
 
     /**
      * must be called every loop iteration in order to keep the wheel up to speed
      */
     public void updateSpeedControl(){
-        flywheel.updateSpeedControl();
+        FLYWHEEL.updateSpeedControl();
     }
 
     /**
@@ -84,28 +82,27 @@ public class Launcher {
      * @param angle Degrees Up from Horizontal in the launcher direction. Will get clipped to allowed range if value is outside of mechanical limits.
      */
     public void setLaunchAngle(double angle){
-        ramp.setLaunchAngle(angle);
+        RAMP.setLaunchAngle(angle);
     }
 
     /**
      * Bring the ramp as close to robot or as low a launch angle as possible
      */
     public void retractRamp(){
-        ramp.retract();
+        RAMP.retract();
     }
 
     /**
      * Steepest preset launch angle
      */
     public void fullyExtendRamp(){
-        ramp.extendFull();
+        RAMP.extendFull();
     }
 
     /**
      * preset directly in the middle of all possible launch angles
      */
     public void halfExtendRamp(){
-        ramp.midAngle();
+        RAMP.midAngle();
     }
-
 }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
@@ -13,6 +12,7 @@ public class odometryTesting extends BaseTeleOp {
         telemetry.update();
         waitForStart();
 
+        robot.odometry.resetPositionAndIMU();
         while(opModeIsActive()){
             robot.odometry.updateOdometry();
             telemetry.addData("X", robot.odometry.getRobotX());

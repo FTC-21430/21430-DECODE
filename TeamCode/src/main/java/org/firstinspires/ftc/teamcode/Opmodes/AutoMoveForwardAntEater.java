@@ -9,7 +9,7 @@ public class AutoMoveForwardAntEater extends BaseAuto{
         initialize(true, false);
         waitForStart();
         robot.driveTrain.setDrivePower(0.4, 0, 0, 0);
-        sleep(2000);
+        sleep(1000);
         robot.driveTrain.setDrivePower(0, 0, 0, 0);
     }
 }
