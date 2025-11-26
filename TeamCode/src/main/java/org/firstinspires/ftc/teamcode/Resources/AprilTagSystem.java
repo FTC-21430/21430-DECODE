@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Resources;
 // huge props to our mentor who also wrote this class in the FIRST SDK, Dryw Wade!
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -14,18 +15,17 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 // used for figuring out the robots position with the april tags around the field.
-public class
-AprilTagSystem {
+public class AprilTagSystem {
  
   // the position of the camera lens relative to the center of the robot
   private Position cameraPosition = new Position(DistanceUnit.INCH,
-          0, -7.25, 4, 0);
+          0, 0, 0, 0);
   
   // the orientation of the camera lens relative to the orientation of the robot
   private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, -180, 0, 0, 0);
 
   // end of the todo values
-  
+  private Telemetry telemetry = null;
   // the latest detection the processor has found
   private AprilTagDetection detection;
   
@@ -48,8 +48,8 @@ AprilTagSystem {
    * Initialize the AprilTag processor.
    * @param hardwareMap the hardware map instance from the first SDK
    */
-  public AprilTagSystem(HardwareMap hardwareMap) {
-    
+  public AprilTagSystem(HardwareMap hardwareMap, Telemetry telemetry) {
+    this.telemetry = telemetry;
     // Create the AprilTag processor.
     aprilTag = new AprilTagProcessor.Builder()
 
@@ -142,5 +142,12 @@ AprilTagSystem {
   public double getRobotYaw() {
     return detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
   }
+  public AprilTagDetection getDetection(){return detection;}
+
+  public void printTagID(){
+    telemetry.addData("AprilTagID",detection.id);
+    telemetry.update();
+  }
 }
+
 

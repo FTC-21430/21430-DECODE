@@ -18,8 +18,12 @@ public class AprilTagTesting extends OpMode {
     //Do we need this function
     @Override
     public void loop(){
+
 telemetry.addData("MotifId",aprilTag.getMotifID());
+/*telemetry.addData("DistanceFromMotifID",aprilTag.getDistance("obelisk"));
+telemetry.addData("BearingToTag",aprilTag.getBearingToTag("obelisk"));
 telemetry.update();
+ */
     }
 
 }

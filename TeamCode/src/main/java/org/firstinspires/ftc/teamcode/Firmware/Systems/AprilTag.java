@@ -86,21 +86,23 @@ public class AprilTag {
         } else if (mode == "blue") {
             //Blue april tags
             update();
-            AprilTagDetection id23 = getSpecific(20);
+            AprilTagDetection id23 = getSpecific(23);
             displayDetectionTelemetry(id23);
         } else if (mode == "obelisk") {
+            update();
+            AprilTagDetection id22 = getSpecific(22);
+            /*if(id22 != null) {
+                aprilTagID = id22.id;
+            }*/
+            displayDetectionTelemetry(id22);
             // April tags 20-22 are for the Obelisk
             update();
-            AprilTagDetection id20 = getSpecific(21);
+            AprilTagDetection id20 = getSpecific(20);
             displayDetectionTelemetry(id20);
 
             update();
-            AprilTagDetection id21 = getSpecific(22);
+            AprilTagDetection id21 = getSpecific(21);
             displayDetectionTelemetry(id21);
-
-            update();
-            AprilTagDetection id22 = getSpecific(23);
-            displayDetectionTelemetry(id22);
         }
     }
     public double getDistance(String mode){
@@ -109,6 +111,7 @@ public class AprilTag {
         if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.range;
     }
+    // the Bearing To Tag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode){
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
