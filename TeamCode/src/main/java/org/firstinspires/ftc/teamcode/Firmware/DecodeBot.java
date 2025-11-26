@@ -82,8 +82,8 @@ public class DecodeBot extends Robot{
     //TODO:Call updates for sensors and actuators
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-        spindexer.updateSpindexer();
-        launcher.updateSpeedControl();
+//        spindexer.updateSpindexer();
+//        launcher.updateSpeedControl();
     }
 
     // red or blue

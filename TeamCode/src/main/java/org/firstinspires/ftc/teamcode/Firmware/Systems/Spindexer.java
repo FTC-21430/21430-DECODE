@@ -29,7 +29,7 @@ public class Spindexer {
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
     public static double ejectionTimeout = 0.3; // Timeout duration for ejection in seconds.
     private final int slotIncrement = 120; // Degrees between slots.
-    private final Servo ejectorServo; // Servo for controlling the ejector mechanism.
+    private final Servo ejectorServo = null; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.675; // Position of the ejector when pushed out.
     private double ejectorInPos = 0.371; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
@@ -41,11 +41,11 @@ public class Spindexer {
      * @param hardwareMap Hardware map to retrieve hardware instances.
      */
     public Spindexer(HardwareMap hardwareMap, Telemetry telemetry, boolean reset) {
-        paddleServo = new SpindexerServoFirmware(hardwareMap, true, 0, 120, 240, "intake",telemetry);
+//        paddleServo = new SpindexerServoFirmware(hardwareMap, true, 0, 120, 240, "intake",telemetry);
         runtime = new ElapsedTime();
         this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
-        ejectorServo = hardwareMap.get(Servo.class, "ejector");
+//        ejectorServo = hardwareMap.get(Servo.class, "ejector");
 //        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
         recalibrateSpindexerPosition();
     }
