@@ -5,12 +5,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
-
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 
@@ -18,7 +16,6 @@ import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 
 @Config
 public class Robot {
-  
   public enum Speed {
     SLOW, FAST
   }
@@ -29,9 +26,9 @@ public class Robot {
   public static double maxTurnDegPerSecond = 280;
   //TODO: Find values for these to tune PID constants
   //TODO: Also make final once values have been found
+    //Why are these public? Needed for FTC dashboard?
   public static double pCon;
   public static double dCon;
-  
   private double drive;
   private double slide;
   private double turn;
@@ -39,21 +36,14 @@ public class Robot {
   public ElapsedTime runtime = new ElapsedTime();
   public RotationControl rotationControl;
   public FtcDashboard ftcDashboard;
-
   public Telemetry telemetry;
   public LinearOpMode opMode;
-
-
-
+  public boolean aiming = false;
   private double currentLoopTime, previousLoopTime;
   public PathFollowing pathFollowing;
   public BulkSensorBucket bulkSensorBucket = null;
-
   public GobildaPinpointModuleFirmware odometry;
-
-
   public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance) {
-
   }
   
   // you call this function in a main auto opMode to make the robot move somewhere.
@@ -70,20 +60,14 @@ public class Robot {
   public void updateLoopTime() {
     previousLoopTime = currentLoopTime;
     currentLoopTime = runtime.seconds();
-
   }
 
-
-
-  
     public double distanceCircle(double x, double y){
       return 0;
   }
 
-
     //ToDo: finish coding updateRobot
   public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
-
     }
 
     public void chill(boolean holdPos, double timeout){
@@ -92,6 +76,4 @@ public class Robot {
         // run things robot specific
       }
     }
-
-
   }

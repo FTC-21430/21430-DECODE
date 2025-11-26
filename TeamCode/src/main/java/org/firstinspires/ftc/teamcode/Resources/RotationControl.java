@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Resources;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,15 +17,24 @@ public class RotationControl {
     //This function is used to establish the PID controller and setting the target angle
 
     private ElapsedTime runtime;
-    public RotationControl(double turnRate, double P,double I,double D, double targetAngle){
+    private Telemetry telemetry;
+    public Utlities utlities;
+
+    public RotationControl(double turnRate, double P, double I, double D, double targetAngle, Telemetry telemetry){
         this.turnRate = turnRate;
         angleControler = new PIDController(P, I, D, new ElapsedTime());
         angleControler.setTarget(targetAngle);
         runtime = new ElapsedTime();
+        this.telemetry = telemetry;
+        utlities = new Utlities();
     }
     //This is used to get the speed it needs to turn
     public double getOutputPower(double currentAngle){
         angleControler.update(currentAngle);
+
+        telemetry.addData("inputed angle", currentAngle);
+        telemetry.addData("output power", angleControler.getPower());
+        telemetry.addData("target angle", angleControler.getTarget());
         return angleControler.getPower();
 
 
@@ -50,10 +61,7 @@ public class RotationControl {
     }
     //It changes values based on what the joystick tells it to do
     public void changeTargetByJoystick(double joystickValue, double currentAngle){
-        if (joystickValue == 0){
-            angleControler.setTarget(currentAngle);
-        }
-        angleControler.setTarget(angleControler.getTarget()+(-joystickValue*turnRate*getDeltaTime()));
+        angleControler.setTarget(utlities.wrap(angleControler.getTarget()+(-joystickValue*turnRate*getDeltaTime())));
     }
     private double getDeltaTime(){
         double time = runtime.milliseconds();

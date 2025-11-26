@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -16,7 +15,6 @@ public class GobildaPinpointModuleFirmware {
 //    stored x and y and angle components
     private double robotX, robotY; // in inches
     private double robotAngle; // in degrees
-
 
     private Telemetry telemetry;
     /**
@@ -41,7 +39,6 @@ public class GobildaPinpointModuleFirmware {
             pinpoint.recalibrateIMU();
         }
     }
-
 
     /**
      * gets all new position values and sets the values to the corresponding variables.
@@ -94,7 +91,5 @@ public class GobildaPinpointModuleFirmware {
     public void recalibrateIMU(){
         pinpoint.recalibrateIMU();
     }
-
-
 }
 

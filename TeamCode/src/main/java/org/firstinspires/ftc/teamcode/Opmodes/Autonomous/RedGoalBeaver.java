@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 
 @Autonomous
 public class RedGoalBeaver extends BaseAuto {
 
     private int motifId = 21;
-
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -24,14 +21,13 @@ public class RedGoalBeaver extends BaseAuto {
             telemetry.update();
         }
         robot.odometry.overridePosition(-58,44,-175);
-
         robot.launchFrom("close");
 
 //        robot.autoMoveTo(-39,16,35,2);
         robot.driveTrain.setDrivePower(-0.4, 0, 0, 0);
+
 //        robot.chill(false,1);
         robot.driveTrain.setDrivePower(0, 0, 0, 0);
-
 
         switch (motifId){
             case 21:
@@ -67,7 +63,5 @@ public class RedGoalBeaver extends BaseAuto {
                 break;
         }
 //        robot.autoMoveTo(-58,14,180,2);
-
-
     }
 }

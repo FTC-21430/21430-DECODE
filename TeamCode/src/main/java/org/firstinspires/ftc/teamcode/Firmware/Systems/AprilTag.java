@@ -41,6 +41,7 @@ public class AprilTag {
     // The displayDetectionTelemetry is used to get telemetry back about what tag it is detecting
     public void displayDetectionTelemetry(AprilTagDetection detectedID) {
         if (detectedID == null) {
+            aprilTagID = 0;
             return;
         }
         /*This is used to actually display the telemetry
@@ -51,8 +52,8 @@ public class AprilTag {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
             telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detectedID.ftcPose.range, detectedID.ftcPose.bearing, detectedID.ftcPose.elevation));
             aprilTagID = detectedID.id;
-        } else {
-            telemetry.addLine("No AprilTags");
+        }else{
+            aprilTagID = 0;
         }
     }
     //The update function is used to get tagDetected
@@ -73,8 +74,7 @@ public class AprilTag {
         return null;
     }
 
-    /**
-     *
+    /*
      * @param mode (options are: red, blue or obelisk)
      */
     public void locateAprilTags(String mode) {
@@ -106,16 +106,15 @@ public class AprilTag {
         }
     }
     public double getDistance(String mode){
+
         locateAprilTags(mode);
-        telemetry.addData("AprilTag",aprilTagID);
-        //telemetry.addData("Return Value",getSpecific(aprilTagID).ftcPose.range);
-        telemetry.update();
-        return 1.0;
-        //return getSpecific(aprilTagID).ftcPose.range;
+        if (aprilTagID == 0) return 0.0;
+        return getSpecific(aprilTagID).ftcPose.range;
     }
     // the Bearing To Tag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode){
         locateAprilTags(mode);
+        if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.bearing;
     }
     public int getMotifID(){

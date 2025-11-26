@@ -52,7 +52,6 @@ public class SpindexerColorSensor {
         sensor.setGain(sensorGain);
     }
 
-    //
     //            Logic for using the detected color value.
     //             switch(sensor.getDetectedColor()){
     //                 case NONE:
@@ -62,7 +61,6 @@ public class SpindexerColorSensor {
     //                 case PURPLE:
     //                     break;
     //           }
-    //
 
     /**
      * reads sensor values, identifies the difference between the colors we are searching for and the current readings.

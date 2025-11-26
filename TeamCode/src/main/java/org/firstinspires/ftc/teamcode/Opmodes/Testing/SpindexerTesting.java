@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
 @TeleOp
 public class SpindexerTesting extends BaseTeleOp {
-
     public static double pos = 0;
     @Override
     public void runOpMode() throws InterruptedException {

@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
@@ -30,13 +29,11 @@ public class Spindexer {
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
     public static double ejectionTimeout = 0.3; // Timeout duration for ejection in seconds.
     private final int slotIncrement = 120; // Degrees between slots.
-
     private final Servo ejectorServo; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.675; // Position of the ejector when pushed out.
     private double ejectorInPos = 0.371; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
-
 
     private Telemetry telemetry;
     /**
@@ -50,10 +47,7 @@ public class Spindexer {
         // Range of motion for the ServoPlus class is in inches for linear movement.
         ejectorServo = hardwareMap.get(Servo.class, "ejector");
 //        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
-        if (reset){
-            recalibrateSpindexerPosition();
-        }
-
+        recalibrateSpindexerPosition();
     }
 
     /**
@@ -71,6 +65,8 @@ public class Spindexer {
             }
         }
             paddleServo.update(); // Updates the spindexer servo position.
+        telemetry.addData("calibrating", calibrating);
+        telemetry.addData("spindexer runtime", runtime.seconds());
         telemetry.addData("slot in intake", getCurrentIndexInIntake());
     }
 
@@ -160,7 +156,6 @@ public class Spindexer {
        paddleServo.setSpindexerSlot(pos); // Moves the spindexer to the calculated position.
     }
 
-
     /**
      * Moves the ejector to the specified position (out or in).
      * @param pushOut True to push the ejector out, false to retract it.
@@ -178,11 +173,9 @@ public class Spindexer {
     public void setSpindexerPos(double degree){
         if (ejecting) return;
         paddleServo.setSpindexerPosition(degree);
-
     }
 
     public double getEncoderPosition(){
         return paddleServo.getEncoderPosition();
     }
-
 }
