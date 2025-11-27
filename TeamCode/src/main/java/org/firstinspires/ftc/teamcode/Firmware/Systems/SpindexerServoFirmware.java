@@ -24,17 +24,10 @@ public class SpindexerServoFirmware {
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
     private int positionTolerance = 30;
+    // what the PWM signal is for the zero position of the servo
     private final double pwmAtZeroDegrees = 0.73;
 
-    // Warp speed exit tolerance - The servo will always spin in one direction at full continuous speed until
-    // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
-    // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
-    // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
     private final DcMotor spindexerEncoderMotorInstance; // Encoder motor instance for position tracking.
-
-    //TODO remove telemetry
-    private Telemetry telemetry;
-    private int savedSlotDebug = 0;
 
     /**
      * Constructor initializes the spindexer servo and encoder.
@@ -47,7 +40,6 @@ public class SpindexerServoFirmware {
      */
     public SpindexerServoFirmware(HardwareMap hardwareMap, boolean spinClockwise, double slot1, double slot2, double slot3, String encoderConfigAddress, Telemetry telemetry){
         this.slots = new double[] {slot1,slot2,slot3};
-        this.telemetry = telemetry;
         spindexerServo = hardwareMap.get(Servo.class, "spindexer");
         spindexerEncoderMotorInstance = hardwareMap.get(DcMotor.class, encoderConfigAddress);
         spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -56,6 +48,10 @@ public class SpindexerServoFirmware {
         direction = spinClockwise ? 0.17 : 0.83;
     }
 
+    // Warp speed exit tolerance - The servo will always spin in one direction at full continuous speed until
+    // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
+    // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
+    // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
     public static double warpSpeedExitTolerance = 50; // Tolerance for exiting warp speed.
     /**
      * Updates the servo position based on the target position and tolerance.
@@ -67,14 +63,11 @@ public class SpindexerServoFirmware {
         // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
         if (Math.abs(encoderPosition - targetPosition) <= warpSpeedExitTolerance){
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
-            telemetry.addData("PWM", degreesToServoPWM(targetPosition));
+
         } else {
             spindexerServo.setPosition(direction);
-            telemetry.addData("PWM", direction);
+
         }
-        telemetry.addData("target", targetPosition);
-        telemetry.addData("encoder",getEncoderPosition());
-        telemetry.addData("slot", savedSlotDebug);
     }
 
     /**
@@ -98,7 +91,6 @@ public class SpindexerServoFirmware {
         if (slot < 1) slot = 3;
         if (slot > 3) slot = 1;
         setSpindexerPosition(slots[slot-1]);
-        savedSlotDebug = slot;
     }
 
     /**

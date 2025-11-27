@@ -34,8 +34,7 @@ public class Spindexer {
     private double ejectorInPos = 0.371; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
-
-    private Telemetry telemetry;
+    private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     /**
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
@@ -65,12 +64,9 @@ public class Spindexer {
             }
         }
             paddleServo.update(); // Updates the spindexer servo position.
-        telemetry.addData("calibrating", calibrating);
-        telemetry.addData("spindexer runtime", runtime.seconds());
-        telemetry.addData("slot in intake", getCurrentIndexInIntake());
     }
 
-//    public void prepColor(COLORS color){ - Not needed for scrimmage - Tobin 11/6
+//    public void prepColor(COLORS color){ - Not needed for scrimmage - Tobin 11/6 - Should work on this soon - Tobin 11/26
 //        if (color == COLORS.NONE) {
 //            return;
 //        }
@@ -170,11 +166,19 @@ public class Spindexer {
         }
     }
 
+    /**
+     * Commands the spindexer paddle to turn to a specific degree of rotation
+     * @param degree - degrees counter clockwise from the init position
+     */
     public void setSpindexerPos(double degree){
         if (ejecting) return;
         paddleServo.setSpindexerPosition(degree);
     }
 
+    /**
+     * Returns the current rotation that is provided by the spindexer encoder
+     * @return degrees of rotation
+     */
     public double getEncoderPosition(){
         return paddleServo.getEncoderPosition();
     }
