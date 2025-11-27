@@ -26,6 +26,7 @@ public class AprilTagSystem {
 
   // end of the todo values
   private Telemetry telemetry = null;
+
   // the latest detection the processor has found
   private AprilTagDetection detection;
   
@@ -50,6 +51,7 @@ public class AprilTagSystem {
    */
   public AprilTagSystem(HardwareMap hardwareMap, Telemetry telemetry) {
     this.telemetry = telemetry;
+
     // Create the AprilTag processor.
     aprilTag = new AprilTagProcessor.Builder()
 
@@ -105,7 +107,7 @@ public class AprilTagSystem {
   
   // the distance formula in a function
   public double calculateDistance(double robotX, double robotY, double projectedX, double projectedY) {
-      //TODO: Should we instead use: return  Math.hypot(a,b);
+      //TODO: Should we instead use: return Math.hypot(a,b);
       return Math.sqrt(Math.pow(robotX - projectedX, 2) + Math.pow(robotY + projectedY, 2));
   }
   
@@ -142,7 +144,10 @@ public class AprilTagSystem {
   public double getRobotYaw() {
     return detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
   }
-  public AprilTagDetection getDetection(){return detection;}
+
+  public AprilTagDetection getDetection(){
+    return detection;
+  }
 
   public void printTagID(){
     telemetry.addData("AprilTagID",detection.id);
