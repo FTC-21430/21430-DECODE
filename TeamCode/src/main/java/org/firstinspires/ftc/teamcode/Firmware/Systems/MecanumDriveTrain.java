@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
+import com.sun.tools.javac.comp.Todo;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ public class MecanumDriveTrain {
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
+
+    //Allows fieldCentricDriving to be turned on and off
     public void fieldCentricDriving(boolean enabled){
         fieldCentricDriving = enabled;
     }
@@ -106,8 +110,6 @@ public class MecanumDriveTrain {
      */
     public void setDrivePower(double forwardPower, double sidewaysPower, double turnPower, double robotHeading) {
 
-        // Field Centric Driving aligns all robot movements with the player's perspective from the field, rather than the robot's
-        // Added math equation to change from degrees to radians on the robot
         List<Double> transformedMovementVectors = calculateFieldCentricDriving(forwardPower,sidewaysPower, robotHeading);
         if (fieldCentricDriving) {
             forwardPower = transformedMovementVectors.get(0);
@@ -119,7 +121,9 @@ public class MecanumDriveTrain {
         motorBL.setPower(Range.clip(forwardPower - sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
         motorBR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
 
-        //divided by 2 on purpose, I think it will help give us closer values to the use case
+        //Finds average Drive Power
+        //Divide by 2 to give us closer values to the use case
+        //TODO: why do we need this here?
         avgDrivePower = (Math.abs(forwardPower) + Math.abs(sidewaysPower) + Math.abs(turnPower))/2;
     }
     public double getAvgDrivePower(){
