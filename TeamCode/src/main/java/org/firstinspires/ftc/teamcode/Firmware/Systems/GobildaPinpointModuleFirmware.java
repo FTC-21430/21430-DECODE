@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 public class GobildaPinpointModuleFirmware {
 
@@ -50,7 +51,7 @@ public class GobildaPinpointModuleFirmware {
 //        Our frame of reference and the gobilda frame of reference is different, so you units needed to change.
         robotY = position.getX(DistanceUnit.INCH);
         robotX = position.getY(DistanceUnit.INCH);
-        robotAngle = position.getHeading(AngleUnit.DEGREES);
+        robotAngle = Math.toDegrees(pinpoint.getHeading(UnnormalizedAngleUnit.RADIANS));
     }
 
     // getter for robot X - Inches from center of field, facing from red alliance station

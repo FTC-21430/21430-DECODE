@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import android.util.Size;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,11 +14,14 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
+@Config
 public class AprilTag {
     private Telemetry telemetry;
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
+    public static double RED_OFFSET = -23;
+    public static double BLUE_OFFSET = -23;
     private int aprilTagID;
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -58,10 +64,12 @@ public class AprilTag {
         tagsDetected = aprilTagProcessor.getDetections();
     }
 
+    // The getTagsDetected() function is used to get a list of all detected april tags
     public List<AprilTagDetection> getTagsDetected() {
         return tagsDetected;
     }
 
+    // The getSpecific function is used in order to get the specifics of all detected AprilTags
     public AprilTagDetection getSpecific(int id) {
         for (AprilTagDetection detection : tagsDetected) {
             if (detection.id == id) {
@@ -82,37 +90,39 @@ public class AprilTag {
         } else if (mode == "blue") {
             //Blue april tags
             update();
-            AprilTagDetection id23 = getSpecific(23);
-            displayDetectionTelemetry(id23);
-        } else if (mode == "obelisk") {
-            update();
-            AprilTagDetection id22 = getSpecific(22);
-            /*if(id22 != null) {
-                aprilTagID = id22.id;
-            }*/
-            displayDetectionTelemetry(id22);
-            // April tags 20-22 are for the Obelisk
-            update();
             AprilTagDetection id20 = getSpecific(20);
             displayDetectionTelemetry(id20);
-
+        } else if (mode == "obelisk") {
+            // April tags 20-22 are for the Obelisk
             update();
             AprilTagDetection id21 = getSpecific(21);
             displayDetectionTelemetry(id21);
+            AprilTagDetection id22 = getSpecific(22);
+            displayDetectionTelemetry(id22);
+            AprilTagDetection id23 = getSpecific(23);
+            displayDetectionTelemetry(id23);
         }
     }
+
+    // the getDistance function calculates the distance between the robot and the april tag
     public double getDistance(String mode){
 
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.range;
     }
-    // the Bearing To Tag is used to turn the robot so it is facing the center of the tag
+    // the getBearingToTag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode){
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
-        return getSpecific(aprilTagID).ftcPose.bearing;
+        if (mode=="blue") {
+            return (getSpecific(aprilTagID).ftcPose.bearing)+BLUE_OFFSET;
+        }else {
+            return (getSpecific(aprilTagID).ftcPose.bearing)+RED_OFFSET;
+        }
     }
+
+    // the getMotifID function gets the ID of the motif on the obelisk
     public int getMotifID(){
         //Still need to call detection telemetry for April tag id to be set
         locateAprilTags("obelisk");

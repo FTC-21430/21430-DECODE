@@ -1,34 +1,94 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
+import java.util.ArrayList;
+
 // The goal of this class is to input in the distance from the april tag and return the needed launch angle and speed to hit the goal
 public class TrajectoryKinematics {
+    // A list of values that the angles have been measured at. The order of these values need to be related to the angles and magnitudes list.
+    // TODO: these values need to be tuned in a sample size of every 5 inches. Current values were from early season prototype testing
+    // NOTE: these values are not actually used, but are the values that the regression functions were made. These values were really calculated in Desmos Graphing Calculator
+    private final double[] distances = {
+            24,
+            81,
+            94,
+            120,
 
-    // All math is based on this algorithm developed by Ian and I. run the python simulations here https://colab.research.google.com/drive/1WOSYEZrom-_3M0OcqzIpiTSzPEJKzpaY#scrollTo=M5i8exEXLY_D
+    };
 
-    private final double gravity = 9.79; // Gravity constant for denver, change if competition in a different location
-    private final double goalHeight;
-    private final double finalEntryAngle;
+    private final double[] angles = {
+            20,
+            35,
+            35,
+            35
+    };
+    private final double[] magnitudes = {
+            1100,
+            1400,
+            1550,
+            1750,
+    };
 
+    // The return value for the angle of the ramp. - in degrees
     private double initialAngle = 0;
+    // the return value for how fast the flywheel should go to achieve a launch. In degrees per second
     private double launchMagnitude = 0;
-    public TrajectoryKinematics(double goalHeight, double finalEntryAngle){
-        this.goalHeight = goalHeight;
-        this.finalEntryAngle = finalEntryAngle;
+    public TrajectoryKinematics(){
     }
 
-    public void calculateTrajectory(double distanceInches){
-        double inchToMeter = 0.0254;
-        double distanceMeters = distanceInches * inchToMeter;
-
-        double angleThroughGoal = Math.toRadians(finalEntryAngle);
-        initialAngle = Math.atan((2*goalHeight / distanceMeters) - Math.tan(angleThroughGoal));
-        launchMagnitude = Math.sqrt((gravity * distanceMeters)/(Math.pow(Math.cos(initialAngle),2)* (Math.tan(initialAngle) - Math.tan(angleThroughGoal))));
+    /**
+     * Updates the return variables based on the two regression functions
+     * @param distanceInches Inches, the distance from the front (camera side) of the robot and the april tag.
+     */
+    public void calculateTrajectory(double distanceInches) {
+   // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
+        initialAngle = angleRegression(distanceInches);
+        launchMagnitude = magnitudeRegression(distanceInches);
     }
 
+    /**
+     * the regression function tuned by Desmos calculator and based on real world testing data.
+     * @param distance Inches, the distance from the front (camera side) of the robot and the april tag.
+     * @return returns the angle the ramp needs to be to hit the goal from the given distance
+     */
+    private double angleRegression(double distance){
+        // values a-e represent the tuning values of this 4th degree polynomial calculated by Desmos using the distance and angle values above
+        double a = 1.59536 * Math.pow(10,-7);
+        double b = -1.17316 * Math.pow(10,-5);
+        double c = -5.85784 * Math.pow(10,-3);
+        double d = 0.865212;
+        double e = 0.0;
+
+        // Math.pow is the exponent function, this is a fourth degree polynomial that is tuning based on real world testing
+        return a * Math.pow(distance,4)+ b * Math.pow(distance,3) + c * Math.pow(distance,2) + d * distance + e;
+    }
+
+    /**
+     * The regression function for flywheel speed tuned by Desmos calculator and based on real world testing data.
+     * @param distance Inches, the distance from the front (camera side) of the robot and the april tag.
+     * @return degrees per second, the speed the flywheel needs to be to hit the goal from the given distance
+     */
+    private double magnitudeRegression(double distance){
+        //quadratic tuning values
+        double a = 0.0302344;
+        double b = 2.50209;
+        double c = 1020.88125;
+
+        // Math.pow is the exponent function, this is a second degree polynomial that is tuning based on real world testing
+        return a * Math.pow(distance,2) + b * Math.pow(distance,1) + c;
+    }
+
+    /**
+     * Getter for initial angle
+     * @return degrees
+     */
     public double getInitialAngle(){
         return initialAngle;
     }
 
+    /**
+     * getter for the flywheel speed
+     * @return degrees per second
+     */
     public double getLaunchMagnitude(){
         return launchMagnitude;
     }

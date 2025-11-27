@@ -89,8 +89,8 @@ public class DecodeBot extends Robot{
     //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-        spindexer.updateSpindexer();
-        launcher.updateSpeedControl();
+//        spindexer.updateSpindexer();
+//        launcher.updateSpeedControl();
     }
 
     // red or blue
@@ -98,19 +98,9 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double distanceToGoal = 68.0;
-        double bearingToTags = 0;
-        switch (alliance){
-            case "red":
-                distanceToGoal = aprilTags.getDistance("red");
-                bearingToTags = aprilTags.getBearingToTag("red");
-                break;
-            case "blue":
-                distanceToGoal = aprilTags.getDistance("blue");
-                bearingToTags = aprilTags.getBearingToTag("blue");
-                break;
-        }
-        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToTags);
+        double distanceToGoal = aprilTags.getDistance(alliance);
+        double bearingToGoal = aprilTags.getBearingToTag(alliance);
+        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
     }
 //final variable which are static to be tuned
 //TODO:Finish tuning, or if done, make final

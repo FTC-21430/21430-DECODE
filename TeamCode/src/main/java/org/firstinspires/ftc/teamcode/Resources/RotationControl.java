@@ -9,6 +9,7 @@ import java.util.List;
 public class RotationControl {
     //The turn Rate is used to determine the rate of turn you need
     public double turnRate = 0;
+    private double joystickPrevious;
     //The Angler Controler gets information from the PID Controler in order to figure out the values
     public PIDController angleControler;
     //This function is used to establish the PID controller and setting the target angle
@@ -45,8 +46,6 @@ public class RotationControl {
         telemetry.addData("output power", angleControler.getPower());
         telemetry.addData("target angle", angleControler.getTarget());
         return angleControler.getPower();
-
-
     }
 
     //This is a setter used to set what the PID values would be
@@ -74,9 +73,14 @@ public class RotationControl {
     }
 
     //It changes values based on what the joystick tells it to do
-
-    public void changeTargetByJoystick(double joystickValue, double currentAngle) {
-        angleControler.setTarget(utlities.wrap(angleControler.getTarget() + (-joystickValue * turnRate * getDeltaTime())));
+    public void changeTargetByJoystick(double joystickValue, double currentAngle){
+        final double REST_THRESHOLD = 0.1;
+        if (Math.abs(joystickValue)<REST_THRESHOLD && Math.abs(joystickPrevious)>REST_THRESHOLD){
+            angleControler.setTarget(currentAngle);
+        }else{
+        angleControler.setTarget(angleControler.getTarget()+(-joystickValue*turnRate*getDeltaTime()));
+        }
+        joystickPrevious = joystickValue;
     }
 
     private double getDeltaTime() {
