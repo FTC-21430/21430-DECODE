@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
+import java.util.ArrayList;
+
 // The goal of this class is to input in the distance from the april tag and return the needed launch angle and speed to hit the goal
 public class TrajectoryKinematics {
 
@@ -9,6 +11,27 @@ public class TrajectoryKinematics {
     private final double goalHeight;
     private final double finalEntryAngle;
 
+    private final double[] distances = {
+            24,
+            81,
+            94,
+            120,
+
+    };
+
+    private final double[] angles = {
+            20,
+            35,
+            35,
+            35
+    };
+    private final double[] magnitudes = {
+            1100,
+            1400,
+            1550,
+            1750,
+    };
+
     private double initialAngle = 0;
     private double launchMagnitude = 0;
     public TrajectoryKinematics(double goalHeight, double finalEntryAngle){
@@ -16,14 +39,30 @@ public class TrajectoryKinematics {
         this.finalEntryAngle = finalEntryAngle;
     }
 
-    public void calculateTrajectory(double distanceInches){
-        double inchToMeter = 0.0254;
-        double distanceMeters = distanceInches * inchToMeter;
-
-        double angleThroughGoal = Math.toRadians(finalEntryAngle);
-        initialAngle = Math.atan((2*goalHeight / distanceMeters) - Math.tan(angleThroughGoal));
-        launchMagnitude = Math.sqrt((gravity * distanceMeters)/(Math.pow(Math.cos(initialAngle),2)* (Math.tan(initialAngle) - Math.tan(angleThroughGoal))));
+    public void calculateTrajectory(double distanceInches) {
+   // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
+        initialAngle = angleRegression(distanceInches);
+        launchMagnitude = magnitudeRegression(distanceInches);
     }
+
+    private double angleRegression(double distance){
+        double a = 1.59536 * Math.pow(10,-7);
+        double b = -1.17316 * Math.pow(10,-5);
+        double c = -5.85784 * Math.pow(10,-3);
+        double d = 0.865212;
+        double e = 0.0;
+
+        return a * Math.pow(distance,4)+ b * Math.pow(distance,3) + c * Math.pow(distance,2) + d * distance + e;
+    }
+
+    private double magnitudeRegression(double distance){
+        double a = 0.0302344;
+        double b = 2.50209;
+        double c = 1020.88125;
+
+        return a * Math.pow(distance,2) + b * Math.pow(distance,1) + c;
+    }
+
 
     public double getInitialAngle(){
         return initialAngle;
