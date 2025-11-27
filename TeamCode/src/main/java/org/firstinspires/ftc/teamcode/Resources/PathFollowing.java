@@ -19,6 +19,9 @@ public class PathFollowing {
   // the output power we use from this class to move the drive train.
   // Stands for powerSideways and power Forwards
   double powerS, powerF;
+
+  // How close does the robot need to be to the target for the isWithinTolerance function to be true.
+  private double followTolerance = 1; // inches
   
   
   /**
@@ -53,7 +56,7 @@ public class PathFollowing {
     yPID.update(robotY);
     
     // takes the output powers from the X and Y PID controllers and rotates them to be the robots X and Y movement.
-    // here we also affectthese powers with follow speed. when programming auto routes you should use
+    // here we also affect these powers with follow speed. when programming auto routes you should use
     // the setter for follow speed instead of changing the speed for the drivetrain
     powerS = xPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - yPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) * followSpeed;
     powerF = xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) * followSpeed;
@@ -86,5 +89,24 @@ public class PathFollowing {
   public void setAutoSpeed(double p, double i, double d){
     xPID.updateConstants(p,i,d);
     yPID.updateConstants(p,i,d);
+  }
+
+  /**
+   * Used to allow the robot the stop once close enough to target
+   * @param robotX current robot x position
+   * @param robotY current robot y position
+   * @return returns a boolean for whether or not the robot position is close enough to target
+   */
+  public boolean isWithinTargetTolerance(double robotX, double robotY){
+    double distance = Math.sqrt(Math.pow(xPID.getTarget() - robotX, 2 ) + Math.pow(yPID.getTarget() - robotY,2));
+    return distance <= followTolerance;
+  }
+
+  /**
+   * changes the tolerance the isWithinTargerTolerance function uses
+   * @param tolerance inches
+   */
+  public void setFollowTolerance(double tolerance){
+    followTolerance = tolerance;
   }
 }

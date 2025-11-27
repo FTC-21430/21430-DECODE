@@ -34,8 +34,8 @@ public class DecodeBot extends Robot{
     public static double yOffset = 5.118;
     public static double xOffset = 2.713;
 
-    @Override
-    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
+
+    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
         this.telemetry = telemetry;
@@ -43,7 +43,7 @@ public class DecodeBot extends Robot{
 
         // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
-        trajectoryKinematics = new TrajectoryKinematics(40,30);
+        trajectoryKinematics = new TrajectoryKinematics();
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
@@ -56,14 +56,15 @@ public class DecodeBot extends Robot{
     }
 
     public void autoMoveTo(double targetX, double targetY, double robotAngle, double targetCircle){
-        telemetry.addData("distanceCircle", distanceCircle(targetX,targetY));
-        telemetry.addData("active", opMode.opModeIsActive());
         pathFollowing.setTargetPosition(targetX,targetY);
+        pathFollowing.setFollowTolerance(targetCircle);
         rotationControl.setTargetAngle(robotAngle);
-        while(distanceCircle(targetX, targetY) > targetCircle&&opMode.opModeIsActive()){
+        driveTrain.fieldCentricDriving(false);
+        while(pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
             driveTrain.setDrivePower(pathFollowing.getPowerF(),pathFollowing.getPowerS(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+            telemetry.update();
         }
     }
     @Override
