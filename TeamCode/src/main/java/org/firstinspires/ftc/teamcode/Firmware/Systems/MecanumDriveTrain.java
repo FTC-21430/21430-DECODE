@@ -44,7 +44,7 @@ public class MecanumDriveTrain {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // F R F R for software testing bot, competition bot has f r r f
+        // F R F R for software testing bot, competition bot has F R R F
 
 
         motorFL.setDirection(DcMotor.Direction.FORWARD);
