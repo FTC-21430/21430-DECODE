@@ -26,34 +26,34 @@ public class RedScrimmageTeleop extends BaseTeleOp {
             if (gamepad1.share) {
                 robot.odometry.resetIMU();
             }
-//            if (gamepad2.squareWasPressed()){
-//                robot.spindexer.moveToNextIndex();
-//            }
-//            if (gamepad2.rightBumperWasPressed()) {
-//                robot.spindexer.eject();
-//            }
-//            if (gamepad2.dpadDownWasPressed()){
-//                robot.launchFrom("close");
-//            } else if(gamepad2.dpadLeftWasPressed()){
-//                robot.launchFrom("mid");
-//            } else if(gamepad2.dpadUpWasPressed()){
-//                robot.launchFrom("far");
-//            } else if (gamepad2.dpadRightWasPressed()){
-//                robot.launcher.retractRamp();
-//                robot.launcher.setSpeed(-400);
-//                robot.spindexer.setSpindexerPos(60);
-//            }
+            if (gamepad2.squareWasPressed()){
+                robot.spindexer.moveToNextIndex();
+            }
+            if (gamepad2.rightBumperWasPressed()) {
+                robot.spindexer.eject();
+            }
+            if (gamepad2.dpadDownWasPressed()){
+                robot.launchFrom("close");
+            } else if(gamepad2.dpadLeftWasPressed()){
+                robot.launchFrom("mid");
+            } else if(gamepad2.dpadUpWasPressed()){
+                robot.launchFrom("far");
+            } else if (gamepad2.dpadRightWasPressed()){
+                robot.launcher.retractRamp();
+                robot.launcher.setSpeed(-400);
+                robot.spindexer.setSpindexerPos(60);
+            }
             if (gamepad1.right_trigger > 0.4){
                 robot.driveTrain.setSpeedMultiplier(0.5);
             } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                 robot.driveTrain.setSpeedMultiplier(1);
             }
 
-//            if (gamepad2.left_bumper){
-//                robot.intake.setIntakePower(-1);
-//            } else {
-//                robot.intake.setIntakePower(0);
-//            }
+            if (gamepad2.left_bumper){
+                robot.intake.setIntakePower(-1);
+            } else {
+                robot.intake.setIntakePower(0);
+            }
             if (gamepad1.cross){
                 robot.aimBasedOnTags();
             }else{
