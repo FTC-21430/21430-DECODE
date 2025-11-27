@@ -61,10 +61,12 @@ public class AprilTag {
         tagsDetected = aprilTagProcessor.getDetections();
     }
 
+    // The getTagsDetected() function is used to get a list of all detected april tags
     public List<AprilTagDetection> getTagsDetected() {
         return tagsDetected;
     }
 
+    // The getSpecific function is used in order to get the specifics of all detected AprilTags
     public AprilTagDetection getSpecific(int id) {
         for (AprilTagDetection detection : tagsDetected) {
             if (detection.id == id) {
@@ -105,18 +107,22 @@ public class AprilTag {
             displayDetectionTelemetry(id21);
         }
     }
+
+    // the getDistance function calculates the distance between the robot and the april tag
     public double getDistance(String mode){
 
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.range;
     }
-    // the Bearing To Tag is used to turn the robot so it is facing the center of the tag
+    // the getBearingToTag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode){
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.bearing;
     }
+
+    // the getMotifID function gets the ID of the motif on the obelisk
     public int getMotifID(){
         //Still need to call detection telemetry for April tag id to be set
         locateAprilTags("obelisk");
