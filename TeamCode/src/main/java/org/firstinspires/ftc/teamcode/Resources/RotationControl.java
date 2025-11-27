@@ -19,6 +19,15 @@ public class RotationControl {
     public Utlities utlities;
 
     //makes it as an object
+
+    /**
+     * @param turnRate -
+     * @param P - pCon
+     * @param I - iCon
+     * @param D -dCon
+     * @param targetAngle - Which which you are traveling too
+     * @param telemetry - telemetry
+     */
     public RotationControl(double turnRate, double P, double I, double D, double targetAngle, Telemetry telemetry) {
         this.turnRate = turnRate;
         angleControler = new PIDController(P, I, D, new ElapsedTime());
@@ -65,6 +74,7 @@ public class RotationControl {
     }
 
     //It changes values based on what the joystick tells it to do
+
     public void changeTargetByJoystick(double joystickValue, double currentAngle) {
         angleControler.setTarget(utlities.wrap(angleControler.getTarget() + (-joystickValue * turnRate * getDeltaTime())));
     }

@@ -19,7 +19,6 @@ public class DecodeBot extends Robot{
 
 //TODO this value must be found through testing as be do not know the constant of kinetic friction between artifacts and the flywheel.
     // the conversion ratio of the speed of the ball's movement to the robots flywheel speed
-    //The conversion rate between velocity meters to degrees
     public static double velocityMetersToDegrees = 0.03;
     //Connecting necessary classes for decode bot's functions
     public Launcher launcher = null;
@@ -39,8 +38,7 @@ public class DecodeBot extends Robot{
     public static double xOffset = 2.713;
 
     @Override
-    //The initialization function
-    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
         this.telemetry = telemetry;
@@ -123,7 +121,9 @@ public class DecodeBot extends Robot{
     public static double midRamp = 55;
     public static double farRamp = 52;
 
-     //@param distance can be: "close" or "mid" or "far"
+    /**
+     * @param distance - String input can be "close", "mid", or "far"
+     */
     public void launchFrom(String distance){
         switch (distance){
             case "close":
