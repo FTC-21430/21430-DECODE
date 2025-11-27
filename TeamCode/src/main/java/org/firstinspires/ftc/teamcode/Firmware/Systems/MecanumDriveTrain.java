@@ -78,6 +78,15 @@ public class MecanumDriveTrain {
         return speedMultiplier;
     }
 
+    /**
+     * Calculates Field Centic Driving (code that allows the driver controls to
+     * stay constant and match the driver's position).
+     * Translates the forward and sideways power based on the angle robot is facing.
+     * @param forwardPower
+     * @param sidewaysPower
+     * @param robotHeading
+     * @return
+     */
     private List<Double> calculateFieldCentricDriving(double forwardPower, double sidewaysPower,double robotHeading){
         double fwdPower = forwardPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading));
         double sidePower = -forwardPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
