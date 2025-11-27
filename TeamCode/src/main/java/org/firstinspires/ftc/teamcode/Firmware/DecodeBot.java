@@ -82,8 +82,8 @@ public class DecodeBot extends Robot{
     //TODO:Call updates for sensors and actuators
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-        spindexer.updateSpindexer();
-        launcher.updateSpeedControl();
+//        spindexer.updateSpindexer();
+//        launcher.updateSpeedControl();
     }
 
     // red or blue
@@ -91,19 +91,9 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double distanceToGoal = 68.0;
-        double bearingToTags = 0;
-        switch (alliance){
-            case "red":
-                distanceToGoal = aprilTags.getDistance("red");
-                bearingToTags = aprilTags.getBearingToTag("red");
-                break;
-            case "blue":
-                distanceToGoal = aprilTags.getDistance("blue");
-                bearingToTags = aprilTags.getBearingToTag("blue");
-                break;
-        }
-        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToTags);
+        double distanceToGoal = aprilTags.getDistance(alliance);
+        double bearingToGoal = aprilTags.getBearingToTag(alliance);
+        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
     }
 
     public static double closeSpeed = 1200;
