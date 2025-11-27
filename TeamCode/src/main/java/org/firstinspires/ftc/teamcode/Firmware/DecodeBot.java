@@ -17,14 +17,18 @@ import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 @Config
 public class DecodeBot extends Robot{
 
-//    TODO this value must be found through testing as be do not know the constant of kinetic friction between artifacts and the flywheel.
+//TODO this value must be found through testing as be do not know the constant of kinetic friction between artifacts and the flywheel.
     // the conversion ratio of the speed of the ball's movement to the robots flywheel speed
+    //The conversion rate between velocity meters to degrees
     public static double velocityMetersToDegrees = 0.03;
+    //Connecting necessary classes for decode bot's functions
     public Launcher launcher = null;
     public Spindexer spindexer = null;
     public Intake intake = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
+    //Setting the alliance
+    //TODO: This is only used in decode bot, should we make private?
     public String alliance = "red";
 
     //The PID values are a public because we need to tune it later and public makes it easier to do that
@@ -35,6 +39,7 @@ public class DecodeBot extends Robot{
     public static double xOffset = 2.713;
 
     @Override
+    //The initialization function
     public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
@@ -42,6 +47,7 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
 
         // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
+        //Creating the classes as objects for future use
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
         trajectoryKinematics = new TrajectoryKinematics(40,30);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
@@ -55,6 +61,7 @@ public class DecodeBot extends Robot{
         bulkSensorBucket.clearCache();
     }
 
+    //the function used to move to a spot on the field during auto
     public void autoMoveTo(double targetX, double targetY, double robotAngle, double targetCircle){
         telemetry.addData("distanceCircle", distanceCircle(targetX,targetY));
         telemetry.addData("active", opMode.opModeIsActive());
@@ -66,6 +73,7 @@ public class DecodeBot extends Robot{
             driveTrain.setDrivePower(pathFollowing.getPowerF(),pathFollowing.getPowerS(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
         }
     }
+    //The function that stops the robot, bc robot.stop is something diff
     @Override
     public void chill(boolean holdPos, double timeout){
         double startTime = runtime.seconds();
@@ -80,6 +88,7 @@ public class DecodeBot extends Robot{
 
     @Override
     //TODO:Call updates for sensors and actuators
+    //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
         spindexer.updateSpindexer();
@@ -105,7 +114,8 @@ public class DecodeBot extends Robot{
         }
         rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToTags);
     }
-
+//final variable which are static to be tuned
+//TODO:Finish tuning, or if done, make final
     public static double closeSpeed = 1200;
     public static double midSpeed = 1400;
     public static double farSpeed = 1750;
@@ -113,9 +123,7 @@ public class DecodeBot extends Robot{
     public static double midRamp = 55;
     public static double farRamp = 52;
 
-    /**
-     * @param distance can be: "close" or "mid" or "far"
-     */
+     //@param distance can be: "close" or "mid" or "far"
     public void launchFrom(String distance){
         switch (distance){
             case "close":

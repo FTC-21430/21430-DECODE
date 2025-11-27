@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
-import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
@@ -24,33 +23,37 @@ public class Robot {
   // used for how fast the turning input is used.
   // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
   public static double maxTurnDegPerSecond = 280;
+
   //TODO: Find values for these to tune PID constants
-  //TODO: Also make final once values have been found
-    //Why are these public? Needed for FTC dashboard?
+  //TODO: Also make final and private once values have been found
   public static double pCon;
   public static double dCon;
+
+  //TODO: Comment out the purpose of these vars.
+  //BC no usages, I cannot look and see usages for ideas of how used
   private double drive;
   private double slide;
   private double turn;
+
+  //Linking classes
   public MecanumDriveTrain driveTrain;
   public ElapsedTime runtime = new ElapsedTime();
   public RotationControl rotationControl;
   public FtcDashboard ftcDashboard;
   public Telemetry telemetry;
   public LinearOpMode opMode;
-  public boolean aiming = false;
-  private double currentLoopTime, previousLoopTime;
   public PathFollowing pathFollowing;
   public BulkSensorBucket bulkSensorBucket = null;
   public GobildaPinpointModuleFirmware odometry;
-  public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance) {
-  }
-  
+
+  public boolean aiming = false;
+  private double currentLoopTime, previousLoopTime;
+
   // you call this function in a main auto opMode to make the robot move somewhere.
   // This is the foundation that every robot should need but you should more season specific things in the bot class.
   public void autoMoveTo(double targetX, double targetY, double robotAngle, double targetCircle, double Timeout) {
   }
-  
+
   public double getDeltaTime() {
     double deltaTime;
     deltaTime = currentLoopTime - previousLoopTime;
@@ -62,18 +65,8 @@ public class Robot {
     currentLoopTime = runtime.seconds();
   }
 
+  //TODO: This always returns 0, what is purpose?
     public double distanceCircle(double x, double y){
       return 0;
   }
-
-    //ToDo: finish coding updateRobot
-  public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
-    }
-
-    public void chill(boolean holdPos, double timeout){
-    double startedTime = runtime.seconds();
-      while (runtime.seconds() - startedTime < timeout){
-        // run things robot specific
-      }
-    }
-  }
+}
