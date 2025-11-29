@@ -92,8 +92,8 @@ public class PathFollowing {
   public double getFollowSpeed(){ return followSpeed; }
 
   public void setAutoConstants(double p, double i, double d){
-    xPID.updateConstants(pXConstant,i,dXConstant);
-    yPID.updateConstants(pYConstant,i,dYConstant);
+    xPID.updatePIDConstants(pXConstant,i,dXConstant);
+    yPID.updatePIDConstants(pYConstant,i,dYConstant);
   }
 
   /**
