@@ -36,7 +36,7 @@ public class PIDController {
   /**
    * This is the constructor for this class, this just assigns the constants from the specific mechanism.
    * @param pConstant - Proportional Constant - used for tuning the Proportional factor.
-   * @param iConstant - Integel Constant- used for tuning the Intergal factor
+   * @param iConstant - Integral Constant- used for tuning the Integral factor
    * @param dConstant - Derivative Constant - used for tuning the Derivative factor
    * @param runtime - The runtime instance from the main op-mode
    */
