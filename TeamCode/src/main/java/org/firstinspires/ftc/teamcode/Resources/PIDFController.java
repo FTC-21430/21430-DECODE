@@ -16,8 +16,8 @@ public class PIDFController extends PIDController{
         super(pConstant, iConstant, dConstant, runtime);
         this.fConstant = fConstant;
     }
-    public void updateFConstant(double pConstant,double iConstant, double dConstant, double fConstant){
-        updateConstants(pConstant,iConstant,dConstant);
+    public void updatePIDFConstants(double pConstant,double iConstant, double dConstant, double fConstant){
+        updatePIDConstants(pConstant,iConstant,dConstant);
         this.fConstant = fConstant;
     }
     public double getFConstant(){

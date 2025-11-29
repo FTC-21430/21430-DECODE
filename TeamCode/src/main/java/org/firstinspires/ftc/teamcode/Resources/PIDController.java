@@ -52,7 +52,7 @@ public class PIDController {
     lastTime = runtime.time();
   }
 
-  public void updateConstants (double pConstant,double iConstant, double dConstant){
+  public void updatePIDConstants(double pConstant, double iConstant, double dConstant){
     this.pConstant = pConstant;
     this.dConstant = dConstant;
     this.iConstant = iConstant;
