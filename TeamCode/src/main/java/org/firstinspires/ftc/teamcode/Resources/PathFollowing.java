@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 // this class is for autonomous movement of the drivetrain.
+
+// Sets the class up for dashboard config so we can tune movement values
+@Config
 public class PathFollowing {
   
   // the speed at which the robot should be following to the point
@@ -14,8 +18,9 @@ public class PathFollowing {
   private PIDController yPID;
   
   // these are the tuning variables for both PID controllers.
-  private double pXConstant, pYConstant;
-  private double dXConstant, dYConstant;
+  // TODO: make these private again once we are done tuning and testing - Tobin: 11/29/2025
+  public static double pXConstant, pYConstant;
+  public static double dXConstant, dYConstant;
   // the output power we use from this class to move the drive train.
   // Stands for powerSideways and power Forwards
   double powerS, powerF;
@@ -58,8 +63,8 @@ public class PathFollowing {
     // takes the output powers from the X and Y PID controllers and rotates them to be the robots X and Y movement.
     // here we also affect these powers with follow speed. when programming auto routes you should use
     // the setter for follow speed instead of changing the speed for the drivetrain
-    powerS = xPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - yPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) * followSpeed;
-    powerF = xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) * followSpeed;
+    powerS = (xPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - yPID.getPower() * Math.sin(Math.toRadians(-robotAngle))) * followSpeed * 1;
+    powerF = (xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * followSpeed * -1;
   }
   
   // returns Power S after you run the followPath method
@@ -86,9 +91,9 @@ public class PathFollowing {
   // returns followSpeed just in case you need it somewhere.
   public double getFollowSpeed(){ return followSpeed; }
 
-  public void setAutoSpeed(double p, double i, double d){
-    xPID.updateConstants(p,i,d);
-    yPID.updateConstants(p,i,d);
+  public void setAutoConstants(double p, double i, double d){
+    xPID.updateConstants(pXConstant,i,dXConstant);
+    yPID.updateConstants(pYConstant,i,dYConstant);
   }
 
   /**
@@ -103,7 +108,7 @@ public class PathFollowing {
   }
 
   /**
-   * changes the tolerance the isWithinTargerTolerance function uses
+   * changes the tolerance the isWithinTargetTolerance function uses
    * @param tolerance inches
    */
   public void setFollowTolerance(double tolerance){

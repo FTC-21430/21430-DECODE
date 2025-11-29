@@ -30,8 +30,8 @@ public class GobildaPinpointModuleFirmware {
         pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED
+                GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD
         );
 
         if (reset) {
@@ -48,8 +48,8 @@ public class GobildaPinpointModuleFirmware {
         pinpoint.update();
         Pose2D position =  pinpoint.getPosition();
 //        Our frame of reference and the gobilda frame of reference is different, so you units needed to change.
-        robotY = position.getX(DistanceUnit.INCH);
-        robotX = position.getY(DistanceUnit.INCH);
+        robotX = position.getX(DistanceUnit.INCH);
+        robotY = position.getY(DistanceUnit.INCH);
         robotAngle = position.getHeading(AngleUnit.DEGREES);
     }
 

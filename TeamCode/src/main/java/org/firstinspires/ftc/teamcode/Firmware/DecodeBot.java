@@ -28,14 +28,14 @@ public class DecodeBot extends Robot{
     public String alliance = "red";
 
     //The PID values are a public because we need to tune it later and public makes it easier to do that
-    public static final double P_CONSTANT = 0.15;
+    public static final double P_CONSTANT = 0.2;
     public static final double I_CONSTANT = 0.1;
     public static final double D_CONSTANT = 0.02;
 //    public static double yOffset = 5.118;
 //    public static double xOffset = 2.713;
 
-    public static double xOffset = 3;
-    public static double yOffset = 7;
+    public static double xOffset = -3.125;
+    public static double yOffset = -7;
 
     public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
@@ -61,30 +61,27 @@ public class DecodeBot extends Robot{
         pathFollowing.setTargetPosition(targetX,targetY);
         pathFollowing.setFollowTolerance(targetCircle);
         rotationControl.setTargetAngle(robotAngle);
-        pathFollowing.setFollowSpeed(0.1);
         driveTrain.fieldCentricDriving(false);
-        while(pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
+//      //TODO: replace true with the isWithinTargetTolerance() function
+        while(!pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
-            driveTrain.setDrivePower(pathFollowing.getPowerF(),pathFollowing.getPowerS(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
-            telemetry.addData("power x", pathFollowing.getPowerS());
-            telemetry.addData("power Y", pathFollowing.getPowerF());
-            telemetry.addData("angle", odometry.getRobotAngle());
-            telemetry.addData("robot X", odometry.getRobotX());
-            telemetry.addData("robot Y", odometry.getRobotY());
-            telemetry.addData("at target", pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY()));
+            driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
             telemetry.update();
+
         }
     }
     @Override
     public void chill(boolean holdPos, double timeout){
         double startTime = runtime.seconds();
-        while (runtime.seconds() < startTime + timeout){
+        while (runtime.seconds() < startTime + timeout && opMode.opModeIsActive()){
             updateRobot(false,false,false);
             if (holdPos){
                 pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
-                driveTrain.setDrivePower(pathFollowing.getPowerF(),pathFollowing.getPowerS(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+                driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+
             }
+            telemetry.update();
         }
     }
 
