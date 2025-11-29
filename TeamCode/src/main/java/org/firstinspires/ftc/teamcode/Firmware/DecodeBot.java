@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 @Config
 public class DecodeBot extends Robot{
 
-//    TODO this value must be found through testing as be do not know the constant of kinetic friction between artifacts and the flywheel.
+//    TODO this value must be found through testing as we do not know the constant of kinetic friction between artifacts and the flywheel.
     // the conversion ratio of the speed of the ball's movement to the robots flywheel speed
     public static double velocityMetersToDegrees = 0.03;
     public Launcher launcher = null;
@@ -89,8 +89,8 @@ public class DecodeBot extends Robot{
     //TODO:Call updates for sensors and actuators
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-        spindexer.updateSpindexer();
-        launcher.updateSpeedControl();
+//        spindexer.updateSpindexer();
+//        launcher.updateSpeedControl();
     }
 
     // red or blue
@@ -98,19 +98,9 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double distanceToGoal = 68.0;
-        double bearingToTags = 0;
-        switch (alliance){
-            case "red":
-                distanceToGoal = aprilTags.getDistance("red");
-                bearingToTags = aprilTags.getBearingToTag("red");
-                break;
-            case "blue":
-                distanceToGoal = aprilTags.getDistance("blue");
-                bearingToTags = aprilTags.getBearingToTag("blue");
-                break;
-        }
-        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToTags);
+        double distanceToGoal = aprilTags.getDistance(alliance);
+        double bearingToGoal = aprilTags.getBearingToTag(alliance);
+        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
     }
 
     public static double closeSpeed = 1200;
