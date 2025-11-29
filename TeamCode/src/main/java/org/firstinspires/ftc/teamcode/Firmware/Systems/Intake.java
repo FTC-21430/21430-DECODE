@@ -19,4 +19,10 @@ public class Intake {
     public void setIntakePower (double power){
         intake.setPower(power);
     }
+    public void turnOn(){
+        setIntakePower(-1);
+    }
+    public void turnOff(){
+        setIntakePower(0);
+    }
 }

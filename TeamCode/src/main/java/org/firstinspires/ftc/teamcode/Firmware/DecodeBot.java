@@ -25,6 +25,8 @@ public class DecodeBot extends Robot{
     public Intake intake = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
+
+    public OperatorStateMachine operatorStateMachine = null;
     public String alliance = "red";
 
     //The PID values are a public because we need to tune it later and public makes it easier to do that
@@ -55,6 +57,7 @@ public class DecodeBot extends Robot{
         aprilTags = new AprilTag();
         aprilTags.init(hardwareMap,telemetry);
         bulkSensorBucket.clearCache();
+        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this);
     }
 
     public void autoMoveTo(double targetX, double targetY, double robotAngle, double targetCircle){
@@ -89,8 +92,7 @@ public class DecodeBot extends Robot{
     //TODO:Call updates for sensors and actuators
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-//        spindexer.updateSpindexer();
-//        launcher.updateSpeedControl();
+
     }
 
     // red or blue
@@ -98,9 +100,14 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double distanceToGoal = aprilTags.getDistance(alliance);
         double bearingToGoal = aprilTags.getBearingToTag(alliance);
         rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
+    }
+    public void setLauncherBasedOnTags(){
+        double distanceToGoal = aprilTags.getDistance(alliance);
+        trajectoryKinematics.calculateTrajectory(distanceToGoal);
+        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
     }
 
     public static double closeSpeed = 1200;
