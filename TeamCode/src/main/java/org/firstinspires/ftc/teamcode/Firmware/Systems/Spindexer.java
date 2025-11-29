@@ -81,10 +81,16 @@ public class Spindexer {
 
     public void prepColor(COLORS color){
         if (color == COLORS.NONE) {
-            return;
+            if (indexColors[getCurrentIndexInLaunch()-1] == COLORS.NONE){
+                if (getIndexWithColor(COLORS.PURPLE) != -1){
+                    moveIndexToLaunch(getIndexWithColor(COLORS.PURPLE));
+                }else if (getIndexWithColor(COLORS.GREEN) != -1){
+                    moveIndexToLaunch(getIndexWithColor(COLORS.GREEN));
+                }
+            }
+        }else {
+            moveIndexToLaunch(getIndexWithColor(color));
         }
-
-        moveIndexToLaunch(getIndexWithColor(color));
     }
 //    zero is index 1 at intake, positive moves counterclockwise facing intake, so 120 will be index 1 at launcher
     public void moveIndexToLaunch(int index){

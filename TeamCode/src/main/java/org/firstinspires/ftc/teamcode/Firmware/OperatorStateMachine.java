@@ -9,23 +9,45 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLO
 import java.util.ArrayList;
 import java.util.List;
 
+// Controls the automation for the mechanisms on the robot. Mainly, the launcher, spindexer, and intake.
 public class OperatorStateMachine {
 
+    // All states the operator is at
     public enum State {
         IDLE,
         LAUNCH,
         INTAKE
     }
+
+    // The idle speed the flywheel will be set too when not actively shooting
     private double idleSpeed = 1000;
+    // The launcher instance
     private Launcher launcher;
+    // The Spindexer Instance
     private Spindexer spindexer;
+    // The Intake Instance
     private Intake intake;
+    // Telemetry Instance from main op-mode
     private Telemetry telemetry;
+    // The Decodebot class is what creates this class, but passes itself alongside the other classes so that we can access its aiming functions
     private DecodeBot bot;
+    // The current state of the robot
     private State currentState = State.IDLE;
+
+    // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
+    // Logic to ensure that a launch is completed before it starts the next launch
     private boolean launching = false;
 
+    /**
+     * The constructor for this class, Stores all of the instances of the components of the robot
+     * Params are self explanatory
+     * @param launcher
+     * @param spindexer
+     * @param intake
+     * @param telemetry
+     * @param bot - Decodebot.java
+     */
     public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, DecodeBot bot){
         this.launcher = launcher;
         this.spindexer = spindexer;
@@ -34,6 +56,7 @@ public class OperatorStateMachine {
         this.bot = bot;
     }
 
+    // Will Trigger the transition from one state to the next
     public void moveToState(State state){
         switch (currentState){
             case IDLE:
@@ -78,6 +101,7 @@ public class OperatorStateMachine {
         currentState = state;
     }
 
+    // Will call the corresponding update function to the current state
     public void updateStateMachine(){
         switch (currentState){
             case IDLE:
@@ -92,23 +116,32 @@ public class OperatorStateMachine {
         }
     }
 
+    /**
+     * Adds a color to the launching queue. Will clear old values over the limit of 3
+     * @param color the color to be added
+     */
     public void addToQueue(COLORS color){
         launchQueue.add(color);
         if (launchQueue.size() > 3){
             launchQueue.remove(0);
         }
     }
-    public void setLaunchQueue(COLORS one, COLORS two, COLORS three){
-        launchQueue.set(0,one);
-        launchQueue.set(1,two);
-        launchQueue.set(2,three);
-    }
+
+    /**
+     * The idle state update method
+     * retracts and slows down launcher, updates spindexer
+     */
     private void idleState(){
         launcher.retractRamp();
         launcher.setSpeed(idleSpeed);
         launcher.updateSpeedControl();
         spindexer.updateSpindexer();
     }
+
+    /**
+     * The intake state update method
+     * Handles all logic for intaking new artifacts and storing their color
+     */
     private void intakeState(){
 
         if (spindexer.getIntakeSwitch()){
@@ -123,11 +156,16 @@ public class OperatorStateMachine {
         spindexer.updateSpindexer();
 
     }
+
+    /**
+     * The launch state update method
+     * Handles the logic for shooting the balls in the right order
+     */
     private void launchState(){
-        bot.aimBasedOnTags();
+        bot.setLauncherBasedOnTags();
 
         if (!launchQueue.isEmpty() && !launching && launcher.isUpToSpeed()){
-            spindexer.prepColor(launchQueue.get(0));
+            spindexer.prepColor(launchQueue.get(launchQueue.size()-1));
             launching = true;
         }
 
@@ -147,24 +185,42 @@ public class OperatorStateMachine {
         spindexer.updateSpindexer();
     }
 
+    /**
+     * Transition from idle to intake
+     */
     private void idleToIntake(){
         intake.turnOn();
     }
+    /**
+     * Transition from launch to idle
+     */
     private void launchToIdle(){
         intake.turnOff();
         launching = false;
     }
+    /**
+     * Transition from intake to idle
+     */
     private void intakeToIdle(){
         intake.turnOff();
     }
+    /**
+     * Transition from intake to launch
+     */
     private void intakeToLaunch(){
         intake.turnOff();
         launching = false;
     }
+    /**
+     * Transition from launch to intake
+     */
     private void launchToIntake(){
         intake.turnOn();
         launching = false;
     }
+    /**
+     * Transition from idle to launch
+     */
     private void idleToLaunch(){
         launching = false;
     }

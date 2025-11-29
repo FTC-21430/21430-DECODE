@@ -92,7 +92,6 @@ public class DecodeBot extends Robot{
     //TODO:Call updates for sensors and actuators
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-        operatorStateMachine.updateStateMachine();
 
     }
 
@@ -101,10 +100,12 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double distanceToGoal = aprilTags.getDistance(alliance);
         double bearingToGoal = aprilTags.getBearingToTag(alliance);
-        trajectoryKinematics.calculateTrajectory(distanceToGoal);
         rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
+    }
+    public void setLauncherBasedOnTags(){
+        double distanceToGoal = aprilTags.getDistance(alliance);
+        trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
     }
