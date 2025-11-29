@@ -21,6 +21,7 @@ public class PIDFController extends PIDController{
         this.fConstant = fConstant;
     }
     public double getFConstant(){
-        return fConstant;
+        return (super.getPower()+fConstant);
     }
+
 }
