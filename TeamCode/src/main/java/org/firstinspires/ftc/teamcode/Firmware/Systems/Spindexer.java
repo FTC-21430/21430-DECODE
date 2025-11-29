@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
-import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
+
+import java.util.Arrays;
 
 /**
  * Spindexer class manages the spindexer mechanism, including its servo and ejector.
@@ -18,6 +20,8 @@ public class Spindexer {
     private final SpindexerServoFirmware paddleServo; // Firmware for controlling the spindexer servo.
 
     private final SpindexerColorSensor colorSensor;
+    private DigitalChannel intakeLimitSwitchOne = null;
+    private DigitalChannel intakeLimitSwitchTwo = null;
 
     private COLORS[] indexColors = {
       COLORS.NONE,
@@ -35,6 +39,7 @@ public class Spindexer {
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
+    private boolean ejectorOut = false;
     /**
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
@@ -47,6 +52,11 @@ public class Spindexer {
         ejectorServo = hardwareMap.get(Servo.class, "ejector");
         colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor");
         recalibrateSpindexerPosition();
+
+        intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
+        intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
+        intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
+        intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
     }
 
     /**
@@ -56,6 +66,9 @@ public class Spindexer {
         if (!calibrating) {
             if (runtime.seconds() >= ejectionTimeout) {
                 moveEjector(false); // Retracts the ejector after ejection timeout.
+            }
+            if (runtime.seconds() >= ejectionTimeout*2){
+                ejectorOut = false;
             }
         } else {
             if (runtime.seconds() >= calibrationTimeout) {
@@ -100,11 +113,18 @@ public class Spindexer {
         paddleServo.setSpindexerPosition(pos);
     }
 
+    public boolean isEjectorOut(){
+        return ejectorOut;
+    }
+
     public void storeColorAtIndex(){
         if (getCurrentIndexInIntake() == -1){
             return;
         }
         indexColors[getCurrentIndexInIntake()-1] = colorSensor.getDetectedColor();
+    }
+    public void clearColor(int index){
+        indexColors[index-1] = COLORS.NONE;
     }
 
     /**
@@ -175,6 +195,7 @@ public class Spindexer {
         if (pushOut){
             ejectorServo.setPosition(ejectorOutPos); // Sets the ejector to the out position.
             ejecting = true; // Marks the spindexer as ejecting.
+            ejectorOut = true;
         }else{
             ejectorServo.setPosition(ejectorInPos); // Sets the ejector to the in position.
             ejecting = false; // Marks the spindexer as not ejecting.
@@ -196,5 +217,12 @@ public class Spindexer {
      */
     public double getEncoderPosition(){
         return paddleServo.getEncoderPosition();
+    }
+
+    public boolean getIntakeSwitch(){
+        return intakeLimitSwitchOne.getState() || intakeLimitSwitchTwo.getState();
+    }
+    public boolean isFull(){
+     return Arrays.stream(indexColors).noneMatch(c -> c == COLORS.NONE);
     }
 }
