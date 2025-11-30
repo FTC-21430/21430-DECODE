@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * */
 
 public class PIDController {
+    //Connects with the PIDFController class
   
   // The constants that you need to tune specifically for each system
   private double pConstant,iConstant, dConstant;
@@ -32,11 +33,11 @@ public class PIDController {
   private ElapsedTime runtime;
   
   private double minWrap = 0.0, maxWrap = 0.0;
-  
+
   /**
    * This is the constructor for this class, this just assigns the constants from the specific mechanism.
    * @param pConstant - Proportional Constant - used for tuning the Proportional factor.
-   * @param iConstant - Integel Constant- used for tuning the Intergal factor
+   * @param iConstant - Integral Constant- used for tuning the Integral factor
    * @param dConstant - Derivative Constant - used for tuning the Derivative factor
    * @param runtime - The runtime instance from the main op-mode
    */
@@ -52,7 +53,7 @@ public class PIDController {
     lastTime = runtime.time();
   }
 
-  public void updateConstants (double pConstant,double iConstant, double dConstant){
+  public void updatePIDConstants(double pConstant, double iConstant, double dConstant){
     this.pConstant = pConstant;
     this.dConstant = dConstant;
     this.iConstant = iConstant;
