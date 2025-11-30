@@ -3,18 +3,26 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+import org.firstinspires.ftc.teamcode.Resources.PIDFController;
+import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 @Config
 // The lift is the mechanism on the robot that protects against defense and raises up the robot to score two robots in the base zone at the end of the match.
 public class Lift {
+    private Telemetry telemetry;
     private DcMotor leftLift = null;
     private DcMotor rightLift = null;
+    private PIDFController leftLiftController = null;
+    private PIDFController rightLiftController = null;
 
-    // TODO Uncomment these lines once the PR for the PIDF class gets merged and synced from master into this branch - Tobin 11/29/2025
-    // private PIDFController leftLiftController = null;
-    // private PIDFController rightLiftController = null;
+    private ServoPlus leftLiftServo = null;
+    private ServoPlus rightLiftServo = null;
+
+    private ServoPlus[] servos;
+    private DcMotor[] lifts;
 
     //TODO: tune these values, I guessed them completely - Tobin 11/29/2025
     public static double holdingConstant = 0.01;
@@ -28,25 +36,44 @@ public class Lift {
     // TODO: Find these values from printing out the encoder values for one of the lift motors and comparing difference to the amount the lift traveled
     private double encoderTickToInch = 1.0;
     private double inchToEncoderTick = 1.0;
+
+    private double leftPawlUp = 0.0;
+    private double leftPawlDown = 1.0;
+    private double rightPawlUp = 0.0;
+    private double rightPawlDown = 1.0;
     public Lift(HardwareMap hardwareMap, Telemetry telemetry){
+        this.telemetry = telemetry;
+
         leftLift = hardwareMap.get(DcMotor.class, "leftLift");
         rightLift = hardwareMap.get(DcMotor.class, "rightLift");
 
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //TODO: when the servos are choosen for the racket and pawls here, enter in the range of motion
+        leftLiftServo = new ServoPlus(hardwareMap.get(Servo.class, "leftLiftServo"),200,0,200);
+        rightLiftServo = new ServoPlus(hardwareMap.get(Servo.class, "rightLiftServo"), 200,0,200);
 
-        // TODO Uncomment these lines once the PR for the PIDF class gets merged and synced from master into this branch - Tobin 11/29/2025
-        //leftLiftController = new PIDFController(pConstant, iConstant, dConstant, holdingConstant, new ElapsedTime());
-        //rightLiftController = new PIDFController(pConstant, iConstant, dConstant, holdingConstant, new ElapsedTime());
+
+        servos = new ServoPlus[] { leftLiftServo, rightLiftServo };
+        lifts = new DcMotor[] {leftLift,rightLift};
+
+        for (DcMotor lift: lifts){
+            lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        leftLiftController = new PIDFController(pConstant, iConstant, dConstant, holdingConstant, new ElapsedTime());
+        rightLiftController = new PIDFController(pConstant, iConstant, dConstant, holdingConstant, new ElapsedTime());
+
 
     }
 
-    public void update(){
-        //leftLiftController.update(encoderTicksToInch(leftLift.getCurrentPosition());
-        //rightLiftController.update(encoderTicksToInch(rightLift.getCurrentPosition());
 
-//        leftLift.setPower(leftLiftController.getOutputPower());
-//        rightLift.setPower(rightLiftController.getOutputPower());
+    public void update(){
+        leftLiftController.update(encoderTicksToInch(leftLift.getCurrentPosition()));
+        rightLiftController.update(encoderTicksToInch(rightLift.getCurrentPosition()));
+
+        leftLift.setPower(leftLiftController.getPower());
+        rightLift.setPower(rightLiftController.getPower());
     }
     public double getCurrentExtension(){
         double exLeft = encoderTicksToInch(leftLift.getCurrentPosition());
@@ -60,8 +87,8 @@ public class Lift {
             return;
         }
 
-//        leftLiftController.setTarget(inches);
-//        rightLiftController.setTarget(inches);
+        leftLiftController.setTarget(inches);
+        rightLiftController.setTarget(inches);
     }
 
     public void retract(){
@@ -73,14 +100,26 @@ public class Lift {
     public void fullLift(){
         setExtension(maxExtension-endSafetySpacing);
     }
-
+    public void lockRackets(){
+        leftLiftServo.setServoPos(leftPawlDown);
+        rightLiftServo.setServoPos(rightPawlDown);
+    }
+    public void liftRackets(){
+        leftLiftServo.setServoPos(leftPawlUp);
+        rightLiftServo.setServoPos(rightPawlUp);
+    }
+    public void printTelemetryData(){
+        telemetry.addData("Current Lift Extension", getCurrentExtension());
+        telemetry.addData("leftLiftPower", leftLiftController.getPower());
+        telemetry.addData("rightLiftPower", rightLiftController.getPower());
+        telemetry.addData("currentLiftDifference", encoderTicksToInch(Math.abs(leftLift.getCurrentPosition()-rightLift.getCurrentPosition())));
+    }
     private double encoderTicksToInch(int tick){
         return tick * encoderTickToInch;
     }
 
-    private int inchesToEncoderTick(double inch){
-        return (int)(inch * inchToEncoderTick);
+    private int inchesToEncoderTick(double inch) {
+        return (int) (inch * inchToEncoderTick);
     }
-
 
 }
