@@ -60,8 +60,8 @@ public class Lift {
             return;
         }
 
-//        leftLiftController.setTargetPosition(inches);
-//        rightLiftController.setTargetPosition(inches);
+//        leftLiftController.setTarget(inches);
+//        rightLiftController.setTarget(inches);
     }
 
     public void retract(){
