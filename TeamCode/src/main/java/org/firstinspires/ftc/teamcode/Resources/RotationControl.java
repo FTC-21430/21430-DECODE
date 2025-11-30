@@ -49,8 +49,8 @@ public class RotationControl {
     }
 
     //This is a setter used to set what the PID values would be
-    public void setPIDController(double P, double I, double D) {
-        angleControler.updateConstants(P, I, D);
+    public void setPIDController(double P, double I, double D){
+        angleControler.updatePIDConstants(P, I, D);
     }
 
     //This is a getter used to what the actual values of these numbers would be
