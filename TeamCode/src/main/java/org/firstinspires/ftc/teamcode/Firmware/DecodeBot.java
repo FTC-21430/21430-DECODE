@@ -57,7 +57,9 @@ public class DecodeBot extends Robot{
         aprilTags = new AprilTag();
         aprilTags.init(hardwareMap,telemetry);
         bulkSensorBucket.clearCache();
-        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this);
+        // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
+        // which would completely break the intended structure of our repository.
+        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags);
     }
 
     public void autoMoveTo(double targetX, double targetY, double robotAngle, double targetCircle){

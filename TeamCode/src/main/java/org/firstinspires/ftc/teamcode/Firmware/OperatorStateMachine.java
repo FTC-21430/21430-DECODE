@@ -30,7 +30,7 @@ public class OperatorStateMachine {
     // Telemetry Instance from main op-mode
     private Telemetry telemetry;
     // The Decodebot class is what creates this class, but passes itself alongside the other classes so that we can access its aiming functions
-    private DecodeBot bot;
+    private Runnable setLauncherBasedOnTags;
     // The current state of the robot
     private State currentState = State.IDLE;
 
@@ -46,14 +46,14 @@ public class OperatorStateMachine {
      * @param spindexer
      * @param intake
      * @param telemetry
-     * @param bot - Decodebot.java
+     * @param setLauncherBasedOnTags - One function we need from DecodeBot.java but this is just a refernce to call method, not anything else in DecodeBot!
      */
-    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, DecodeBot bot){
+    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags){
         this.launcher = launcher;
         this.spindexer = spindexer;
         this.intake = intake;
         this.telemetry = telemetry;
-        this.bot = bot;
+        this.setLauncherBasedOnTags = setLauncherBasedOnTags;
     }
 
     // Will Trigger the transition from one state to the next
@@ -162,7 +162,7 @@ public class OperatorStateMachine {
      * Handles the logic for shooting the balls in the right order
      */
     private void launchState(){
-        bot.setLauncherBasedOnTags();
+        setLauncherBasedOnTags.run();
 
         if (!launchQueue.isEmpty() && !launching && launcher.isUpToSpeed()){
             spindexer.prepColor(launchQueue.get(launchQueue.size()-1));
@@ -195,6 +195,9 @@ public class OperatorStateMachine {
      * Transition from launch to idle
      */
     private void launchToIdle(){
+        for (int i = 0; i < 3; i++){
+            addToQueue(COLORS.NONE);
+        }
         intake.turnOff();
         launching = false;
     }
