@@ -164,12 +164,12 @@ public class OperatorStateMachine {
     private void launchState(){
         setLauncherBasedOnTags.run();
 
-        if (!launchQueue.isEmpty() && !launching && launcher.isUpToSpeed()){
+        if (!launchQueue.isEmpty() && !launching){
             spindexer.prepColor(launchQueue.get(launchQueue.size()-1));
             launching = true;
         }
 
-        if (launching && spindexer.isAtRest()){
+        if (launching && spindexer.isAtRest() && launcher.isUpToSpeed()){
             spindexer.eject();
             spindexer.clearColor(spindexer.getCurrentIndexInLaunch());
         }

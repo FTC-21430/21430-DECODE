@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
+@TeleOp
 public class BlueTeleop extends BaseTeleOp {
 
     private boolean manualMode = false;
