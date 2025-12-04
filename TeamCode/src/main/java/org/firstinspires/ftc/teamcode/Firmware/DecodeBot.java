@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 @Config
-public class DecodeBot extends Robot{
+public abstract class DecodeBot extends Robot{
 
 //TODO this value must be found through testing as be do not know the constant of kinetic friction between artifacts and the flywheel.
     // the conversion ratio of the speed of the ball's movement to the robots flywheel speed
@@ -26,6 +27,7 @@ public class DecodeBot extends Robot{
     public Intake intake = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
+    public Lifter lifter = null;
     //Setting the alliance
     //TODO: This is only used in decode bot, should we make private?
     public String alliance = "red";
@@ -55,6 +57,7 @@ public class DecodeBot extends Robot{
         launcher = new Launcher(hardwareMap,telemetry);
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,reset);
+        lifter = new Lifter(hardwareMap, runtime, P_CONSTANT, I_CONSTANT, D_CONSTANT);
         rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle,telemetry);
         aprilTags = new AprilTag();
         aprilTags.init(hardwareMap,telemetry);
