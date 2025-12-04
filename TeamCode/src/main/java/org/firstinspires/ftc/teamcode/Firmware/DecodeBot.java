@@ -30,6 +30,8 @@ public class DecodeBot extends Robot{
     //TODO: This is only used in decode bot, should we make private?
     public String alliance = "red";
 
+  
+    public OperatorStateMachine operatorStateMachine = null;
     //The PID values are a public because we need to tune it later and public makes it easier to do that
     public static final double P_CONSTANT = 0.2;
     public static final double I_CONSTANT = 0.1;
@@ -59,6 +61,9 @@ public class DecodeBot extends Robot{
         aprilTags = new AprilTag();
         aprilTags.init(hardwareMap,telemetry);
         bulkSensorBucket.clearCache();
+        // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
+        // which would completely break the intended structure of our repository.
+        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags);
     }
 
     //the function used to move to a spot on the field during auto
@@ -96,8 +101,7 @@ public class DecodeBot extends Robot{
     //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-//        spindexer.updateSpindexer();
-//        launcher.updateSpeedControl();
+
     }
 
     // red or blue
@@ -105,12 +109,16 @@ public class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double distanceToGoal = aprilTags.getDistance(alliance);
         double bearingToGoal = aprilTags.getBearingToTag(alliance);
         rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
     }
-//final variable which are static to be tuned
-//TODO:Finish tuning, or if done, make final
+    public void setLauncherBasedOnTags(){
+        double distanceToGoal = aprilTags.getDistance(alliance);
+        trajectoryKinematics.calculateTrajectory(distanceToGoal);
+        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+    }
+
     public static double closeSpeed = 1200;
     public static double midSpeed = 1400;
     public static double farSpeed = 1750;

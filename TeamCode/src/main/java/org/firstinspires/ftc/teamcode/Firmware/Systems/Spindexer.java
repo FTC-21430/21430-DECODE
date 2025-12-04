@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
-import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
+
+import java.util.Arrays;
 
 /**
  * Spindexer class manages the spindexer mechanism, including its servo and ejector.
@@ -17,13 +19,15 @@ public class Spindexer {
 
     private final SpindexerServoFirmware paddleServo; // Firmware for controlling the spindexer servo.
 
-//    private final SpindexerColorSensor colorSensor; - Not needed for scrimmage - Tobin 11/6
+    private final SpindexerColorSensor colorSensor;
+    private DigitalChannel intakeLimitSwitchOne = null;
+    private DigitalChannel intakeLimitSwitchTwo = null;
 
-//    private COLORS[] indexColors = { - Not needed for scrimmage - Tobin 11/6
-//      COLORS.NONE,
-//      COLORS.NONE,
-//      COLORS.NONE
-//    };
+    private COLORS[] indexColors = {
+      COLORS.NONE,
+      COLORS.NONE,
+      COLORS.NONE
+    };
 
     private final ElapsedTime runtime; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
@@ -35,6 +39,7 @@ public class Spindexer {
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
+    private boolean ejectorOut = false;
     /**
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
@@ -45,8 +50,13 @@ public class Spindexer {
         this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
         ejectorServo = hardwareMap.get(Servo.class, "ejector");
-//        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor"); - Not needed for scrimmage, Tobin 11/6
+        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor");
         recalibrateSpindexerPosition();
+
+        intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
+        intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
+        intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
+        intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
     }
 
     /**
@@ -57,6 +67,9 @@ public class Spindexer {
             if (runtime.seconds() >= ejectionTimeout) {
                 moveEjector(false); // Retracts the ejector after ejection timeout.
             }
+            if (runtime.seconds() >= ejectionTimeout*2){
+                ejectorOut = false;
+            }
         } else {
             if (runtime.seconds() >= calibrationTimeout) {
                 calibrating = false; // Ends calibration mode after timeout.
@@ -66,32 +79,60 @@ public class Spindexer {
             paddleServo.update(); // Updates the spindexer servo position.
     }
 
-//    public void prepColor(COLORS color){ - Not needed for scrimmage - Tobin 11/6 - Should work on this soon - Tobin 11/26
-//        if (color == COLORS.NONE) {
-//            return;
-//        }
-//
-//        // figure out what index the correct color is in
-//        // move that index to launch pos
-//    }
+    public void prepColor(COLORS color){
+        if (color == COLORS.NONE) {
+            if (indexColors[getCurrentIndexInLaunch()-1] == COLORS.NONE){
+                if (getIndexWithColor(COLORS.PURPLE) != -1){
+                    moveIndexToLaunch(getIndexWithColor(COLORS.PURPLE));
+                }else if (getIndexWithColor(COLORS.GREEN) != -1){
+                    moveIndexToLaunch(getIndexWithColor(COLORS.GREEN));
+                }
+            }
+        }else {
+            moveIndexToLaunch(getIndexWithColor(color));
+        }
+    }
 //    zero is index 1 at intake, positive moves counterclockwise facing intake, so 120 will be index 1 at launcher
-//    public void moveIndexToLaunch(int index){ - Not needed for scrimmage - Tobin 11/6
-//        if (index < 1 || index > 3){
-//            return;
-//        }
-//        if (ejecting) return;
-//        double pos = (index * slotIncrement) % 360;
-//        paddleServo.setSpindexerPosition(pos);
-//    }
-//
-//    public void moveIndexToIntake(int index){ - Not needed for scrimmage - Tobin 11/6
-//        if (index < 1 || index > 3){
-//            return;
-//        }
-//        if (ejecting) return;
-//        double pos = ((index-1) * slotIncrement);
-//        paddleServo.setSpindexerPosition(pos);
-//    }
+    public void moveIndexToLaunch(int index){
+        if (index < 1 || index > 3){
+            return;
+        }
+        if (ejecting) return;
+        double pos = (index * slotIncrement) % 360;
+        paddleServo.setSpindexerPosition(pos);
+    }
+
+    public int getIndexWithColor(COLORS color){
+        for (int i = 0; i < indexColors.length; i++){
+            if (indexColors[i] == color){
+                return i + 1;
+            }
+        }
+        return -1; // if we do not find the color
+    }
+    public void moveIndexToIntake(int index){
+        if (index < 1 || index > 3){
+            return;
+        }
+        if (ejecting) return;
+        double pos = ((index-1) * slotIncrement);
+        paddleServo.setSpindexerPosition(pos);
+    }
+
+    public boolean isEjectorOut(){
+        return ejectorOut;
+    }
+
+    public void storeColorAtIndex(){
+        if (getCurrentIndexInIntake() == -1){
+            return;
+        }
+        indexColors[getCurrentIndexInIntake()-1] = colorSensor.getDetectedColor();
+    }
+    public void clearColor(int index){
+        indexColors[index-1] = COLORS.NONE;
+    }
+
     /**
      * Ejects the current item if the spindexer is at a valid slot.
      */
@@ -160,6 +201,7 @@ public class Spindexer {
         if (pushOut){
             ejectorServo.setPosition(ejectorOutPos); // Sets the ejector to the out position.
             ejecting = true; // Marks the spindexer as ejecting.
+            ejectorOut = true;
         }else{
             ejectorServo.setPosition(ejectorInPos); // Sets the ejector to the in position.
             ejecting = false; // Marks the spindexer as not ejecting.
@@ -181,5 +223,12 @@ public class Spindexer {
      */
     public double getEncoderPosition(){
         return paddleServo.getEncoderPosition();
+    }
+
+    public boolean getIntakeSwitch(){
+        return intakeLimitSwitchOne.getState() || intakeLimitSwitchTwo.getState();
+    }
+    public boolean isFull(){
+     return Arrays.stream(indexColors).noneMatch(c -> c == COLORS.NONE);
     }
 }
