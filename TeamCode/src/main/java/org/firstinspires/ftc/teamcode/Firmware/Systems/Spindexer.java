@@ -50,7 +50,7 @@ public class Spindexer {
         this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
         ejectorServo = hardwareMap.get(Servo.class, "ejector");
-        colorSensor = new SpindexerColorSensor(hardwareMap, "spindexerColorSensor");
+        colorSensor = new SpindexerColorSensor(hardwareMap, "colorSensor");
         recalibrateSpindexerPosition();
 
         intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
@@ -165,9 +165,9 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInIntake(){
-        if (paddleServo.getTargetPosition()%120 == 0){
-            return ((int)paddleServo.getTargetPosition() / slotIncrement) + 1;
-        }else{
+        if (paddleServo.getTargetPosition() % 120 == 0) {
+            return ((int) paddleServo.getTargetPosition() / slotIncrement) + 1;
+        } else {
             return -1; // Indicates the spindexer is not at a valid slot.
         }
     }
