@@ -53,7 +53,6 @@ public abstract class Robot {
   
   // you call this function in a main auto opMode to make the robot move somewhere.
   // This is the foundation that every robot should need but you should more season specific things in the bot class.
-  
   public double getDeltaTime() {
     double deltaTime;
     deltaTime = currentLoopTime - previousLoopTime;
