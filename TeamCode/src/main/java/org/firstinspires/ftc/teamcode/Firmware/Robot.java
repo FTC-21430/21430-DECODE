@@ -49,6 +49,7 @@ public abstract class Robot {
 
     public boolean aiming = false;
     private double currentLoopTime, previousLoopTime;
+
   
   // you call this function in a main auto opMode to make the robot move somewhere.
   // This is the foundation that every robot should need but you should more season specific things in the bot class.
@@ -67,7 +68,9 @@ public abstract class Robot {
     }
 
     //The initialization function
-    public abstract void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance);
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance){
+
+    }
 
     public void chill(boolean holdPos, double timeout) {
         double startedTime = runtime.seconds();
