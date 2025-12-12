@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Firmware.Robot;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 
 // This class will have the autonomous functions applicable to every auto. All autos extend BaseAuto.
 @Config
@@ -27,12 +28,37 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
         }
     }
 
-    public void autonomousLaunching(boolean holdPos, double timeout) {
+    public void autonomousLaunching(int motifId) {
+
+        switch (motifId){
+            case 0:
+                for (int i = 0; i < 3; i++){
+                    robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);
+                }
+                break;
+            case 21:
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+                break;
+            case 22:
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+                break;
+            case 23:
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+                robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
+                break;
+        }
+
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
         while(robot.operatorStateMachine.getCurrentState() == OperatorStateMachine.State.LAUNCH) {
             robot.updateRobot(false, false, false);
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
             robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(), robot.pathFollowing.getPowerF(), robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
+            robot.operatorStateMachine.updateStateMachine();
             telemetry.update();
         }
     }
