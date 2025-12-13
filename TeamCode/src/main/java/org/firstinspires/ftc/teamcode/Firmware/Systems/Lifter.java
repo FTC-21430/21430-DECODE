@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
+import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
+import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Resources.PIDFController;
@@ -21,6 +24,7 @@ public class Lifter {
     private double iCon;
     private double dCon;
     private double fCon;
+    private boolean unlached = false;
 
     private PIDFController leftLiftController = null;
     private PIDFController rightLiftController = null;
@@ -30,8 +34,10 @@ public class Lifter {
     DcMotor liftLeft;
     private ServoPlus[] servos;
     private DcMotor[] lifts;
-    private DigitalChannel leftLiftLimitSwitch;
-    private DigitalChannel rightLiftLimitSwitch;
+    private DigitalChannel leftLiftLimitSwitch1;
+    private DigitalChannel leftLiftLimitSwitch2;
+    private DigitalChannel rightLiftLimitSwitch1;
+    private DigitalChannel rightLiftLimitSwitch2;
 
 
     public Lifter(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -39,10 +45,12 @@ public class Lifter {
         this.telemetry = telemetry;
         liftLeft = hardwareMap.get(DcMotor.class, "liftL");
         liftRight = hardwareMap.get(DcMotor.class, "liftR");
-        ServoPlus leftLift = new ServoPlus((com.qualcomm.robotcore.hardware.Servo) hardwareMap.get(ServoPlus.class, "leftLiftServo"), 200, 0, 200);
-        ServoPlus rightLift = new ServoPlus((com.qualcomm.robotcore.hardware.Servo) hardwareMap.get(ServoPlus.class, "rightLiftServo"), 200, 0, 200);
-        leftLiftLimitSwitch = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchL");
-        rightLiftLimitSwitch = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchR");
+        liftLeftLatch = new ServoPlus(hardwareMap.get(Servo.class, "leftLiftServo"), 200, 0, 200);
+        liftRightLatch = new ServoPlus(hardwareMap.get(Servo.class, "rightLiftServo"), 200, 0, 200);
+        leftLiftLimitSwitch1 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchL1");
+        rightLiftLimitSwitch1 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchR1");
+        leftLiftLimitSwitch2 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchL2");
+        rightLiftLimitSwitch2 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchR2");
         servos = new ServoPlus[]{liftLeftLatch, liftRightLatch};
         lifts = new DcMotor[]{liftLeft, liftRight};
         for (DcMotor lift : lifts) {
@@ -52,6 +60,10 @@ public class Lifter {
         }
         leftLiftController = new PIDFController(pCon, iCon, dCon, fCon, new ElapsedTime());
         rightLiftController = new PIDFController(pCon, iCon, dCon, fCon, new ElapsedTime());
+
+        //Potentially reverse...
+        liftLeft.setDirection(FORWARD);
+        liftRight.setDirection(FORWARD);
     }
     //TODO:Make the million functions you have to Cassady!
     public void setLiftPosition(double position){
@@ -63,6 +75,7 @@ public class Lifter {
         rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
         liftLeft.setPower(leftLiftController.getPower());
         liftRight.setPower(rightLiftController.getPower());
+        checkHomingSwitches();
     }
     public double ticksToInches(int ticks){
         //TODO: Actually make this work
@@ -73,11 +86,12 @@ public class Lifter {
         return 0.0;
     }
     public void lockLatches(){
-        //Find values
-        double leftLockPos = 0;
-        double rightLockPos = 0;
-    liftLeftLatch.setServoPos(leftLockPos);
-    liftRightLatch.setServoPos(rightLockPos);
+        if (!unlached) {//Find values
+            double leftLockPos = 0;
+            double rightLockPos = 0;
+            liftLeftLatch.setServoPos(leftLockPos);
+            liftRightLatch.setServoPos(rightLockPos);
+        }
     }
     public void unlockLatches(){
         //Find values
@@ -85,12 +99,13 @@ public class Lifter {
         double rightUnlockPos = 0;
         liftLeftLatch.setServoPos(leftUnlockPos);
         liftRightLatch.setServoPos(rightUnlockPos);
+        unlached = true;
     }
     public boolean leftHomingSwitchesPressed(){
-        return leftLiftLimitSwitch.getState();
+        return leftLiftLimitSwitch1.getState() || leftLiftLimitSwitch2.getState();
     }
     public boolean rightHomingSwitchesPressed(){
-        return rightLiftLimitSwitch.getState();
+        return rightLiftLimitSwitch1.getState() || rightLiftLimitSwitch2.getState();
     }
     public void checkHomingSwitches(){
         if (leftHomingSwitchesPressed()){
