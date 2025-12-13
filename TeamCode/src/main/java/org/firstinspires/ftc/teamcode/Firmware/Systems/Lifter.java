@@ -20,8 +20,9 @@ public class Lifter {
     //TODO: Find and tune values
     //TODO: Find height values. These are not even guestimates! RANDOM NUMBERS!
     private double MIN_HEIGHT = 0;
-    private double MAX_HEIGHT = 1;
+    private double MAX_HEIGHT = 21.26; // inches
     private double DEFENCE_HEIGHT = 0.1;
+    private double MAX_ENCODER = ((((1+(46/17))) * (1+(46/17))) * (1+(46/17)) * 28) * 4.5; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
     private double pCon;
     private double iCon;
     private double dCon;
@@ -80,20 +81,44 @@ public class Lifter {
         leftLiftController.setTarget(position);
         rightLiftController.setTarget(position);
     }
+
+    private void homed(){
+        homing = false;
+        leftLiftController.setTarget(0);
+        rightLiftController.setTarget(0);
+    }
+
     public void update(){
-        leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
-        rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
-        liftLeft.setPower(leftLiftController.getPower());
-        liftRight.setPower(rightLiftController.getPower());
-        checkHomingSwitches();
-        home();
+
+        if (homing){
+            if (getLiftPosition() <1.2) {
+                double loweringSpeed = -0.03;
+                liftLeft.setPower(loweringSpeed);
+                liftRight.setPower(loweringSpeed);
+                checkHomingSwitches();
+            }else{
+                leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
+                rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
+                liftLeft.setPower(leftLiftController.getPower());
+                liftRight.setPower(rightLiftController.getPower());
+            }
+        }else {
+            leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
+            rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
+            liftLeft.setPower(leftLiftController.getPower());
+            liftRight.setPower(rightLiftController.getPower());
+        }
+
     }
     public double ticksToInches(int ticks){
         //TODO: Actually make this work
-        return 0.0;
+
+        double ticks2Inches = MAX_HEIGHT/MAX_ENCODER;
+        return ticks * ticks2Inches;
     }
     public double inchesToTicks(double inches){
-        //TODO: Actually make this work
+        //TODO: tune values
+        double inches2Ticks = MAX_ENCODER/MAX_HEIGHT;
         return 0.0;
     }
     public void lockLatches(){
@@ -126,6 +151,9 @@ public class Lifter {
         if (rightHomingSwitchesPressed()){
             liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        if (rightHomingSwitchesPressed() || leftHomingSwitchesPressed()){
+            homed();
         }
     }
     public void retract(){
