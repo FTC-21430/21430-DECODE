@@ -92,11 +92,9 @@ public class PathFollowing {
   public double getFollowSpeed(){ return followSpeed; }
 
   public void setAutoConstants(double p, double i, double d){
-//    xPID.updatePIDConstants(pXConstant,i,dXConstant);
-//    yPID.updatePIDConstants(pYConstant,i,dYConstant);
     xPID.updatePIDConstants(p,i,d);
     yPID.updatePIDConstants(p,i,d);
-//  }
+  }
 
   /**
    * Used to allow the robot the stop once close enough to target
