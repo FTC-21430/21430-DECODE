@@ -101,8 +101,6 @@ public class DecodeBot extends Robot{
     //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-        spindexer.updateSpindexer();
-        launcher.updateSpeedControl();
         operatorStateMachine.updateStateMachine();
     }
 
