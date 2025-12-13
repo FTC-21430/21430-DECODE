@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Resources.PIDFController;
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 
+@Config
 public class Lifter {
 
     //TODO: Comments
@@ -21,12 +24,12 @@ public class Lifter {
     //TODO: Find height values. These are not even guestimates! RANDOM NUMBERS!
     private double MIN_HEIGHT = 0;
     private double MAX_HEIGHT = 21.26; // inches
-    private double DEFENCE_HEIGHT = 0.1;
-    private double MAX_ENCODER = ((((1+(46/17))) * (1+(46/17))) * (1+(46/17)) * 28) * 4.5; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
-    private double pCon;
-    private double iCon;
-    private double dCon;
-    private double fCon;
+    public static double DEFENCE_HEIGHT = 0.1;
+    public static double MAX_ENCODER = ((((1+(46/17))) * (1+(46/17))) * (1+(46/17)) * 28) * 4.5; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
+    public static double pCon;
+    public static double iCon;
+    public static double dCon;
+    public static double fCon;
     private boolean unlached = false;
     //TODO: we should make the homing logic work
     private boolean homing = false;
