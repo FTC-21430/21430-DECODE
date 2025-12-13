@@ -9,13 +9,21 @@ public class TestingAutonomous extends BaseAuto {
     public void runOpMode() throws InterruptedException {
         initialize(true,true);
         waitForStart();
-        robot.odometry.overridePosition(0,0,0);
+        double start = robot.runtime.seconds();
 
-        robot.pathFollowing.setFollowSpeed(1);
-        robot.autoMoveTo(0,24,0, 2);
-        robot.autoMoveTo(24,0,0,2);
-        robot.autoMoveTo(0,24,90,2);
-        robot.autoMoveTo(0,0,-180,1);
-        robot.chill(true,2);
+        if(robot.runtime.seconds() < start +1){
+            robot.odometry.overridePosition(0, 0, 0);
+            robot.pathFollowing.setFollowSpeed(1);
+            robot.pathFollowing.setAutoConstants(0, 0, 0);
+            robot.autoMoveTo(5, 0, 2,2);
+//        robot.autoMoveTo(24,0,0,2);
+//        robot.autoMoveTo(0,24,90,2);
+//        robot.autoMoveTo(0,0,-180,1);
+//        robot.chill(true,2)
+        }
+        else {
+            robot.chill(true,5);
+        }
+        }
     }
-}
+
