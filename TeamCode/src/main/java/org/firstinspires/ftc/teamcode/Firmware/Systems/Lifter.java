@@ -25,6 +25,7 @@ public class Lifter {
     private double dCon;
     private double fCon;
     private boolean unlached = false;
+    private boolean homing = false;
 
     private PIDFController leftLiftController = null;
     private PIDFController rightLiftController = null;
@@ -67,6 +68,13 @@ public class Lifter {
     }
     //TODO:Make the million functions you have to Cassady!
     public void setLiftPosition(double position){
+        if (position>MAX_HEIGHT){
+            position = MAX_HEIGHT;
+        }
+        if (position<MIN_HEIGHT){
+            position = MIN_HEIGHT;
+        }
+
         leftLiftController.setTarget(position);
         rightLiftController.setTarget(position);
     }
@@ -125,5 +133,13 @@ public class Lifter {
     }
     public void defence(){
         setLiftPosition(DEFENCE_HEIGHT);
+    }
+    public void home(){
+        homing = true;
+        setLiftPosition(1);
+    }
+    public double getLiftPosition(){
+        double position = (liftLeft.getCurrentPosition() + liftRight.getCurrentPosition())/2;
+        return position;
     }
 }
