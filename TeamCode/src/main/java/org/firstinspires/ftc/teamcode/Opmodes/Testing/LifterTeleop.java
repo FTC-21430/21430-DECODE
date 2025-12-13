@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes;
+package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
@@ -25,6 +25,9 @@ private Lifter lift = null;
             if (gamepad1.triangleWasPressed()) {
                 //open latches
                 lift.unlockLatches();
+            }
+            if (gamepad1.touchpadWasPressed()){
+                lift.home();
             }
             if (gamepad1.circleWasPressed()) {
                 //closes latches

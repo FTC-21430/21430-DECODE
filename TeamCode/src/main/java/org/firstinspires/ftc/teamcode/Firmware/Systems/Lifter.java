@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.Resources.PIDFController;
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 
 public class Lifter {
+
+    //TODO: Comments
     private HardwareMap hardwareMap = null;
     private Telemetry telemetry = null;
 
@@ -25,6 +27,7 @@ public class Lifter {
     private double dCon;
     private double fCon;
     private boolean unlached = false;
+    //TODO: we should make the homing logic work
     private boolean homing = false;
 
     private PIDFController leftLiftController = null;
@@ -62,7 +65,7 @@ public class Lifter {
         leftLiftController = new PIDFController(pCon, iCon, dCon, fCon, new ElapsedTime());
         rightLiftController = new PIDFController(pCon, iCon, dCon, fCon, new ElapsedTime());
 
-        //Potentially reverse...
+        //Potentially reverse in the future, TODO:Check
         liftLeft.setDirection(FORWARD);
         liftRight.setDirection(FORWARD);
     }
@@ -84,6 +87,7 @@ public class Lifter {
         liftLeft.setPower(leftLiftController.getPower());
         liftRight.setPower(rightLiftController.getPower());
         checkHomingSwitches();
+        // TODO: No homing logic here, should be some!
     }
     public double ticksToInches(int ticks){
         //TODO: Actually make this work
@@ -137,8 +141,10 @@ public class Lifter {
     public void home(){
         homing = true;
         setLiftPosition(1);
+        //TODO: this method should be used in the test code
     }
     public double getLiftPosition(){
+        //TODO: ensure this returns in inches of movement!
         double position = (liftLeft.getCurrentPosition() + liftRight.getCurrentPosition())/2;
         return position;
     }
