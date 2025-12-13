@@ -42,10 +42,9 @@ public class Lifter {
     DcMotor liftLeft;
     private ServoPlus[] servos;
     private DcMotor[] lifts;
-    private DigitalChannel leftLiftLimitSwitch1;
-    private DigitalChannel leftLiftLimitSwitch2;
-    private DigitalChannel rightLiftLimitSwitch1;
-    private DigitalChannel rightLiftLimitSwitch2;
+    private DigitalChannel LiftLimitSwitch1;
+    private DigitalChannel LiftLimitSwitch2;
+
 
 
     public Lifter(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -55,10 +54,8 @@ public class Lifter {
         liftRight = hardwareMap.get(DcMotor.class, "liftR");
         liftLeftLatch = new ServoPlus(hardwareMap.get(Servo.class, "leftLiftServo"), 200, 0, 200);
         liftRightLatch = new ServoPlus(hardwareMap.get(Servo.class, "rightLiftServo"), 200, 0, 200);
-        leftLiftLimitSwitch1 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchL1");
-        rightLiftLimitSwitch1 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchR1");
-        leftLiftLimitSwitch2 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchL2");
-        rightLiftLimitSwitch2 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitchR2");
+        LiftLimitSwitch1 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitch1");
+        LiftLimitSwitch2 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitch2");
         servos = new ServoPlus[]{liftLeftLatch, liftRightLatch};
         lifts = new DcMotor[]{liftLeft, liftRight};
         for (DcMotor lift : lifts) {
@@ -87,6 +84,10 @@ public class Lifter {
 
     private void homed(){
         homing = false;
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftLiftController.setTarget(0);
         rightLiftController.setTarget(0);
     }
@@ -141,23 +142,13 @@ public class Lifter {
         unlached = true;
     }
     public boolean leftHomingSwitchesPressed(){
-        return leftLiftLimitSwitch1.getState() || leftLiftLimitSwitch2.getState();
-    }
-    public boolean rightHomingSwitchesPressed(){
-        return rightLiftLimitSwitch1.getState() || rightLiftLimitSwitch2.getState();
+        return LiftLimitSwitch1.getState() || LiftLimitSwitch2.getState();
     }
     public void checkHomingSwitches(){
         if (leftHomingSwitchesPressed()){
-            liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-        if (rightHomingSwitchesPressed()){
-            liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-        if (rightHomingSwitchesPressed() || leftHomingSwitchesPressed()){
             homed();
         }
+
     }
     public void retract(){
      setLiftPosition(MIN_HEIGHT);
