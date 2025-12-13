@@ -69,7 +69,6 @@ public class Lifter {
         liftLeft.setDirection(FORWARD);
         liftRight.setDirection(FORWARD);
     }
-    //TODO:Make the million functions you have to Cassady!
     public void setLiftPosition(double position){
         if (position>MAX_HEIGHT){
             position = MAX_HEIGHT;
@@ -87,7 +86,7 @@ public class Lifter {
         liftLeft.setPower(leftLiftController.getPower());
         liftRight.setPower(rightLiftController.getPower());
         checkHomingSwitches();
-        // TODO: No homing logic here, should be some!
+        home();
     }
     public double ticksToInches(int ticks){
         //TODO: Actually make this work
@@ -141,11 +140,9 @@ public class Lifter {
     public void home(){
         homing = true;
         setLiftPosition(1);
-        //TODO: this method should be used in the test code
     }
     public double getLiftPosition(){
-        //TODO: ensure this returns in inches of movement!
-        double position = (liftLeft.getCurrentPosition() + liftRight.getCurrentPosition())/2;
-        return position;
+        int position = (liftLeft.getCurrentPosition() + liftRight.getCurrentPosition())/2;
+        return ticksToInches(position);
     }
 }

@@ -33,6 +33,9 @@ private Lifter lift = null;
                 //closes latches
                 lift.lockLatches();
             }
+            if (gamepad1.dpadDownWasPressed()){
+                lift.home();
+            }
             lift.update();
         }
     }
