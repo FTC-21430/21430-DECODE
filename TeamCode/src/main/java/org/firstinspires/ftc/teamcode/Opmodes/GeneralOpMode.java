@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode.Opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 
 // Creates robot object. All OpModes inherit this.
@@ -14,6 +17,7 @@ abstract public class GeneralOpMode extends LinearOpMode {
     // normal functions
     public void initialize(boolean reset, boolean isAuto) {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        robot = new DecodeBot(hardwareMap,telemetry,0,0,0,this,reset,isAuto,"red");
+        robot = new DecodeBot(hardwareMap, telemetry, 0, 0, 0, this, reset, isAuto, "red") {
+        };
     }
 }
