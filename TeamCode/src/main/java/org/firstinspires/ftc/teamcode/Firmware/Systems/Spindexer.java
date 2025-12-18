@@ -34,8 +34,8 @@ public class Spindexer {
     public static double ejectionTimeout = 0.3; // Timeout duration for ejection in seconds.
     private final int slotIncrement = 120; // Degrees between slots.
     private final Servo ejectorServo; // Servo for controlling the ejector mechanism.
-    private double ejectorOutPos = 0.675; // Position of the ejector when pushed out.
-    private double ejectorInPos = 0.371; // Position of the ejector when retracted.
+    private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
+    private double ejectorInPos = 0.42; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful

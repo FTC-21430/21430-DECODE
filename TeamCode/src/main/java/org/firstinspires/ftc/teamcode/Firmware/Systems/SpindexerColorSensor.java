@@ -18,12 +18,12 @@ public class SpindexerColorSensor {
             0
     };
     private final float[] purpleValues = new float[]{
-            230,
+            200,
             0,
             0
     };
     private final float[] greenValues = new float[]{
-            165,
+            140,
             0,
             0
     };
@@ -111,7 +111,7 @@ public class SpindexerColorSensor {
      * gets value from the sensor and converts from RGBA to HSV
      * @return returns color in HSV
      */
-    private float[] getRawData(){
+    public float[] getRawData(){
         float[] hsvValues = new float[3];
         NormalizedRGBA colors = sensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);

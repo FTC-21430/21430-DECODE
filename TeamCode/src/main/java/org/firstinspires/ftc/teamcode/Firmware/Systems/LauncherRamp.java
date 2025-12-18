@@ -26,7 +26,7 @@ public class LauncherRamp {
 
     // The range of motion the ramp can move, from completely retracted to farthest mechanical limit
 //    Took radius from pivot point to end of ramp and the circumference segment of the movable ramp segment. Took that ratio of full circumference and part to find ROM
-    public static double rampROM = 27.5; // degrees guessed based on CAD.
+    public static double rampROM = 2.5; // degrees guessed based on CAD.
     // The gear ratio between the launcher hood and the servo gear - Provided by the chief engineer in training who designed this part on hardware.
     public static double servoToRampRatio = (double) 1 / 6;
 

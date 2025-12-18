@@ -9,20 +9,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 // Intent of the class is to allow you to ftc dashboard to the robot and then you can fine control servos and find needed values quickly.
 
 // Uncomment line 11 to reveal the position on FTC dashboard.
-@Config
 
 // Disable this class by default, but when you want to mess with it, then comment out line 14
 //@Disabled
 @TeleOp
+@Config
 public class ServoTuningTesting extends LinearOpMode {
     private Servo servo;
     public static double position = 0;
-
+    public static String address = "ejector";
     @Override
     public void runOpMode() throws InterruptedException {
 
         // Change this value to match the config value of the servo you want to tune
-        String address = "spindexer";
+
 
         // get the servo object from the config files
         servo = hardwareMap.get(Servo.class, address);
