@@ -227,5 +227,11 @@ public class OperatorStateMachine {
     private void idleToLaunch(){
         launching = false;
     }
+    public List<COLORS> getLaunchQueue(){
+        return launchQueue;
+    }
+    public State getCurrentState(){
+        return currentState;
+    }
 
 }

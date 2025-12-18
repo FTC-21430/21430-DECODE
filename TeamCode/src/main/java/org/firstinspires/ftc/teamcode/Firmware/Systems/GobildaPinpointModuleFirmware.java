@@ -49,8 +49,8 @@ public class GobildaPinpointModuleFirmware {
         pinpoint.update();
         Pose2D position =  pinpoint.getPosition();
 //        Our frame of reference and the gobilda frame of reference is different, so you units needed to change.
-        robotY = position.getX(DistanceUnit.INCH);
-        robotX = position.getY(DistanceUnit.INCH);
+        robotX = position.getX(DistanceUnit.INCH);
+        robotY = position.getY(DistanceUnit.INCH);
         robotAngle = Math.toDegrees(pinpoint.getHeading(UnnormalizedAngleUnit.RADIANS));
     }
 

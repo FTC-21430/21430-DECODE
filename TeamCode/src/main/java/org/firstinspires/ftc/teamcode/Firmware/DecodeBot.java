@@ -75,7 +75,6 @@ public abstract class DecodeBot extends Robot{
         pathFollowing.setFollowTolerance(targetCircle);
         rotationControl.setTargetAngle(robotAngle);
         driveTrain.fieldCentricDriving(false);
-//      //TODO: replace true with the isWithinTargetTolerance() function
         while(!pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
@@ -104,7 +103,7 @@ public abstract class DecodeBot extends Robot{
     //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
-        operatorStateMachine.updateStateMachine();
+//        operatorStateMachine.updateStateMachine();
     }
 
     // red or blue
