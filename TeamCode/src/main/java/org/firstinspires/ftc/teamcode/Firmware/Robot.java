@@ -50,17 +50,9 @@ public abstract class Robot {
     public boolean aiming = false;
     private double currentLoopTime, previousLoopTime;
 
-  // TODO: Refactor this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
-  // used for how fast the turning input is used.
-  // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
-
-  //TODO: Find values for these to tune PID constants
-  //TODO: Also make final once values have been found
-    //Why are these public? Needed for FTC dashboard?
   
   // you call this function in a main auto opMode to make the robot move somewhere.
   // This is the foundation that every robot should need but you should more season specific things in the bot class.
-  
   public double getDeltaTime() {
     double deltaTime;
     deltaTime = currentLoopTime - previousLoopTime;
@@ -76,7 +68,9 @@ public abstract class Robot {
     }
 
     //The initialization function
-    public abstract void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance);
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance){
+
+    }
 
     public void chill(boolean holdPos, double timeout) {
         double startedTime = runtime.seconds();
