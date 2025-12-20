@@ -38,11 +38,11 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.2;
     public static final double I_CONSTANT = 0.1;
     public static final double D_CONSTANT = 0.02;
-//    public static double yOffset = 5.118;
-//    public static double xOffset = 2.713;
+    public static double yOffset = 5.118;
+    public static double xOffset = 2.713;
 
-    public static double xOffset = -3.125;
-    public static double yOffset = -7;
+//    public static double xOffset = -3.125;
+//    public static double yOffset = -7;
 
     public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
@@ -50,7 +50,6 @@ public abstract class DecodeBot extends Robot{
         this.telemetry = telemetry;
         this.alliance = alliance;
 
-        // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
         //Creating the classes as objects for future use
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
         trajectoryKinematics = new TrajectoryKinematics();
