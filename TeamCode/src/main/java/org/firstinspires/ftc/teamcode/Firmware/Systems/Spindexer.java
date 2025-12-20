@@ -23,7 +23,7 @@ public class Spindexer {
     private DigitalChannel intakeLimitSwitchOne = null;
     private DigitalChannel intakeLimitSwitchTwo = null;
 
-    private COLORS[] indexColors = {
+    public COLORS[] indexColors = {
       COLORS.NONE,
       COLORS.NONE,
       COLORS.NONE
@@ -130,6 +130,9 @@ public class Spindexer {
             return;
         }
         indexColors[getCurrentIndexInIntake()-1] = colorSensor.getDetectedColor();
+    }
+    public COLORS getColorInIntake(){
+        return colorSensor.getDetectedColor();
     }
     public void clearColor(int index){
         indexColors[index-1] = COLORS.NONE;

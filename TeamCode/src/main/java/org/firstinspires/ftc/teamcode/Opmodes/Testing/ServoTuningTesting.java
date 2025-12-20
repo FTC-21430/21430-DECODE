@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoTuningTesting extends LinearOpMode {
     private Servo servo;
     public static double position = 0;
-    public static String address = "ejector";
+    public static String address = "spindexer";
     @Override
     public void runOpMode() throws InterruptedException {
 

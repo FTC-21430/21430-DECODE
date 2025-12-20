@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Firmware;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
@@ -41,7 +42,9 @@ public class OperatorStateMachine {
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
     // Logic to ensure that a launch is completed before it starts the next launch
-    private boolean launching = false;
+    private boolean prepping = false;
+    private boolean launched = false;
+    private ElapsedTime runtime = null;
 
     /**
      * The constructor for this class, Stores all of the instances of the components of the robot
@@ -58,6 +61,7 @@ public class OperatorStateMachine {
         this.intake = intake;
         this.telemetry = telemetry;
         this.setLauncherBasedOnTags = setLauncherBasedOnTags;
+        this.runtime = new ElapsedTime();
     }
 
     // Will Trigger the transition from one state to the next
@@ -107,6 +111,9 @@ public class OperatorStateMachine {
 
     // Will call the corresponding update function to the current state
     public void updateStateMachine(){
+        for (COLORS color : spindexer.indexColors){
+            telemetry.addData("A Color", color);
+        }
         switch (currentState){
             case IDLE:
                 idleState();
@@ -146,12 +153,22 @@ public class OperatorStateMachine {
      * The intake state update method
      * Handles all logic for intaking new artifacts and storing their color
      */
+
+    private boolean holdingIntake = false;
     private void intakeState(){
-        telemetry.addData("intakeSwitch", spindexer.getIntakeSwitch());
-        if (spindexer.getIntakeSwitch()&&spindexer.isAtRest()){
+        telemetry.addData("holdingIntake", holdingIntake);
+        telemetry.addData("time", runtime.seconds());
+        if (!holdingIntake && (spindexer.getColorInIntake() != COLORS.NONE || spindexer.getIntakeSwitch())&&spindexer.isAtRest()){
+            holdingIntake = true;
+            runtime.reset();
+        }
+
+        if (holdingIntake && runtime.seconds() >= 0.08){
+            holdingIntake = false;
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
         }
+
         if (spindexer.isFull()){
             moveToState(State.IDLE);
         }
@@ -171,20 +188,22 @@ public class OperatorStateMachine {
         telemetry.addData("get target speed", launcher.getTargetSpeed());
         setLauncherBasedOnTags.run();
 
-        if (!launchQueue.isEmpty() && !launching){
+        if (!launchQueue.isEmpty() && !prepping && !launched){
             spindexer.prepColor(launchQueue.get(launchQueue.size()-1));
-            launching = true;
+            prepping = true;
         }
 
-        if (launching && spindexer.isAtRest() && launcher.isUpToSpeed()){
+        if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed()){
             spindexer.eject();
+            prepping = false;
+            launched = true;
             spindexer.clearColor(spindexer.getCurrentIndexInLaunch());
         }
-        if (launching && !spindexer.isEjectorOut() && spindexer.isAtRest()){
-            launching = false;
+        if (launched && !spindexer.isEjectorOut()){
+            launched = false;
         }
 
-        if (launchQueue.isEmpty() && !launching){
+        if (launchQueue.isEmpty() && !prepping && !launched){
             moveToState(State.IDLE);
         }
 
@@ -206,7 +225,7 @@ public class OperatorStateMachine {
             addToQueue(COLORS.NONE);
         }
         intake.turnOff();
-        launching = false;
+        prepping = false;
     }
     /**
      * Transition from intake to idle
@@ -219,20 +238,20 @@ public class OperatorStateMachine {
      */
     private void intakeToLaunch(){
         intake.turnOff();
-        launching = false;
+        prepping = false;
     }
     /**
      * Transition from launch to intake
      */
     private void launchToIntake(){
         intake.turnOn();
-        launching = false;
+        prepping = false;
     }
     /**
      * Transition from idle to launch
      */
     private void idleToLaunch(){
-        launching = false;
+        prepping = false;
     }
     public List<COLORS> getLaunchQueue(){
         return launchQueue;
