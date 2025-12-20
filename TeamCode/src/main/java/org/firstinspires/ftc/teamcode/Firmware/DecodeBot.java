@@ -58,7 +58,7 @@ public abstract class DecodeBot extends Robot{
         launcher = new Launcher(hardwareMap,telemetry);
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,reset);
-        lifter = new Lifter(hardwareMap, telemetry);
+//        lifter = new Lifter(hardwareMap, telemetry);
         rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle,telemetry);
         aprilTags = new AprilTag();
         aprilTags.init(hardwareMap,telemetry);

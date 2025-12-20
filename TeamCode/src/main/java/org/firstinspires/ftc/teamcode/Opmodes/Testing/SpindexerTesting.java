@@ -30,6 +30,7 @@ public class SpindexerTesting extends BaseTeleOp {
                 robot.spindexer.eject();
             }
             robot.updateRobot(false,false,false);
+            robot.operatorStateMachine.updateStateMachine();
             robot.bulkSensorBucket.clearCache();
             telemetry.update();
         }

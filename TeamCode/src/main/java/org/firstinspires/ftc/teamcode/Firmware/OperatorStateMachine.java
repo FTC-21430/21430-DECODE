@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Firmware;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
@@ -9,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLO
 import java.util.ArrayList;
 import java.util.List;
 
+@Config
 // Controls the automation for the mechanisms on the robot. Mainly, the launcher, spindexer, and intake.
 public class OperatorStateMachine {
 
@@ -20,7 +24,7 @@ public class OperatorStateMachine {
     }
 
     // The idle speed the flywheel will be set too when not actively shooting
-    private double idleSpeed = 1000;
+    public static double idleSpeed = 1000;
     // The launcher instance
     private Launcher launcher;
     // The Spindexer Instance
@@ -143,8 +147,8 @@ public class OperatorStateMachine {
      * Handles all logic for intaking new artifacts and storing their color
      */
     private void intakeState(){
-
-        if (spindexer.getIntakeSwitch()){
+        telemetry.addData("intakeSwitch", spindexer.getIntakeSwitch());
+        if (spindexer.getIntakeSwitch()&&spindexer.isAtRest()){
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
         }
@@ -162,6 +166,9 @@ public class OperatorStateMachine {
      * Handles the logic for shooting the balls in the right order
      */
     private void launchState(){
+        telemetry.addData("speed", launcher.getSpeed());
+        telemetry.addData("up to speed", launcher.isUpToSpeed());
+        telemetry.addData("get target speed", launcher.getTargetSpeed());
         setLauncherBasedOnTags.run();
 
         if (!launchQueue.isEmpty() && !launching){

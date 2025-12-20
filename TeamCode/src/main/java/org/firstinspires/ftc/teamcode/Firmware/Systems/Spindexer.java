@@ -76,6 +76,8 @@ public class Spindexer {
                 paddleServo.resetEncoderPosition();
             }
         }
+            telemetry.addData("Encoder", getEncoderPosition());
+            telemetry.addData("target", paddleServo.getTargetPosition());
             paddleServo.update(); // Updates the spindexer servo position.
     }
 
