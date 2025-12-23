@@ -135,7 +135,7 @@ public class Lifter {
     public void unlockLatches(){
         //Find values
         double leftUnlockPos = 0.68;
-        double rightUnlockPos = 0.32;
+        double rightUnlockPos = 0.4;
         liftLeftLatch.setPosition(leftUnlockPos);
         liftRightLatch.setPosition(rightUnlockPos);
         unlached = true;
