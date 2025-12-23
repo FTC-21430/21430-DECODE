@@ -35,7 +35,7 @@ public class LauncherRamp {
     public static double minRampAngle = 37.5;
 
     // The maximum angle of the ramp up from Horizontal used previous values
-    private final double maxRampAngle = minRampAngle + rampROM;
+    private final double MAX_RAMP_ANGLE = minRampAngle + rampROM;
 
     /**
      * Construct function for this class, gets the servo reference
@@ -43,7 +43,7 @@ public class LauncherRamp {
      */
     public LauncherRamp(HardwareMap hardwareMap){
         // All values are passed to the servo assuming that the servo's zero is the launcher's min.
-        rampServo = new ServoPlus(hardwareMap.get(Servo.class, "ramp"),servoROM * servoToRampRatio,rampAngleToServo(minRampAngle), rampAngleToServo(maxRampAngle));
+        rampServo = new ServoPlus(hardwareMap.get(Servo.class, "ramp"),servoROM * servoToRampRatio,rampAngleToServo(minRampAngle), rampAngleToServo(MAX_RAMP_ANGLE));
     }
 
     /**
@@ -51,7 +51,7 @@ public class LauncherRamp {
      * @param angleUpFromHorizontal degrees above Horizontal the tangent line of the hood should be.
      */
     public void setLaunchAngle(double angleUpFromHorizontal){
-        angleUpFromHorizontal = Range.clip(angleUpFromHorizontal, minRampAngle, maxRampAngle);
+        angleUpFromHorizontal = Range.clip(angleUpFromHorizontal, minRampAngle, MAX_RAMP_ANGLE);
         rampServo.setServoPos(rampAngleToServo(angleUpFromHorizontal));
     }
 
@@ -66,14 +66,14 @@ public class LauncherRamp {
      * Highest launch angle
      */
     public void extendFull(){
-        rampServo.setServoPos(rampAngleToServo(maxRampAngle));
+        rampServo.setServoPos(rampAngleToServo(MAX_RAMP_ANGLE));
     }
 
     /**
      * right in between the limits of launch angles
      */
     public void midAngle(){
-        rampServo.setServoPos(rampAngleToServo((maxRampAngle - minRampAngle)/2));
+        rampServo.setServoPos(rampAngleToServo((MAX_RAMP_ANGLE - minRampAngle)/2));
     }
 
     /**

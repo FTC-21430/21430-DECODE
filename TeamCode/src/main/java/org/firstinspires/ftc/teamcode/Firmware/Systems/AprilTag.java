@@ -22,8 +22,8 @@ public class AprilTag {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
-    public static double RED_OFFSET = -23;
-    public static double BLUE_OFFSET = -23;
+    public static double RED_OFFSET = -3;
+    public static double BLUE_OFFSET = 3;
     private int aprilTagID;
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -31,7 +31,7 @@ public class AprilTag {
         this.telemetry = telemetry;
         //The builder class is used to access multiple configurations for the aprilTagProcessor
         aprilTagProcessor = new AprilTagProcessor.Builder()
-                .setLensIntrinsics(738.946641312, 738.946641312, 950.355325352, 537.2414353)
+                .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561)
                 .setCameraPose(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,-90,0,0))
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
@@ -139,6 +139,7 @@ public class AprilTag {
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode){
+
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
         return getSpecific(aprilTagID).ftcPose.bearing;

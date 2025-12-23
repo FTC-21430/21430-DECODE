@@ -15,7 +15,7 @@ public class ServoPlus {
     // this value is the max range assuming that the min value is 0.0
     // so if you gave it 360.0 then the servo has a range of motion of 360.0 degrees,
     // this is from the specs of the servo.
-    private final double rangeOfMotion;
+    private final double RANGE_OF_MOTION;
 
     // the previous angle assigned to the servo, this data is not coming from the servo.
     private double currentAngle;
@@ -31,7 +31,7 @@ public class ServoPlus {
      */
     public ServoPlus(Servo servoInput, double rangeOfMotionInput, double rangeMinInput, double rangeMaxInput){
         servo = servoInput;
-        rangeOfMotion = rangeOfMotionInput;
+        RANGE_OF_MOTION = rangeOfMotionInput;
         rangeMin = rangeMinInput;
         rangeMax = rangeMaxInput;
     }
@@ -47,7 +47,7 @@ public class ServoPlus {
 
         // sets the position of the servo to be the ratio of the angle you provided
         // and the full range of motion of the servo.
-        servo.setPosition(targetAngle / rangeOfMotion);
+        servo.setPosition(targetAngle / RANGE_OF_MOTION);
 
         // updates the currentAngle to reflect your change
         currentAngle = targetAngle;
