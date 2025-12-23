@@ -90,6 +90,11 @@ public class RedTeleop extends BaseTeleOp {
                 if (gamepad2.dpadRightWasPressed()){
                     robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
                 }
+                if (gamepad2.touchpadWasPressed()){
+                    for (int i = 0; i < 3; i++){
+                        robot.spindexer.clearColor(i);
+                    }
+                }
 
                 robot.operatorStateMachine.updateStateMachine();
             }

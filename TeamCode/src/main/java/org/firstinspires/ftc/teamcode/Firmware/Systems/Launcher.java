@@ -31,7 +31,7 @@ public class Launcher {
         // Initialize the flywheel with PID constants
         FLYWHEEL = new Flywheel(hardwareMap, telemetry, new ElapsedTime(), FLYWHELLSPEEDCONTROLP, FLYWHELLSPEEDCONTROLI, FLYWHELLSPEEDCONTROLD);
         // Set the accuracy threshold for speed control (in degrees per second)
-        FLYWHEEL.setAccuracyThreshold(20);
+        FLYWHEEL.setAccuracyThreshold(35);
 
         // Initialize the ramp and have it move to starting configuration of retracted
         RAMP = new LauncherRamp(hardwareMap);
