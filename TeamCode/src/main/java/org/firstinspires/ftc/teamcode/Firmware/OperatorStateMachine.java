@@ -189,20 +189,28 @@ public class OperatorStateMachine {
         setLauncherBasedOnTags.run();
 
         if (!launchQueue.isEmpty() && !prepping && !launched){
-            spindexer.prepColor(launchQueue.get(launchQueue.size()-1));
+            COLORS toPrep = launchQueue.remove(0);
+            spindexer.prepColor(toPrep);
             prepping = true;
         }
 
+        // When prepped and launcher is ready, eject and clear the stored color
         if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed()){
             spindexer.eject();
             prepping = false;
             launched = true;
-            spindexer.clearColor(spindexer.getCurrentIndexInLaunch());
+
+            // Clear the color from the spindexer and remove it from the queue so we don't re-prep it
+            int clearedIndex = spindexer.getCurrentIndexInLaunch();
+            spindexer.clearColor(clearedIndex);
         }
+
+        // Wait for ejector to fully retract before allowing next cycle
         if (launched && !spindexer.isEjectorOut()){
             launched = false;
         }
 
+        // If nothing left to launch and nothing in progress, go idle
         if (launchQueue.isEmpty() && !prepping && !launched){
             moveToState(State.IDLE);
         }

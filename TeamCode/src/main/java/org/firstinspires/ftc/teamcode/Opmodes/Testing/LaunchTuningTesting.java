@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 
 @Config
 @TeleOp
 public class LaunchTuningTesting extends LinearOpMode {
 
     Launcher launcher;
+    Spindexer spindexer;
     AprilTag aprilTagProcessing;
 
     public static double angle = 0;
@@ -22,6 +24,8 @@ public class LaunchTuningTesting extends LinearOpMode {
 
         // Init launcher
         launcher = new Launcher(hardwareMap, telemetry);
+        spindexer = new Spindexer(hardwareMap,telemetry,true);
+
         // We don't want the flywheel running right now
         launcher.setSpeed(0);
 
@@ -40,6 +44,15 @@ public class LaunchTuningTesting extends LinearOpMode {
             telemetry.addData("speed", speed);
             telemetry.addData("distance", aprilTagProcessing.getDistance("red"));
             telemetry.update();
+
+            if (gamepad1.circleWasPressed()){
+                spindexer.moveToNextIndex();
+            }
+            if (gamepad1.crossWasPressed()){
+                spindexer.eject();
+            }
+
+            spindexer.updateSpindexer();
         }
     }
 }

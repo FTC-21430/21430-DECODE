@@ -83,15 +83,24 @@ public class Spindexer {
 
     public void prepColor(COLORS color){
         if (color == COLORS.NONE) {
-            if (indexColors[getCurrentIndexInLaunch()-1] == COLORS.NONE){
-                if (getIndexWithColor(COLORS.PURPLE) != -1){
-                    moveIndexToLaunch(getIndexWithColor(COLORS.PURPLE));
-                }else if (getIndexWithColor(COLORS.GREEN) != -1){
-                    moveIndexToLaunch(getIndexWithColor(COLORS.GREEN));
+            int launchIndex = getCurrentIndexInLaunch();
+            if (launchIndex == -1) return;
+            if (indexColors[launchIndex - 1] == COLORS.NONE){
+                int purple = getIndexWithColor(COLORS.PURPLE);
+                if (purple != -1){
+                    moveIndexToLaunch(purple);
+                } else {
+                    int green = getIndexWithColor(COLORS.GREEN);
+                    if (green != -1){
+                        moveIndexToLaunch(green);
+                    }
                 }
             }
-        }else {
-            moveIndexToLaunch(getIndexWithColor(color));
+        } else {
+            int idx = getIndexWithColor(color);
+            if (idx != -1) {
+                moveIndexToLaunch(idx);
+            }
         }
     }
 //    zero is index 1 at intake, positive moves counterclockwise facing intake, so 120 will be index 1 at launcher
@@ -170,11 +179,15 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInIntake(){
-        if (paddleServo.getTargetPosition() % 120 == 0) {
-            return ((int) paddleServo.getTargetPosition() / slotIncrement) + 1;
-        } else {
-            return -1; // Indicates the spindexer is not at a valid slot.
+        switch ((int)paddleServo.getTargetPosition()){
+            case 0:
+                return 1;
+            case 120:
+                return 2;
+            case 240:
+                return 3;
         }
+        return -1;
     }
 
     /**
@@ -182,11 +195,15 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInLaunch(){
-        if (paddleServo.getTargetPosition()%120 == 0){
-            return ((int)paddleServo.getTargetPosition() / slotIncrement) + 2;
-        }else{
-            return -1; // Indicates the spindexer is not at a valid slot.
+        switch ((int)paddleServo.getTargetPosition()){
+            case 0:
+                return 3;
+            case 120:
+                return 1;
+            case 240:
+                return 2;
         }
+        return -1;
     }
 
     /**
