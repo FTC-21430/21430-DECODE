@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -29,7 +31,8 @@ public class AprilTag {
         this.telemetry = telemetry;
         //The builder class is used to access multiple configurations for the aprilTagProcessor
         aprilTagProcessor = new AprilTagProcessor.Builder()
-                .setLensIntrinsics(736.952533347, 736.952533347, 951.225875883, 540.574797136)
+                .setLensIntrinsics(738.946641312, 738.946641312, 950.355325352, 537.2414353)
+                .setCameraPose(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,-90,0,0))
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
 
@@ -106,20 +109,40 @@ public class AprilTag {
 
     // the getDistance function calculates the distance between the robot and the april tag
     public double getDistance(String mode){
-
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
-        return getSpecific(aprilTagID).ftcPose.range;
+
+        double distance = 0.0;
+        double posX = getSpecific(aprilTagID).robotPose.getPosition().x;
+        double posY = getSpecific(aprilTagID).robotPose.getPosition().y;
+        double goalX = getSpecific(aprilTagID).metadata.fieldPosition.get(0);
+        double goalY = getSpecific(aprilTagID).metadata.fieldPosition.get(1);
+        distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2));
+        return distance;
     }
+    // Locate AprilTags must be called before this!
+    public double getRobotX(){
+        return getSpecific(aprilTagID).robotPose.getPosition().x;
+    }
+    public double getRobotY(){
+        return getSpecific(aprilTagID).robotPose.getPosition().y;
+    }
+    public double getRobotAngle(){
+        return getSpecific(aprilTagID).robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
+    }
+    public boolean isTag(String mode){
+        locateAprilTags(mode);
+        return aprilTagID != 0;
+    }
+
+
+
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode){
         locateAprilTags(mode);
         if (aprilTagID == 0) return 0.0;
-        if (mode=="blue") {
-            return (getSpecific(aprilTagID).ftcPose.bearing)+BLUE_OFFSET;
-        }else {
-            return (getSpecific(aprilTagID).ftcPose.bearing)+RED_OFFSET;
-        }
+        return getSpecific(aprilTagID).ftcPose.bearing;
+
     }
 
     // the getMotifID function gets the ID of the motif on the obelisk

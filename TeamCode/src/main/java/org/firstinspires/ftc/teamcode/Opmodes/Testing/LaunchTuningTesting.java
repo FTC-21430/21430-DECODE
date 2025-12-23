@@ -43,6 +43,12 @@ public class LaunchTuningTesting extends LinearOpMode {
             telemetry.addData("angle", angle);
             telemetry.addData("speed", speed);
             telemetry.addData("distance", aprilTagProcessing.getDistance("red"));
+            telemetry.addLine("------------------------------");
+            if (aprilTagProcessing.isTag("red")) {
+                telemetry.addData("robotX", aprilTagProcessing.getRobotX());
+                telemetry.addData("robotY", aprilTagProcessing.getRobotY());
+                telemetry.addData("robotAngle", aprilTagProcessing.getRobotAngle());
+            }
             telemetry.update();
 
             if (gamepad1.circleWasPressed()){
