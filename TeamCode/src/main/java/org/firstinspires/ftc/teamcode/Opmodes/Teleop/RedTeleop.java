@@ -91,7 +91,7 @@ public class RedTeleop extends BaseTeleOp {
                     robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
                 }
                 if (gamepad2.touchpadWasPressed()){
-                    for (int i = 0; i < 3; i++){
+                    for (int i = 0; i < 2; i++){
                         robot.spindexer.clearColor(i);
                     }
                 }

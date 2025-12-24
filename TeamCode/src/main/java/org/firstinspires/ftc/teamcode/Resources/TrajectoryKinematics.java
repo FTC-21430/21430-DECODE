@@ -53,7 +53,7 @@ public class TrajectoryKinematics {
     private double angleRegression(double distance){
         // values a-e represent the tuning values of this 4th degree polynomial calculated by Desmos using the distance and angle values above
         double a =-3.8327541 * Math.pow(10,-13);
-        double b = -2.88733484 * Math.pow(10,-10);
+        double b = 2.88733484 * Math.pow(10,-10);
         double c = -9.1384146 * Math.pow(10,-8);
         double d = 1.5804336 * Math.pow(10,-5);
         double e = -1.6266162 * Math.pow(10,-3);

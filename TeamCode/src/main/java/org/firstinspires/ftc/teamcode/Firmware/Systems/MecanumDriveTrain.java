@@ -20,6 +20,7 @@ public class MecanumDriveTrain {
     double speedMultiplier = 1;
     public boolean fieldCentricDriving = false;
     private double avgDrivePower = 0;
+    private final double TURN_PRIORITY = 1.0;
 
     private Telemetry telemetry;
     /**
@@ -117,10 +118,10 @@ public class MecanumDriveTrain {
             sidewaysPower = transformedMovementVectors.get(1);
         }
 
-        double powerFL = (forwardPower - sidewaysPower + turnPower)*speedMultiplier;
-        double powerFR = (forwardPower - sidewaysPower + turnPower)*speedMultiplier;
-        double powerBL = (forwardPower - sidewaysPower - turnPower)*speedMultiplier;
-        double powerBR = (forwardPower + sidewaysPower + turnPower)*speedMultiplier;
+        double powerFL = (forwardPower + sidewaysPower - turnPower*TURN_PRIORITY)*speedMultiplier;
+        double powerFR = (forwardPower - sidewaysPower + turnPower*TURN_PRIORITY)*speedMultiplier;
+        double powerBL = (forwardPower - sidewaysPower - turnPower*TURN_PRIORITY)*speedMultiplier;
+        double powerBR = (forwardPower + sidewaysPower + turnPower*TURN_PRIORITY)*speedMultiplier;
 
 
         double powers[] = {powerFL, powerFR, powerBL, powerBR};
