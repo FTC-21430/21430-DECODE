@@ -60,7 +60,7 @@ public class TrajectoryKinematics {
         double f = 1.0159161 * Math.pow(10, -1);
         double g = -3.7433493 * Math.pow(10,0);
         double h = 7.3853696 * Math.pow(10,1);
-        double i = -5.3187568 * Math.pow(10,3);
+        double i = -5.3187568 * Math.pow(10,2);
 
         // Math.pow is the exponent function, this is a fourth degree polynomial that is tuning based on real world testing
         return a * Math.pow(distance,8)+ b * Math.pow(distance,7) + c * Math.pow(distance,6) + d * Math.pow(distance,5) + e * Math.pow(distance,4) + f * Math.pow(distance,3)

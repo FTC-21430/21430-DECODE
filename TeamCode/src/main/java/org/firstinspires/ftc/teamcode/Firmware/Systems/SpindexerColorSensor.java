@@ -13,7 +13,7 @@ public class SpindexerColorSensor {
 
 // constants for color ranges. At the moment the difference is calculated based on the Hue value in the HSV color space. One tuning set for each potential color we are searching for
     private final float[] noneValues = new float[]{
-            70,
+            120,
             0,
             0
     };
@@ -23,7 +23,7 @@ public class SpindexerColorSensor {
             0
     };
     private final float[] greenValues = new float[]{
-            140,
+            150,
             0,
             0
     };

@@ -22,8 +22,11 @@ public class AprilTag {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
-    public static double RED_OFFSET = -3;
-    public static double BLUE_OFFSET = 3;
+    public static double RED_OFFSET = -7;
+    public static double BLUE_OFFSET = 6.6;
+
+    private double lastAngle = 0.0;
+    private double lastDistance= 0.0;
     private int aprilTagID;
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -110,7 +113,7 @@ public class AprilTag {
     // the getDistance function calculates the distance between the robot and the april tag
     public double getDistance(String mode){
         locateAprilTags(mode);
-        if (aprilTagID == 0) return 0.0;
+        if (aprilTagID == 0) return lastDistance;
 
         double distance = 0.0;
         double posX = getSpecific(aprilTagID).robotPose.getPosition().x;
@@ -118,6 +121,7 @@ public class AprilTag {
         double goalX = getSpecific(aprilTagID).metadata.fieldPosition.get(0);
         double goalY = getSpecific(aprilTagID).metadata.fieldPosition.get(1);
         distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2));
+        lastDistance = distance;
         return distance;
     }
     // Locate AprilTags must be called before this!
@@ -141,8 +145,16 @@ public class AprilTag {
     public double getBearingToTag(String mode){
 
         locateAprilTags(mode);
-        if (aprilTagID == 0) return 0.0;
-        return getSpecific(aprilTagID).ftcPose.bearing;
+        if (aprilTagID == 0) return 0;
+        double angle = 0.0;
+        switch (mode) {
+            case "red":
+                angle = getSpecific(aprilTagID).ftcPose.bearing + RED_OFFSET;
+                break;
+            case "blue":
+                angle = getSpecific(aprilTagID).ftcPose.bearing + BLUE_OFFSET;
+        }
+        return angle;
 
     }
 

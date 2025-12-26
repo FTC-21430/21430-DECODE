@@ -17,15 +17,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class SpindexerServoFirmware {
     private final Servo spindexerServo; // Servo controlling the spindexer.
     private final double[] slots; // Degree values for each slot.
-    private final double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
+    private final double DIRECTION; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
 
     // The servo degree that is the current target
     private double targetPosition = 0;
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
-    private int positionTolerance = 30;
+    private int positionTolerance = 20;
     // what the PWM signal is for the zero position of the servo
-    private final double pwmAtZeroDegrees = 0.73;
+    private double pwmAtZeroDegrees = 0.73;
+
+    private double positionOffset = 0.0;
 
     private final DcMotor spindexerEncoderMotorInstance; // Encoder motor instance for position tracking.
 
@@ -45,7 +47,7 @@ public class SpindexerServoFirmware {
         spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexerServo.setDirection(Servo.Direction.FORWARD);
         // Set direction based on spinClockwise parameter.
-        direction = spinClockwise ? 0.17 : 0.83;
+        DIRECTION = spinClockwise ? 0.17 : 0.83;
     }
 
     // Warp speed exit tolerance - The servo will always spin in one direction at full continuous speed until
@@ -65,7 +67,7 @@ public class SpindexerServoFirmware {
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
 
         } else {
-            spindexerServo.setPosition(direction);
+            spindexerServo.setPosition(DIRECTION);
 
         }
     }
@@ -75,6 +77,9 @@ public class SpindexerServoFirmware {
      * @param position Target position in degrees.
      */
     public void setSpindexerPosition(double position){
+
+        position += positionOffset;
+
         if (position > 360){
             position = position % 360; // Wraps position within 360 degrees.
         }
@@ -93,6 +98,10 @@ public class SpindexerServoFirmware {
         setSpindexerPosition(slots[slot-1]);
     }
 
+    public void setSpindexerOffset(double degrees){
+        positionOffset = degrees;
+    }
+
     /**
      * Sets the tolerance for position accuracy.
      * @param toleranceTicks Tolerance in encoder ticks.
@@ -106,7 +115,7 @@ public class SpindexerServoFirmware {
      * @return True if at target, false otherwise.
      */
     public boolean isAtTarget(){
-        return Math.abs(getEncoderPosition()-targetPosition) < positionTolerance;
+        return Math.abs((getEncoderPosition()+positionOffset)-targetPosition) < positionTolerance;
     }
 
     /**
@@ -114,7 +123,7 @@ public class SpindexerServoFirmware {
      * @return Target position in degrees.
      */
     public double getTargetPosition() {
-        return targetPosition;
+        return targetPosition - positionOffset;
     }
 
     /**

@@ -39,6 +39,17 @@ public class Spindexer {
     private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     private boolean ejectorOut = false;
+
+    public static double intakeOffSet = -13.0;
+    public static double launchOffSet = 0.0;
+    public static double idleOffSet = 30.0;
+
+    public enum INDEX_TYPE{
+        INTAKE,
+        LAUNCH,
+        NONE
+    }
+
     /**
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
@@ -78,6 +89,20 @@ public class Spindexer {
             telemetry.addData("Encoder", getEncoderPosition());
             telemetry.addData("target", PADDLE_SERVO.getTargetPosition());
             PADDLE_SERVO.update(); // Updates the spindexer servo position.
+    }
+
+    public void setIndexOffset(INDEX_TYPE type){
+        switch (type){
+            case INTAKE:
+                PADDLE_SERVO.setSpindexerOffset(intakeOffSet);
+                break;
+            case LAUNCH:
+                PADDLE_SERVO.setSpindexerOffset(launchOffSet);
+                break;
+            case NONE:
+                PADDLE_SERVO.setSpindexerOffset(idleOffSet);
+                break;
+        }
     }
 
     public void prepColor(COLORS color){
@@ -143,7 +168,7 @@ public class Spindexer {
         return COLOR_SENSOR.getDetectedColor();
     }
     public void clearColor(int index){
-        indexColors[index-1] = COLORS.NONE;
+        indexColors[index] = COLORS.NONE;
     }
 
     /**
@@ -171,6 +196,10 @@ public class Spindexer {
      */
     public boolean isAtRest(){
         return PADDLE_SERVO.isAtTarget();
+    }
+
+    public void refreshOffset(){
+
     }
 
     /**
@@ -251,5 +280,8 @@ public class Spindexer {
     }
     public boolean isFull(){
      return Arrays.stream(indexColors).noneMatch(c -> c == COLORS.NONE);
+    }
+    public double getTarget(){
+        return PADDLE_SERVO.getTargetPosition();
     }
 }

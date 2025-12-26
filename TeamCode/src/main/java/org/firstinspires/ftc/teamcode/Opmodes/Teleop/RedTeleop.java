@@ -20,6 +20,8 @@ public class RedTeleop extends BaseTeleOp {
         robot.setAlliance("red");
         robot.driveTrain.fieldCentricDriving(true);
 
+
+
         waitForStart();
         while(opModeIsActive()) {
 
@@ -39,6 +41,8 @@ public class RedTeleop extends BaseTeleOp {
                 }
             }
 
+
+
             if (manualMode){
                 if (gamepad2.squareWasPressed()){
                     robot.spindexer.moveToNextIndex();
@@ -46,6 +50,7 @@ public class RedTeleop extends BaseTeleOp {
                 if (gamepad2.rightBumperWasPressed()) {
                     robot.spindexer.eject();
                 }
+
                 if (gamepad2.dpadDownWasPressed()){
                     robot.launchFrom("close");
                 } else if(gamepad2.dpadLeftWasPressed()){
@@ -67,6 +72,9 @@ public class RedTeleop extends BaseTeleOp {
                     robot.intake.setIntakePower(-1);
                 } else {
                     robot.intake.setIntakePower(0);
+                }
+                if (gamepad2.left_trigger > 0.4){
+                    robot.intake.setIntakePower(0.4);
                 }
             }else{
                 if (gamepad2.triangleWasPressed()){
@@ -91,7 +99,7 @@ public class RedTeleop extends BaseTeleOp {
                     robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
                 }
                 if (gamepad2.touchpadWasPressed()){
-                    for (int i = 0; i < 2; i++){
+                    for (int i = 0; i < 3; i++){
                         robot.spindexer.clearColor(i);
                     }
                 }
