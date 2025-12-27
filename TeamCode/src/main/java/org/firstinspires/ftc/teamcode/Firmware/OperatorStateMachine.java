@@ -250,7 +250,6 @@ public class OperatorStateMachine {
      */
     private void idleToIntake(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
-        spindexer.moveToNextIndex();
         intake.turnOn();
     }
     /**
@@ -262,7 +261,6 @@ public class OperatorStateMachine {
         }
 
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
-        spindexer.moveToNextIndex();
         intake.turnOff();
         prepping = false;
     }
@@ -271,7 +269,6 @@ public class OperatorStateMachine {
      */
     private void intakeToIdle(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
-        spindexer.moveToNextIndex();
         intake.turnOff();
     }
     /**
@@ -280,7 +277,6 @@ public class OperatorStateMachine {
     private void intakeToLaunch(){
         intake.turnOff();
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
-        spindexer.moveToNextIndex();
         prepping = false;
     }
     /**
@@ -289,7 +285,6 @@ public class OperatorStateMachine {
     private void launchToIntake(){
 
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
-        spindexer.moveToNextIndex();
         intake.turnOn();
         prepping = false;
     }
@@ -298,7 +293,6 @@ public class OperatorStateMachine {
      */
     private void idleToLaunch(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
-        spindexer.moveToNextIndex();
         prepping = false;
     }
     public List<COLORS> getLaunchQueue(){

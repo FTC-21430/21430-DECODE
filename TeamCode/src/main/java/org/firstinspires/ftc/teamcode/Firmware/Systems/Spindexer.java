@@ -30,7 +30,7 @@ public class Spindexer {
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.3; // Timeout duration for ejection in seconds.
+    public static double ejectionTimeout = 0.2; // Timeout duration for ejection in seconds.
     private final int SLOTH_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
@@ -110,14 +110,12 @@ public class Spindexer {
             int launchIndex = getCurrentIndexInLaunch();
             if (launchIndex == -1) return;
             if (indexColors[launchIndex - 1] == COLORS.NONE){
-                int purple = getIndexWithColor(COLORS.PURPLE);
-                if (purple != -1){
-                    moveIndexToLaunch(purple);
-                } else {
-                    int green = getIndexWithColor(COLORS.GREEN);
-                    if (green != -1){
-                        moveIndexToLaunch(green);
-                    }
+                if (indexColors[launchIndex%3] != COLORS.NONE){
+                    moveIndexToLaunch((launchIndex%3)+1);
+                } else if (indexColors[((launchIndex+1)%3)] != COLORS.NONE) {
+                    moveIndexToLaunch(((launchIndex+1)%3)+1);
+                }else{
+                    moveToNextIndex();
                 }
             }
         } else {
@@ -169,6 +167,11 @@ public class Spindexer {
     }
     public void clearColor(int index){
         indexColors[index] = COLORS.NONE;
+    }
+    public void setColorIndexing(COLORS index1, COLORS index2, COLORS index3){
+        indexColors = new COLORS[]{
+                index1,index2,index3
+        };
     }
 
     /**

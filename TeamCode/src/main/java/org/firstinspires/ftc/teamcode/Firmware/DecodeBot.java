@@ -39,8 +39,8 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.2;
     public static final double I_CONSTANT = 0.1;
     public static final double D_CONSTANT = 0.02;
-    public static double yOffset = 5.118;
-    public static double xOffset = 2.713;
+    public static double yOffset = 2.78;
+    public static double xOffset = 4.9574;
 
 //    public static double xOffset = -3.125;
 //    public static double yOffset = -7;
@@ -80,6 +80,7 @@ public abstract class DecodeBot extends Robot{
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
             driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
             telemetry.update();
+            bulkSensorBucket.clearCache();
 
         }
     }
@@ -94,7 +95,9 @@ public abstract class DecodeBot extends Robot{
                 driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
 
             }
+            operatorStateMachine.updateStateMachine();
             telemetry.update();
+            bulkSensorBucket.clearCache();
         }
     }
 

@@ -99,7 +99,9 @@ public class SpindexerServoFirmware {
     }
 
     public void setSpindexerOffset(double degrees){
+        targetPosition -= (positionOffset-degrees);
         positionOffset = degrees;
+
     }
 
     /**

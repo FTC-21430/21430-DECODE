@@ -2,39 +2,36 @@ package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 @Autonomous
 public class RedBeaver extends BaseAuto {
 
     private void sortedLaunch(){
         //The robot moves to the launch zone and it launches the three balls
+        robot.autoMoveTo(-23.5, 24, 135, 2);
         robot.chill(true,3);
-        robot.autoMoveTo(-8, 10, 135, 2);
-        robot.chill(true,5);
-//        autonomousLaunching(motifId);
+        autonomousLaunching(motifId);
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true, true);
         robot.odometry.recalibrateIMU();
+        robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
 
         waitForStart();
         //TODO; tune starting positon for actual robot
         //This is the starting location of the robot
-        robot.odometry.overridePosition(-50,50.8,129.3);
+        robot.odometry.overridePosition(-49.82,54.5782,125.08);
 
         
 
         //This is the position that the robot moves to to shoot the first three balls
-        robot.autoMoveTo(-15,20,135,2);
-
-        //TODO: Figure out the shooting code with actual robot
-//        robot.launchFrom("mid");
-
-
+        motifId = 0;
+        sortedLaunch();
 //        //The robot moves to the place to intake the balls
-//        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         detectMotifWhileMoveTo(-23,44,200,2);
 
         detectMotifWhileMoveTo(-5,46,180,2);
@@ -50,7 +47,7 @@ public class RedBeaver extends BaseAuto {
 //        // sorted cycle 1
 //
 //        //The robot moves to the place to intake the balls
-//        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(0,44,180,2);
 
         robot.autoMoveTo(18.5,46,180,2);
@@ -63,7 +60,7 @@ public class RedBeaver extends BaseAuto {
 //        // sorted cycle 2
 //
 //        //The robot moves to the place to intake the balls
-//        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(23.5,44,180,2);
 
 

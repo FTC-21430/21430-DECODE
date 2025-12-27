@@ -22,8 +22,8 @@ public class AprilTag {
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
-    public static double RED_OFFSET = -7;
-    public static double BLUE_OFFSET = 6.6;
+    public static double RED_OFFSET = -5;
+    public static double BLUE_OFFSET = 0.1;
 
     private double lastAngle = 0.0;
     private double lastDistance= 0.0;
