@@ -8,9 +8,10 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 public class RedBeaver extends BaseAuto {
 
     private void sortedLaunch(){
+//        robot.autoMoveTo(0, 40, 135, 2);
         //The robot moves to the launch zone and it launches the three balls
-        robot.autoMoveTo(-23.5, 24, 135, 2);
-        robot.chill(true,3);
+        robot.autoMoveTo(-23.5, 24, 135, 4);
+        robot.chill(true,1);
         autonomousLaunching(motifId);
     }
 
@@ -30,17 +31,24 @@ public class RedBeaver extends BaseAuto {
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
         sortedLaunch();
+        motifId = 21;
+        detectMotifWhileMoveTo(-39,25,210,2);
+        robot.chill(true,0.2);
+        detectMotifWhileMoveTo(-27,46,195,3);
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-23,44,200,2);
 
-        detectMotifWhileMoveTo(-5,46,180,2);
+
+        detectMotifWhileMoveTo(-5,46,180,4);
 
 //
 //        //The robot bumps the gate
-        detectMotifWhileMoveTo(-2,51,180,2);
+        detectMotifWhileMoveTo(-4.5,50,180,2);
+        robot.chill(true,1);
 
-        detectMotifWhileMoveTo(-2,55,180,2);
+        detectMotifWhileMoveTo(-4.5,53.3,180,3);
+        robot.chill(true,1);
+
 //
         sortedLaunch();
 //
@@ -48,12 +56,12 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(0,44,180,2);
+        robot.autoMoveTo(0,43.5,185,3);
 
-        robot.autoMoveTo(18.5,46,180,2);
+        robot.autoMoveTo(15.5,43.5,180,4);
 
 
-        robot.chill(true, 0.5);
+        robot.chill(true, 1.2);
 //
         sortedLaunch();
 //
@@ -61,11 +69,11 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(23.5,44,180,2);
+        robot.autoMoveTo(18.5,41,180,5);
 
 
-        robot.autoMoveTo(42,46,180,2);
-        robot.chill(true, 0.5);
+        robot.autoMoveTo(31,41,180,4);
+        robot.chill(true, 0.8);
 
 
 //
@@ -74,8 +82,8 @@ public class RedBeaver extends BaseAuto {
 //        // sorted cycle 3
 //
 ////      park off of launch line and close to the gate to clear the classifier at teleop start
-        robot.autoMoveTo(-2,51,180,2);
-        robot.chill(true,2);
+        robot.autoMoveTo(-2,46,180,2);
+        robot.chill(true,0.2);
 
 
    }

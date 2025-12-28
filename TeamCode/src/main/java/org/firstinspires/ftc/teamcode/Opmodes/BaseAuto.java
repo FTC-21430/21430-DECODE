@@ -17,14 +17,17 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
         robot.rotationControl.setTargetAngle(robotAngle);
         robot.driveTrain.fieldCentricDriving(false);
         while (!robot.pathFollowing.isWithinTargetTolerance(robot.odometry.getRobotX(), robot.odometry.getRobotY()) && robot.opMode.opModeIsActive()) {
-//            int tempId = robot.aprilTags.getMotifID();
-//            if (tempId != 0) {
-//                motifId = tempId;
-//            }
+            int tempId = robot.aprilTags.getMotifID();
+            if (tempId != 0) {
+                motifId = tempId;
+            }
+            telemetry.addData("motifID", motifId);
             robot.updateRobot(false, false, false);
+            robot.operatorStateMachine.updateStateMachine();
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
             robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(), robot.pathFollowing.getPowerF(), robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             telemetry.update();
+            robot.bulkSensorBucket.clearCache();
         }
     }
 
@@ -60,6 +63,7 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
             robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(), robot.pathFollowing.getPowerF(), robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.operatorStateMachine.updateStateMachine();
+            telemetry.addData("motif",motifId);
             telemetry.update();
             robot.bulkSensorBucket.clearCache();
         }

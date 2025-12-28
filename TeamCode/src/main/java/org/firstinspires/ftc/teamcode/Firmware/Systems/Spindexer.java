@@ -30,7 +30,7 @@ public class Spindexer {
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.2; // Timeout duration for ejection in seconds.
+    public static double ejectionTimeout = 0.14; // Timeout duration for ejection in seconds.
     private final int SLOTH_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
@@ -122,6 +122,9 @@ public class Spindexer {
             int idx = getIndexWithColor(color);
             if (idx != -1) {
                 moveIndexToLaunch(idx);
+            }
+            else {
+                moveToNextIndex();
             }
         }
     }

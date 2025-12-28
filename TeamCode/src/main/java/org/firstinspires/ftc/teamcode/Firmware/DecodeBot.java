@@ -36,9 +36,9 @@ public abstract class DecodeBot extends Robot{
   
     public OperatorStateMachine operatorStateMachine = null;
     //The PID values are a public because we need to tune it later and public makes it easier to do that
-    public static final double P_CONSTANT = 0.2;
-    public static final double I_CONSTANT = 0.1;
-    public static final double D_CONSTANT = 0.02;
+    public static final double P_CONSTANT = 0.14;
+    public static final double I_CONSTANT = 0.11;
+    public static final double D_CONSTANT = 0.031;
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
 
@@ -78,6 +78,7 @@ public abstract class DecodeBot extends Robot{
         while(!pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
+            operatorStateMachine.updateStateMachine();
             driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
             telemetry.update();
             bulkSensorBucket.clearCache();

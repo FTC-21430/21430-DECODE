@@ -45,7 +45,8 @@ public class OperatorStateMachine {
     // Logic to ensure that a launch is completed before it starts the next launch
     private boolean prepping = false;
     private boolean launched = false;
-    public static double moveingTimeout = 0.8;
+    public static double moveingTimeout = 0.15;
+    public static double holdingTimeout = 0.075;
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
 
@@ -115,10 +116,10 @@ public class OperatorStateMachine {
 
     // Will call the corresponding update function to the current state
     public void updateStateMachine(){
-        for (COLORS color : spindexer.indexColors){
-            telemetry.addData("A Color", color);
-        }
-        telemetry.addData("spin target", spindexer.getTarget());
+//        for (COLORS color : spindexer.indexColors){
+//            telemetry.addData("A Color", color);
+//        }
+//        telemetry.addData("spin target", spindexer.getTarget());
         if (gamepad2.left_trigger > 0.4){
             intake.setIntakePower(0.4);
         }
@@ -169,8 +170,8 @@ public class OperatorStateMachine {
     private boolean holdingIntake = false;
     private boolean movingIntake = false;
     private void intakeState(){
-        telemetry.addData("holdingIntake", holdingIntake);
-        telemetry.addData("time", runtime.seconds());
+//        telemetry.addData("holdingIntake", holdingIntake);
+//        telemetry.addData("time", runtime.seconds());
 
         if (!(gamepad2.left_trigger >= 0.4)){
             intake.setIntakePower(-1);
@@ -181,7 +182,7 @@ public class OperatorStateMachine {
             runtime.reset();
         }
 
-        if (holdingIntake && runtime.seconds() >= 0.07){
+        if (holdingIntake && runtime.seconds() >= holdingTimeout){
             holdingIntake = false;
             movingIntake = true;
             runtime.reset();
@@ -192,7 +193,7 @@ public class OperatorStateMachine {
             movingIntake = false;
         }
 
-        if (spindexer.isFull()){
+        if (spindexer.isFull() && !holdingIntake){
             moveToState(State.IDLE);
         }
 
@@ -209,9 +210,9 @@ public class OperatorStateMachine {
         if (!(gamepad2.left_trigger >= 0.4)){
             intake.setIntakePower(0);
         }
-        telemetry.addData("speed", launcher.getSpeed());
-        telemetry.addData("up to speed", launcher.isUpToSpeed());
-        telemetry.addData("get target speed", launcher.getTargetSpeed());
+//        telemetry.addData("speed", launcher.getSpeed());
+//        telemetry.addData("up to speed", launcher.isUpToSpeed());
+//        telemetry.addData("get target speed", launcher.getTargetSpeed());
         setLauncherBasedOnTags.run();
 
         if (!launchQueue.isEmpty() && !prepping && !launched){
@@ -237,7 +238,7 @@ public class OperatorStateMachine {
         }
 
         // If nothing left to launch and nothing in progress, go idle
-        if (launchQueue.isEmpty() && !prepping && !launched){
+        if (launchQueue.isEmpty() && !prepping && !launched && !spindexer.isEjectorOut()){
             moveToState(State.IDLE);
         }
 
