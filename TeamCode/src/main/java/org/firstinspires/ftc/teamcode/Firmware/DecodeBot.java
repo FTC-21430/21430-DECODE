@@ -58,9 +58,9 @@ public abstract class DecodeBot extends Robot{
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
         intake = new Intake(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,reset);
+        spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
-        rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle,telemetry);
+        rotationControl = new RotationControl(0.3,0.02,0,0.0001,robotAngle,telemetry);
         aprilTags = new AprilTag();
         aprilTags.init(hardwareMap,telemetry);
         bulkSensorBucket.clearCache();

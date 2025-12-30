@@ -30,7 +30,7 @@ public class Spindexer {
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.14; // Timeout duration for ejection in seconds.
+    public static double ejectionTimeout = 0.09; // Timeout duration for ejection in seconds.
     private final int SLOTH_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
@@ -54,7 +54,7 @@ public class Spindexer {
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
      */
-    public Spindexer(HardwareMap hardwareMap, Telemetry telemetry, boolean reset) {
+    public Spindexer(HardwareMap hardwareMap, Telemetry telemetry, boolean reset, boolean autonomous) {
         PADDLE_SERVO = new SpindexerServoFirmware(hardwareMap, true, 0, 120, 240, "intake",telemetry);
         RUNTIME = new ElapsedTime();
         this.telemetry = telemetry;
@@ -67,6 +67,9 @@ public class Spindexer {
         intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
         intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
         intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
+        if (autonomous){
+            ejectionTimeout = 0.2;
+        }
     }
 
     /**

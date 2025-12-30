@@ -97,5 +97,4 @@ public class TrajectoryKinematics {
      */
     public double getLaunchMagnitude(){
         return launchMagnitude;
-    }
-}
+    }}

@@ -24,7 +24,7 @@ public class LaunchTuningTesting extends LinearOpMode {
 
         // Init launcher
         launcher = new Launcher(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,true);
+        spindexer = new Spindexer(hardwareMap,telemetry,true,false);
 
         // We don't want the flywheel running right now
         launcher.setSpeed(0);

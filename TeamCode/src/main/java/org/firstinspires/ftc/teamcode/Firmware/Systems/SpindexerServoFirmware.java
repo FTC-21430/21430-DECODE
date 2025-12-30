@@ -74,7 +74,7 @@ public class SpindexerServoFirmware {
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
     public static double warpSpeedExitTolerance = 50; // Tolerance for exiting warp speed.
     private double encoderPosition = 0;
-    public static double jamFreedTimeout = 0.5;
+    public static double jamFreedTimeout = 0.3;
     public static int jamsAmount = 8;
     /**
      * Updates the servo position based on the target position and tolerance.
@@ -256,5 +256,8 @@ public class SpindexerServoFirmware {
         double time = deltaRuntime.milliseconds();
         deltaRuntime.reset();
         return time;
+    }
+    public boolean getIfJammed(){
+        return isJamed;
     }
 }
