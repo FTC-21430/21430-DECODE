@@ -25,6 +25,7 @@ public class RedBeaver extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        robot.setAlliance("red");
         initialize(true, true);
         robot.odometry.recalibrateIMU();
         robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
