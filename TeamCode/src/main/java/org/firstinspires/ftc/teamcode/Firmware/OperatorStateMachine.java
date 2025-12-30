@@ -167,9 +167,7 @@ public class OperatorStateMachine {
      * Handles all logic for intaking new artifacts and storing their color
      */
 
-    private boolean holdingIntake = false;
-    private boolean movingIntake = false;
-    private void intakeState(){
+    private void intakeState (){
 //        telemetry.addData("holdingIntake", holdingIntake);
 //        telemetry.addData("time", runtime.seconds());
 
@@ -177,23 +175,12 @@ public class OperatorStateMachine {
             intake.setIntakePower(-1);
         }
 
-        if (!movingIntake&&!holdingIntake && (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest())){
-            holdingIntake = true;
-            runtime.reset();
-        }
-
-        if (holdingIntake && runtime.seconds() >= holdingTimeout){
-            holdingIntake = false;
-            movingIntake = true;
-            runtime.reset();
+        if ((spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && spindexer.getIntakeSwitch())){
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
         }
-        if (movingIntake && runtime.seconds() >= moveingTimeout){
-            movingIntake = false;
-        }
 
-        if (spindexer.isFull() && !holdingIntake){
+        if (spindexer.isFull() && spindexer.isAtRest()){
             moveToState(State.IDLE);
         }
 
@@ -228,6 +215,7 @@ public class OperatorStateMachine {
             launched = true;
 
             // Clear the color from the spindexer and remove it from the queue so we don't re-prep it
+
             int clearedIndex = spindexer.getCurrentIndexInLaunch() -1;
             spindexer.clearColor(clearedIndex);
         }

@@ -30,6 +30,25 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
             robot.bulkSensorBucket.clearCache();
         }
     }
+    public void chillAndDetect(boolean holdPos, double timeout){
+        double startTime = runtime.seconds();
+        while (runtime.seconds() < startTime + timeout && opModeIsActive()){
+            int tempId = robot.aprilTags.getMotifID();
+            if (tempId != 0) {
+                motifId = tempId;
+            }
+            telemetry.addData("motifID", motifId);
+            robot.updateRobot(false,false,false);
+            if (holdPos){
+                robot.pathFollowing.followPath(robot.odometry.getRobotX(),robot.odometry.getRobotY(),robot.odometry.getRobotAngle());
+                robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(),robot.pathFollowing.getPowerF(),robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()),robot.odometry.getRobotAngle());
+
+            }
+            robot.operatorStateMachine.updateStateMachine();
+            telemetry.update();
+            robot.bulkSensorBucket.clearCache();
+        }
+    }
 
     public void autonomousLaunching(int motifId) {
 

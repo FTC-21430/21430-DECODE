@@ -103,8 +103,10 @@ public class AprilTag {
             update();
             AprilTagDetection id21 = getSpecific(21);
             displayDetectionTelemetry(id21);
+            if (aprilTagID != 0) return;
             AprilTagDetection id22 = getSpecific(22);
             displayDetectionTelemetry(id22);
+            if (aprilTagID != 0) return;
             AprilTagDetection id23 = getSpecific(23);
             displayDetectionTelemetry(id23);
         }
