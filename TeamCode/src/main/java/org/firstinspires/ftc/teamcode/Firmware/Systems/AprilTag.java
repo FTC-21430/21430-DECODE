@@ -29,13 +29,19 @@ public class AprilTag {
     private double lastDistance= 0.0;
     private int aprilTagID;
 
+    public static double cameraX = 0.0;
+    public static double cameraY = 0.0;
+    public static double cameraZ = 0.0;
+
+
+
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
 
         this.telemetry = telemetry;
         //The builder class is used to access multiple configurations for the aprilTagProcessor
         aprilTagProcessor = new AprilTagProcessor.Builder()
                 .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561)
-                .setCameraPose(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,-90,0,0))
+                .setCameraPose(new Position(DistanceUnit.INCH, cameraX,cameraY,cameraZ,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,-90,0,0))
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
 
