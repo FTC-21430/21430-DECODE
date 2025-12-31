@@ -33,11 +33,20 @@ public class RedBeaver extends BaseAuto {
         
 
         //This is the position that the robot moves to to shoot the first three balls
+<<<<<<< Updated upstream
         motifId = 0;
         sortedLaunch(false);
         detectMotifWhileMoveTo(-39,25,210,2);
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         chillAndDetect(true,0.2);
+=======
+        robot.autoMoveTo(-15,20,135,2);
+
+        //TODO: Figure out the shooting code with actual robot
+//     robot.launchFrom("mid");
+
+
+>>>>>>> Stashed changes
 //        //The robot moves to the place to intake the balls
         detectMotifWhileMoveTo(-32,46,180,2);
         chillAndDetect(true,0.1);
