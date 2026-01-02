@@ -45,10 +45,10 @@ public class OperatorStateMachine {
     // Logic to ensure that a launch is completed before it starts the next launch
     private boolean prepping = false;
     private boolean launched = false;
-    public static double moveingTimeout = 0.15;
-    public static double holdingTimeout = 0.075;
+    public static double launchingTimeout = 0.2;
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
+    private ElapsedTime launchTimer = null;
 
     /**
      * The constructor for this class, Stores all of the instances of the components of the robot
@@ -67,6 +67,7 @@ public class OperatorStateMachine {
         this.setLauncherBasedOnTags = setLauncherBasedOnTags;
         this.runtime = new ElapsedTime();
         this.gamepad2 = gamepad2;
+        this.launchTimer = new ElapsedTime();
     }
 
     // Will Trigger the transition from one state to the next
@@ -209,10 +210,11 @@ public class OperatorStateMachine {
         }
 
         // When prepped and launcher is ready, eject and clear the stored color
-        if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed()){
+        if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed() && launcher.rampReady()){
             spindexer.eject();
             prepping = false;
             launched = true;
+            launchTimer.reset();
 
             // Clear the color from the spindexer and remove it from the queue so we don't re-prep it
 
@@ -225,7 +227,7 @@ public class OperatorStateMachine {
         }
 
         // Wait for ejector to fully retract before allowing next cycle
-        if (launched && !spindexer.isEjectorOut()){
+        if (launched && !spindexer.isEjectorOut() && launchTimer.seconds() >= launchingTimeout){
             launched = false;
         }
 

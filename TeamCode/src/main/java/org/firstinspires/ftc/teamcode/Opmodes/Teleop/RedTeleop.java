@@ -23,6 +23,8 @@ public class RedTeleop extends BaseTeleOp {
 
 
         waitForStart();
+        robot.odometry.resetIMU();
+        robot.rotationControl.setTargetAngle(0);
         while(opModeIsActive()) {
 
             // get and update functions
@@ -32,6 +34,7 @@ public class RedTeleop extends BaseTeleOp {
             // resets Field Centric Driving
             if (gamepad1.shareWasPressed()) {
                 robot.odometry.resetIMU();
+                robot.rotationControl.setTargetAngle(0);
             }
             if (gamepad2.squareWasPressed()){
                 if (manualMode){
@@ -112,7 +115,7 @@ public class RedTeleop extends BaseTeleOp {
                 robot.operatorStateMachine.updateStateMachine();
             }
 
-            if (gamepad1.cross){
+            if (gamepad1.crossWasPressed()){
                 robot.aimBasedOnTags();
             }else{
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());

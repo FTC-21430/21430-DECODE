@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
+import static java.lang.Thread.sleep;
+
 import android.util.Size;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -7,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -16,12 +19,15 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 @Config
 public class AprilTag {
     private Telemetry telemetry;
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
+    private ExposureControl exposureControl;
     public static double RED_OFFSET = -2;
     public static double BLUE_OFFSET = -6;
 
@@ -29,29 +35,54 @@ public class AprilTag {
     private double lastDistance= 0.0;
     private int aprilTagID;
 
-    public static double cameraX = 0.0;
-    public static double cameraY = 0.0;
-    public static double cameraZ = 0.0;
+//
+//    public static double cameraX = 144.5;
+//    public static double cameraY = 30;
+//    public static double cameraZ = 350;
+    public static double cameraX = 30;
+    public static double cameraY = -144.5;
+    public static double cameraZ = 350;
 
 
 
-    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, long exposure) {
 
         this.telemetry = telemetry;
         //The builder class is used to access multiple configurations for the aprilTagProcessor
         aprilTagProcessor = new AprilTagProcessor.Builder()
                 .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561)
-                .setCameraPose(new Position(DistanceUnit.INCH, cameraX,cameraY,cameraZ,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,-90,0,0))
+                .setCameraPose(new Position(DistanceUnit.MM, cameraX,cameraY,cameraZ,0),new YawPitchRollAngles(AngleUnit.DEGREES,-90,-90,0,0))
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
 
         //The VisionPortal.Builder is used to access the vison processer for April Tags
         VisionPortal.Builder builder = new VisionPortal.Builder();
+
         builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
         builder.setCameraResolution(new Size(1280, 960));
         builder.addProcessor(aprilTagProcessor);
         builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
         visionPortal = builder.build();
+
+        telemetry.addData("Camera", "Waiting");
+        telemetry.update();
+        while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+        }
+        telemetry.addData("Camera", "Ready");
+        telemetry.update();
+        setExposure(exposure);
+
+    }
+
+    /**
+     * sets how much light our camera takes in, time in milliseconds
+     * @param exposure
+     */
+    public void setExposure(long exposure){
+        exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+        exposureControl.setMode(ExposureControl.Mode.Manual);
+        exposureControl.setExposure(exposure,TimeUnit.MILLISECONDS);
+
     }
     // The displayDetectionTelemetry is used to get telemetry back about what tag it is detecting
     public void displayDetectionTelemetry(AprilTagDetection detectedID) {
@@ -150,19 +181,41 @@ public class AprilTag {
 
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
-    public double getBearingToTag(String mode){
+    public double getBearingToTag(String mode, Boolean isAuto){
 
         locateAprilTags(mode);
-        if (aprilTagID == 0) return 0;
-        double angle = 0.0;
+        if (aprilTagID == 0) return -1000;
+        double angle;
+
+        double posX = getSpecific(aprilTagID).robotPose.getPosition().x;
+        double posY = getSpecific(aprilTagID).robotPose.getPosition().y;
+        double goalX = 0;
+        double goalY = 0;
+        double coordinate_correction_offset = 0;
+
         switch (mode) {
             case "red":
-                angle = getSpecific(aprilTagID).ftcPose.bearing + RED_OFFSET;
+                goalX = -68;
+                goalY = 68;
+                if (isAuto){
+                    coordinate_correction_offset += 90;
+                }
                 break;
             case "blue":
-                angle = getSpecific(aprilTagID).ftcPose.bearing + BLUE_OFFSET;
+                goalX = -68;
+                goalY = -68;
+                coordinate_correction_offset = 180;
+                if (isAuto){
+                    coordinate_correction_offset -= 90;
+                }
+                break;
         }
-        return angle;
+
+        double x_difference = posX-goalX;
+        double y_difference = posY-goalY;
+        double FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
+        angle = 90+Math.toDegrees(Math.atan2(y_difference,x_difference));
+        return angle - FLYWHEEL_OFFSET + coordinate_correction_offset;
 
     }
 

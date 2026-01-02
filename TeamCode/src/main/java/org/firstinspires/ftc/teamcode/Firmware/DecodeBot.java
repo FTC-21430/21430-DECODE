@@ -44,6 +44,8 @@ public abstract class DecodeBot extends Robot{
     public static double D_ANGLE = 0.0001;
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
+    public static long cameraExposure = 10;
+    private boolean isAuto;
 
 //    public static double xOffset = -3.125;
 //    public static double yOffset = -7;
@@ -53,6 +55,7 @@ public abstract class DecodeBot extends Robot{
         this.opMode = opMode;
         this.telemetry = telemetry;
         this.alliance = alliance;
+        this.isAuto = isAuto;
 
         //Creating the classes as objects for future use
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
@@ -65,7 +68,8 @@ public abstract class DecodeBot extends Robot{
 //        lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
         aprilTags = new AprilTag();
-        aprilTags.init(hardwareMap,telemetry);
+
+        aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
@@ -118,11 +122,15 @@ public abstract class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double bearingToGoal = aprilTags.getBearingToTag(alliance);
-        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
+        double bearingToGoal = aprilTags.getBearingToTag(alliance, isAuto);
+        if (bearingToGoal == -1000) return;
+        rotationControl.setTargetAngle(bearingToGoal);
     }
     public void setLauncherBasedOnTags(){
+        telemetry.addLine("LAUNCHED BASED ON TAGS IS RUNNING @#$^@#$^&@#$^");
         double distanceToGoal = aprilTags.getDistance(alliance);
+        telemetry.addData("alliance", alliance);
+        telemetry.addData("distance", distanceToGoal);
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());

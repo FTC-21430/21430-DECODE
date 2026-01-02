@@ -105,4 +105,7 @@ public class Launcher {
     public void halfExtendRamp(){
         RAMP.midAngle();
     }
+    public boolean rampReady(){
+        return RAMP.isReady();
+    }
 }

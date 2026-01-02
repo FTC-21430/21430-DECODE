@@ -30,7 +30,7 @@ public class LaunchTuningTesting extends LinearOpMode {
         launcher.setSpeed(0);
 
         aprilTagProcessing = new AprilTag();
-        aprilTagProcessing.init(hardwareMap,telemetry);
+        aprilTagProcessing.init(hardwareMap,telemetry,10);
         waitForStart();
         while (opModeIsActive()){
 

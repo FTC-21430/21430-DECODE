@@ -19,10 +19,10 @@ public class BlueTeleop extends BaseTeleOp {
         initialize(false, false);
         robot.setAlliance("blue");
         robot.driveTrain.fieldCentricDriving(true);
-
-
-
+        robot.aprilTags.setExposure(10);
         waitForStart();
+        robot.odometry.resetIMU();
+        robot.rotationControl.setTargetAngle(0);
         while(opModeIsActive()) {
 
             // get and update functions
@@ -32,6 +32,7 @@ public class BlueTeleop extends BaseTeleOp {
             // resets Field Centric Driving
             if (gamepad1.shareWasPressed()) {
                 robot.odometry.resetIMU();
+                robot.rotationControl.setTargetAngle(0);
             }
             if (gamepad2.squareWasPressed()){
                 if (manualMode){

@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.Resources.ServoPlus;
 
@@ -36,6 +37,9 @@ public class LauncherRamp {
 
     // The maximum angle of the ramp up from Horizontal used previous values
     private final double MAX_RAMP_ANGLE = minRampAngle + rampROM;
+    public static double timeout = 0.4;
+    private final double WIGGLE_TOLERANCE = 8;
+    private ElapsedTime movementTimeout;
 
     /**
      * Construct function for this class, gets the servo reference
@@ -44,6 +48,7 @@ public class LauncherRamp {
     public LauncherRamp(HardwareMap hardwareMap){
         // All values are passed to the servo assuming that the servo's zero is the launcher's min.
         rampServo = new ServoPlus(hardwareMap.get(Servo.class, "ramp"),servoROM * servoToRampRatio,rampAngleToServo(minRampAngle), rampAngleToServo(MAX_RAMP_ANGLE));
+        movementTimeout = new ElapsedTime();
     }
 
     /**
@@ -52,6 +57,10 @@ public class LauncherRamp {
      */
     public void setLaunchAngle(double angleUpFromHorizontal){
         angleUpFromHorizontal = Range.clip(angleUpFromHorizontal, minRampAngle, MAX_RAMP_ANGLE);
+
+        if (Math.abs(rampServo.getServoPos() - rampAngleToServo(angleUpFromHorizontal)) > WIGGLE_TOLERANCE){
+            movementTimeout.reset();
+        }
         rampServo.setServoPos(rampAngleToServo(angleUpFromHorizontal));
     }
 
@@ -83,5 +92,8 @@ public class LauncherRamp {
      */
     private double rampAngleToServo(double angle){
         return angle - minRampAngle;
+    }
+    public boolean isReady(){
+        return movementTimeout.seconds() >= timeout;
     }
 }

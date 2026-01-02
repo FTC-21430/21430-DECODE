@@ -12,21 +12,22 @@ public class RedBeaver extends BaseAuto {
 //        robot.autoMoveTo(0, 40, 135, 2);
         //The robot moves to the launch zone and it launches the three balls
         if (!finalLaunch) {
-            robot.autoMoveTo(-15.5, 24, 124, 13);
+            robot.autoMoveTo(-15.5, 18, 126, 5);
         }else{
-            robot.autoMoveTo(-37, 24, 129, 13);
+            robot.autoMoveTo(-40, 18, 108, 5);
         }
-
+        robot.chill(true,0.8);
         robot.aimBasedOnTags();
 
-        robot.chill(true,0.1);
+        robot.chill(true,0.2);
         autonomousLaunching(motifId);
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.setAlliance("red");
+
         initialize(true, true);
+        robot.setAlliance("red");
         robot.odometry.recalibrateIMU();
         robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
 
@@ -34,7 +35,7 @@ public class RedBeaver extends BaseAuto {
         //This is the starting location of the robot
         robot.odometry.overridePosition(-49.82,54.5782,125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
-        robot.chill(false,0.5);
+        robot.chill(false,0.7);
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
         sortedLaunch(false);
@@ -63,9 +64,9 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-5,44.7,172,4);
+        detectMotifWhileMoveTo(-5,44.7,176,4);
 
-        detectMotifWhileMoveTo(16,43.5,173,4);
+        detectMotifWhileMoveTo(16,43.5,177,4);
 
 
         robot.chill(true, 0.4);
@@ -88,7 +89,7 @@ public class RedBeaver extends BaseAuto {
 //        // sorted cycle 3
 //
 ////      park off of launch line and close to the gate to clear the classifier at teleop start
-        robot.autoMoveTo(-2,43,180,2);
+        robot.autoMoveTo(-2,36,90,2);
         robot.chill(true,0.5);
 
 

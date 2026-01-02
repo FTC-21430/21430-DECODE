@@ -12,7 +12,7 @@ public class AprilTagTesting extends OpMode {
 
     @Override
     public void init(){
-        aprilTag.init(hardwareMap, telemetry);
+        aprilTag.init(hardwareMap, telemetry,10);
     }
 
     //Do we need this function
