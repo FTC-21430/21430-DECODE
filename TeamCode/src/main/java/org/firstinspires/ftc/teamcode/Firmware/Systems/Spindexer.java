@@ -232,12 +232,12 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInLaunch(){
-        switch ((int) PADDLE_SERVO.getTargetPosition()){
+        switch ((int) Math.round(PADDLE_SERVO.getTargetPosition()/120)){
             case 0:
                 return 3;
-            case 120:
+            case 1:
                 return 1;
-            case 240:
+            case 2:
                 return 2;
         }
         return -1;

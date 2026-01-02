@@ -62,7 +62,7 @@ public class RedTeleop extends BaseTeleOp {
                     robot.launcher.setSpeed(-400);
                     robot.spindexer.setSpindexerPos(60);
                 }
-                if (gamepad1.right_trigger > 0.4){
+                if (gamepad1.right_bumper){
                     robot.driveTrain.setSpeedMultiplier(0.5);
                 } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                     robot.driveTrain.setSpeedMultiplier(1);
@@ -77,6 +77,11 @@ public class RedTeleop extends BaseTeleOp {
                     robot.intake.setIntakePower(0.4);
                 }
             }else{
+                if (gamepad1.right_bumper){
+                    robot.driveTrain.setSpeedMultiplier(0.5);
+                } else if (robot.driveTrain.getSpeedMultiplier() != 1){
+                    robot.driveTrain.setSpeedMultiplier(1);
+                }
                 if (gamepad2.triangleWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }

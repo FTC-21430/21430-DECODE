@@ -217,6 +217,10 @@ public class OperatorStateMachine {
             // Clear the color from the spindexer and remove it from the queue so we don't re-prep it
 
             int clearedIndex = spindexer.getCurrentIndexInLaunch() -1;
+            if (clearedIndex < 0){
+                moveToState(State.IDLE);
+                spindexer.setColorIndexing(COLORS.NONE,COLORS.NONE,COLORS.NONE);
+            }
             spindexer.clearColor(clearedIndex);
         }
 
