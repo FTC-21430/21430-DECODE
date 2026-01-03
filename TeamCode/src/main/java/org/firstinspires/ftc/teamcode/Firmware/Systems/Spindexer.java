@@ -30,7 +30,7 @@ public class Spindexer {
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.12; // Timeout duration for ejection in seconds.
+    public static double ejectionTimeout = 0.24; // Timeout duration for ejection in seconds.
     private final int SLOTH_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
@@ -40,7 +40,7 @@ public class Spindexer {
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     private boolean ejectorOut = false;
 
-    public static double intakeOffSet = -13.0;
+    public static double intakeOffSet = -13.5;
     public static double launchOffSet = 0.0;
     public static double idleOffSet = 30.0;
 

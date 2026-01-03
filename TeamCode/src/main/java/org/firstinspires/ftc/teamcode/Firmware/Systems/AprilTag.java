@@ -192,28 +192,31 @@ public class AprilTag {
         double goalX = 0;
         double goalY = 0;
         double coordinate_correction_offset = 0;
+        double FLYWHEEL_OFFSET = 0;
 
         switch (mode) {
             case "red":
-                goalX = -68;
-                goalY = 68;
+                goalX = -6;
+                goalY = 64.5;
                 if (isAuto){
-                    coordinate_correction_offset += 90;
+                    coordinate_correction_offset += 92;
                 }
+                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
             case "blue":
-                goalX = -68;
-                goalY = -68;
-                coordinate_correction_offset = 180;
+                goalX = -60;
+                goalY = -70;
+                coordinate_correction_offset = 178;
                 if (isAuto){
                     coordinate_correction_offset -= 90;
                 }
+                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
         }
 
         double x_difference = posX-goalX;
         double y_difference = posY-goalY;
-        double FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
+
         angle = 90+Math.toDegrees(Math.atan2(y_difference,x_difference));
         return angle - FLYWHEEL_OFFSET + coordinate_correction_offset;
 

@@ -45,7 +45,7 @@ public class OperatorStateMachine {
     // Logic to ensure that a launch is completed before it starts the next launch
     private boolean prepping = false;
     private boolean launched = false;
-    public static double launchingTimeout = 0.2;
+    public static double launchingTimeout = 0.5;
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
