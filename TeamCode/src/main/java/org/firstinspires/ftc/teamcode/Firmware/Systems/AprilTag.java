@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.mmPerInch;
 import static java.lang.Thread.sleep;
 
 import android.util.Size;
@@ -34,6 +35,7 @@ public class AprilTag {
     private double lastAngle = 0.0;
     private double lastDistance= 0.0;
     private int aprilTagID;
+
 
 //
 //    public static double cameraX = 144.5;
@@ -159,7 +161,7 @@ public class AprilTag {
         double posY = getSpecific(aprilTagID).robotPose.getPosition().y;
         double goalX = getSpecific(aprilTagID).metadata.fieldPosition.get(0);
         double goalY = getSpecific(aprilTagID).metadata.fieldPosition.get(1);
-        distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2));
+        distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2)) - (cameraY / mmPerInch);
         lastDistance = distance;
         return distance;
     }
@@ -194,19 +196,21 @@ public class AprilTag {
         double coordinate_correction_offset = 0;
         double FLYWHEEL_OFFSET = 0;
 
+
         switch (mode) {
             case "red":
-                goalX = -6;
-                goalY = 64.5;
+                goalX = -67.2;
+                goalY = 60;
+                coordinate_correction_offset = 0;
                 if (isAuto){
-                    coordinate_correction_offset += 92;
+                    coordinate_correction_offset += 90;
                 }
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
             case "blue":
-                goalX = -60;
-                goalY = -70;
-                coordinate_correction_offset = 178;
+                goalX = -67.2;
+                goalY = -60;
+                coordinate_correction_offset = 180;
                 if (isAuto){
                     coordinate_correction_offset -= 90;
                 }
@@ -221,7 +225,6 @@ public class AprilTag {
         return angle - FLYWHEEL_OFFSET + coordinate_correction_offset;
 
     }
-
     // the getMotifID function gets the ID of the motif on the obelisk
     public int getMotifID(){
         //Still need to call detection telemetry for April tag id to be set

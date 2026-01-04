@@ -124,10 +124,19 @@ public abstract class DecodeBot extends Robot{
     public void aimBasedOnTags(){
         double bearingToGoal = aprilTags.getBearingToTag(alliance, isAuto);
         if (bearingToGoal == -1000) return;
+        switch (alliance){
+            case "red":
+                odometry.overridePosition(odometry.getRobotX(),odometry.getRobotY(), aprilTags.getRobotAngle()-90);
+                break;
+            case "blue":
+                odometry.overridePosition(odometry.getRobotX(),odometry.getRobotY(), aprilTags.getRobotAngle()+90);
+        }
+        telemetry.addData("aprilTagAngle",bearingToGoal );
+        telemetry.addData("actualAngle",aprilTags.getRobotAngle());
+
         rotationControl.setTargetAngle(bearingToGoal);
     }
     public void setLauncherBasedOnTags(){
-        telemetry.addLine("LAUNCHED BASED ON TAGS IS RUNNING @#$^@#$^&@#$^");
         double distanceToGoal = aprilTags.getDistance(alliance);
         telemetry.addData("alliance", alliance);
         telemetry.addData("distance", distanceToGoal);
