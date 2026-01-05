@@ -125,9 +125,10 @@ public class MecanumDriveTrain {
 
 
         double powers[] = {powerFL, powerFR, powerBL, powerBR};
-        if (getMaxDouble(powers)>1) {
-            for (double power: powers){
-                power /= getMaxDouble(powers);
+        double maxPower = getMaxDouble(powers);
+        if (maxPower>1) {
+            for (int i = 0; i<4;i++){
+                powers[i] /= maxPower;
             }
         }
         // Main bot
