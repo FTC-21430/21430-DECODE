@@ -155,7 +155,7 @@ public class OperatorStateMachine {
      */
     private void idleState(){
         if (!(gamepad2.left_trigger >= 0.4)){
-            intake.setIntakePower(0);
+            intake.setIntakePower(0.3);
         }
         launcher.retractRamp();
         launcher.setSpeed(idleSpeed);
@@ -196,7 +196,7 @@ public class OperatorStateMachine {
      */
     private void launchState(){
         if (!(gamepad2.left_trigger >= 0.4)){
-            intake.setIntakePower(0);
+            intake.setIntakePower(0.1);
         }
 //        telemetry.addData("speed", launcher.getSpeed());
 //        telemetry.addData("up to speed", launcher.isUpToSpeed());
