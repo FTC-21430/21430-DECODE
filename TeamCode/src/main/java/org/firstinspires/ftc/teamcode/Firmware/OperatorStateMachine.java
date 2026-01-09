@@ -168,6 +168,8 @@ public class OperatorStateMachine {
      * Handles all logic for intaking new artifacts and storing their color
      */
 
+
+    private int ballSampling = 0;
     private void intakeState (){
 //        telemetry.addData("holdingIntake", holdingIntake);
 //        telemetry.addData("time", runtime.seconds());
@@ -176,9 +178,14 @@ public class OperatorStateMachine {
             intake.setIntakePower(-1);
         }
 
-        if ((spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && spindexer.getIntakeSwitch())){
+        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch())){
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
+            ballSampling = 0;
+        } else if (spindexer.isAtRest() && spindexer.getColorInIntake() != COLORS.NONE) {
+            ++ballSampling;
+        }else{
+            ballSampling = 0;
         }
 
         if (spindexer.isFull() && spindexer.isAtRest()){

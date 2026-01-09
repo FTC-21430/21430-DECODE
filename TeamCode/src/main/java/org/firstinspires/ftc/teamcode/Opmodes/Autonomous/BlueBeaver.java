@@ -8,15 +8,27 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 @Autonomous
 public class BlueBeaver extends BaseAuto {
 
-    private void sortedLaunch(boolean finalLaunch){
+    private void sortedLaunch(boolean finalLaunch, boolean firstLaunch){
+        if (!firstLaunch) {
+            robot.autoMoveTo(-15.5, -30, -195, 25);
+        }
 //        robot.autoMoveTo(0, 40, 135, 2);
         //The robot moves to the launch zone and it launches the three balls
         if (!finalLaunch) {
-            robot.autoMoveTo(-15.5, -18, -126, 8);
+            if (firstLaunch){
+                robot.autoMoveTo(-15.5, -19, -132, 8);
+            }else{
+                robot.autoMoveTo(-15.5, -19, -134, 8);
+            }
+
         }else{
-            robot.autoMoveTo(-34, -18, -108, 8);
+            robot.autoMoveTo(-38, -18, -124, 4);
         }
-        robot.chill(true,0.6);
+        if (!firstLaunch) {
+            robot.chill(true, 0.8);
+        }else{
+            robot.chill(true,0.3);
+        }
         robot.aimBasedOnTags();
         robot.setLauncherBasedOnTags();
 
@@ -38,63 +50,67 @@ public class BlueBeaver extends BaseAuto {
         //This is the starting location of the robot
         robot.odometry.overridePosition(-49.82,-54.5782,-125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
-        robot.chill(false,0.7);
+        robot.chill(false,0.2);
         robot.setAlliance("blue");
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
-        sortedLaunch(false);
+        robot.aimBasedOnTags();
+        robot.chill(true,0.2);
+        sortedLaunch(false, true);
         detectMotifWhileMoveTo(-39,-40,-210,10);
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
 
 //        //The robot moves to the place to intake the balls
-        detectMotifWhileMoveTo(-36,-44,-180,14);
+        detectMotifWhileMoveTo(-36,-45,-180,14);
+        robot.chill(true, 0.3);
 
-        detectMotifWhileMoveTo(-27,-43.5,-180,3);
+        detectMotifWhileMoveTo(-27,-44.5,-180,5);
 
 
-        detectMotifWhileMoveTo(-8,-43.5,-180,4);
+        detectMotifWhileMoveTo(-9,-44.5,-180,4);
 
 //
 //        //The robot bumps the gate
-        detectMotifWhileMoveTo(-7,-44,-180,2.5);
+        detectMotifWhileMoveTo(-8,-44,-180,5);
 
-        detectMotifWhileMoveTo(-7,-53.3,-180,3);
+        detectMotifWhileMoveTo(-8,-53.3,-180,3);
         chillAndDetect(true,0.4);
 
 //
-        sortedLaunch(false);
+        sortedLaunch(false,false);
 //
 //        // sorted cycle 1
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-5,-44.7,-176,4);
+        detectMotifWhileMoveTo(-5,-45.7,-176,4);
 
-        detectMotifWhileMoveTo(16,-43.5,-177,4);
+        detectMotifWhileMoveTo(16,-44.7,-177,4);
 
 
-        robot.chill(true, 0.4);
+        robot.chill(true, 0.2);
 //
-        sortedLaunch(false);
+        sortedLaunch(false,false);
 //
 //        // sorted cycle 2
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(18.5,-42,-177,4);
-        robot.chill(true,0.4);
-        robot.autoMoveTo(31,-42.7,-177,4);
-        robot.chill(true, 0.6);
+        robot.autoMoveTo(18.5,-45,-177,4);
+        robot.chill(true,0.2);
+        robot.autoMoveTo(31,-45.7,-177,4);
+        robot.chill(true, 0.2);
 
 
 //
-        sortedLaunch(true);
+        sortedLaunch(true,false);
+//        robot.chill(true,0.1);
 //
 //        // sorted cycle 3
 //
-////      park off of launch line and close to the gate to clear the classifier at teleop start
-        robot.autoMoveTo(-2,-36,-90,2);
-        robot.chill(true,0.5);
+////      park off of launch line
+        robot.autoMoveTo(-50, -18, -90, 4);
+        robot.chill(true,0.2);
 
 
     }

@@ -108,6 +108,18 @@ public class Spindexer {
         }
     }
 
+    private boolean preppedCatalog[] = {
+            false,
+            false,
+            false
+    };
+    public void clearPreppedCatalog(){
+        preppedCatalog = new boolean[]{
+                false,
+                false,
+                false
+        };
+    }
     public void prepColor(COLORS color){
         if (color == COLORS.NONE) {
             int launchIndex = getCurrentIndexInLaunch();
@@ -118,15 +130,28 @@ public class Spindexer {
                 } else if (indexColors[((launchIndex+1)%3)] != COLORS.NONE) {
                     moveIndexToLaunch(((launchIndex+1)%3)+1);
                 }else{
+                    for (int i = 0; i < 3; i++){
+                        if (!preppedCatalog[i]){
+                            moveIndexToLaunch(i+1);
+                            return;
+                        }
+                    }
                     moveToNextIndex();
                 }
             }
         } else {
             int idx = getIndexWithColor(color);
             if (idx != -1) {
+                preppedCatalog[idx-1] = true;
                 moveIndexToLaunch(idx);
             }
             else {
+                for (int i = 0; i < 3; i++){
+                    if (!preppedCatalog[i]){
+                        moveIndexToLaunch(i+1);
+                        return;
+                    }
+                }
                 moveToNextIndex();
             }
         }

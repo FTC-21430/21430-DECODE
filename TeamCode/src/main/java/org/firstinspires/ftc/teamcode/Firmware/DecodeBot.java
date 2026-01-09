@@ -59,7 +59,7 @@ public abstract class DecodeBot extends Robot{
 
         //Creating the classes as objects for future use
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
-        trajectoryKinematics = new TrajectoryKinematics();
+        trajectoryKinematics = new TrajectoryKinematics(isAuto);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
@@ -131,6 +131,14 @@ public abstract class DecodeBot extends Robot{
                     break;
                 case "blue":
                     odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 90);
+            }
+        }else{
+            switch (alliance) {
+                case "red":
+                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() - 0);
+                    break;
+                case "blue":
+                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 0);
             }
         }
         telemetry.addData("aprilTagAngle",bearingToGoal );

@@ -28,11 +28,14 @@ public class TrajectoryKinematics {
             1750,
     };
 
+    private double autonomousLaunchDecrement = 0;
+
     // The return value for the angle of the ramp. - in degrees
     private double initialAngle = 0;
     // the return value for how fast the flywheel should go to achieve a launch. In degrees per second
     private double launchMagnitude = 0;
-    public TrajectoryKinematics(){
+    public TrajectoryKinematics(boolean isAuto){
+        autonomousLaunchDecrement = isAuto? 30:30;
     }
 
     /**
@@ -80,7 +83,7 @@ public class TrajectoryKinematics {
         double d = 909.04077;
 
         // Math.pow is the exponent function, this is a second degree polynomial that is tuning based on real world testing
-        return a * Math.pow(distance,3) + b * Math.pow(distance,2) + c * Math.pow(distance,1) + d;
+        return a * Math.pow(distance,3) + b * Math.pow(distance,2) + c * Math.pow(distance,1) + d - autonomousLaunchDecrement;
     }
 
     /**

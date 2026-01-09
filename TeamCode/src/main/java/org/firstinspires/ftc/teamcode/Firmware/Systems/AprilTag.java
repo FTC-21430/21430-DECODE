@@ -208,7 +208,7 @@ public class AprilTag {
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
             case "blue":
-                goalX = -67.2;
+                goalX = -60.2;
                 goalY = -60;
                 coordinate_correction_offset = 180;
                 if (isAuto){
