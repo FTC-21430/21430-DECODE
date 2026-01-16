@@ -178,7 +178,7 @@ public class OperatorStateMachine {
             intake.setIntakePower(-1);
         }
 
-        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch())){
+        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= 4){
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
             ballSampling = 0;

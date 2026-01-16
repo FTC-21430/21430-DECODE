@@ -115,8 +115,10 @@ public class BlueTeleop extends BaseTeleOp {
 
             if (gamepad1.cross){
                 robot.aimBasedOnTags();
+                robot.driveTrain.setTurnPriority(1.7);
             }else{
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
+                robot.driveTrain.setTurnPriority(1.0);
             }
 
             //sets drive power and what gamepad does
