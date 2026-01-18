@@ -116,6 +116,11 @@ public abstract class AprilTagProcessorDistortion implements VisionProcessor
          * @param fy see opencv 8 parameter camera model
          * @param cx see opencv 8 parameter camera model
          * @param cy see opencv 8 parameter camera model
+         * @param k1 first distortion variable
+         * @param k2 distortion variable 2
+         * @param p1 distortion variable 3
+         * @param p2 distortion variable 4
+         * @param k3 distortion variable 5
          * @return the {@link Builder} object, to allow for method chaining
          */
         public Builder setLensIntrinsics(double fx, double fy, double cx, double cy, double k1, double k2, double p1, double p2, double k3)
@@ -271,7 +276,7 @@ public abstract class AprilTagProcessorDistortion implements VisionProcessor
                     .inverted();
 
             return new AprilTagProcessorImplWithDistortionCorrection(
-                    robotInCameraFrame, fx, fy, cx, cy, k1,k2,p1,p2,k2,
+                    robotInCameraFrame, fx, fy, cx, cy, k1,k2,p1,p2,k3,
                     outputUnitsLength, outputUnitsAngle, tagLibrary,
                     drawAxes, drawCube, drawOutline, drawTagId,
                     tagFamily, threads, suppressCalibrationWarnings
