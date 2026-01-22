@@ -16,6 +16,11 @@ public class Launcher {
     // Launcher Ramp subsystem instance
     private final LauncherRamp RAMP;
 
+    // Launcher gate subsystem - controls the physical gate/door that releases rings.
+    // The Gate subsystem provides simple open/close commands and a short movement timer
+    // so callers can know whether the gate is still moving (useful when sequencing shots).
+    private final LauncherGate GATE;
+
     /**
      * Constructs a Launcher with the given hardware map and telemetry.
      * @param hardwareMap the hardware map to use
@@ -33,8 +38,13 @@ public class Launcher {
         // Set the accuracy threshold for speed control (in degrees per second)
         FLYWHEEL.setAccuracyThreshold(50);
 
-        // Initialize the ramp and have it move to starting configuration of retracted
+        // Initialize the ramp and gate. The gate is a simple servo controller
+        // used to momentarily open and close the launcher release mechanism.
+        // We keep a reference so OpModes can command open/close and query whether
+        // the gate has finished moving.
         RAMP = new LauncherRamp(hardwareMap);
+        GATE = new LauncherGate(hardwareMap,telemetry);
+        GATE.closeGate();
         RAMP.retract();
     }
 
@@ -71,9 +81,14 @@ public class Launcher {
     }
 
     /**
-     * must be called every loop iteration in order to keep the wheel up to speed
+     * Must be called every loop iteration in order to keep subsystems updated.
+     * <p>Includes a call to the gate update so the gate's internal movement timer
+     * is advanced; this allows callers to check `gateMoving()` reliably after
+     * commanding `setGatePosition(...)`.</p>
      */
-    public void updateSpeedControl(){
+    public void update(){
+        // Update gate timing first so its movement state is current for this loop.
+        GATE.updateGate();
         FLYWHEEL.updateSpeedControl();
     }
 
@@ -107,5 +122,32 @@ public class Launcher {
     }
     public boolean rampReady(){
         return RAMP.isReady();
+    }
+    /**
+     * Command the gate to open or close.
+     *
+     * <p>Opening/closing the gate will start a short internal movement timer inside
+     * the {@link LauncherGate} so callers can poll {@link #gateMoving()} to wait until
+     * the motion has completed. This method simply delegates to the gate subsystem.</p>
+     *
+     * @param open true to open the gate, false to close it
+     */
+    public void setGatePosition(boolean open){
+        if (open){
+            GATE.openGate();
+        }else{
+            GATE.closeGate();
+        }
+    }
+
+    /**
+     * Returns whether the gate is currently moving.
+     *
+     * @return true when the gate is in motion (i.e. a recent open/close command
+     *         is still within the gate movement timeout), false when the gate is stopped
+     *         and considered settled.
+     */
+    public boolean gateMoving(){
+        return !GATE.isStopped();
     }
 }

@@ -24,7 +24,7 @@ public class SpindexerServoFirmware {
     private double targetPosition = 0;
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
-    private int positionTolerance = 20;
+    public static int positionTolerance = 45;
     // what the PWM signal is for the zero position of the servo
     private double pwmAtZeroDegrees = 0.73;
 
@@ -72,9 +72,9 @@ public class SpindexerServoFirmware {
     // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
     // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
-    public static double warpSpeedExitTolerance = 50; // Tolerance for exiting warp speed.
+    public static double warpSpeedExitTolerance = 60; // Tolerance for exiting warp speed.
     private double encoderPosition = 0;
-    public static double jamFreedTimeout = 0.3;
+    public static double jamFreedTimeout = 0.18;
     public static int jamsAmount = 8;
     /**
      * Updates the servo position based on the target position and tolerance.

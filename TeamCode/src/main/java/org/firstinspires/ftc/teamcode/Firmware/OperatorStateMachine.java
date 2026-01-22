@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Firmware;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -159,7 +158,7 @@ public class OperatorStateMachine {
         }
         launcher.retractRamp();
         launcher.setSpeed(idleSpeed);
-        launcher.updateSpeedControl();
+        launcher.update();
         spindexer.updateSpindexer();
     }
 
@@ -178,7 +177,7 @@ public class OperatorStateMachine {
             intake.setIntakePower(-1);
         }
 
-        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch())){
+        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= 4){
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
             ballSampling = 0;
@@ -192,7 +191,7 @@ public class OperatorStateMachine {
             moveToState(State.IDLE);
         }
 
-        launcher.updateSpeedControl();
+        launcher.update();
         spindexer.updateSpindexer();
 
     }
@@ -214,9 +213,13 @@ public class OperatorStateMachine {
             COLORS toPrep = launchQueue.remove(0);
             spindexer.prepColor(toPrep);
             prepping = true;
+            launcher.setGatePosition(true);
         }
 
+
         // When prepped and launcher is ready, eject and clear the stored color
+
+
         if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed() && launcher.rampReady()){
             spindexer.eject();
             prepping = false;
@@ -236,14 +239,16 @@ public class OperatorStateMachine {
         // Wait for ejector to fully retract before allowing next cycle
         if (launched && !spindexer.isEjectorOut() && launchTimer.seconds() >= launchingTimeout){
             launched = false;
+            launcher.setGatePosition(false);
         }
 
         // If nothing left to launch and nothing in progress, go idle
         if (launchQueue.isEmpty() && !prepping && !launched && !spindexer.isEjectorOut()){
             moveToState(State.IDLE);
+            launcher.setGatePosition(false);
         }
 
-        launcher.updateSpeedControl();
+        launcher.update();
         spindexer.updateSpindexer();
     }
 
@@ -261,7 +266,7 @@ public class OperatorStateMachine {
         for (int i = 0; i < 3; i++){
             addToQueue(COLORS.NONE);
         }
-
+        launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         intake.turnOff();
         prepping = false;
@@ -285,7 +290,7 @@ public class OperatorStateMachine {
      * Transition from launch to intake
      */
     private void launchToIntake(){
-
+        launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         intake.turnOn();
         prepping = false;

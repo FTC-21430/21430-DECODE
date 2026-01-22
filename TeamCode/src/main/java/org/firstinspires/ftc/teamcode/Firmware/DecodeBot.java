@@ -39,7 +39,7 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.14;
     public static final double I_CONSTANT = 0.11;
     public static final double D_CONSTANT = 0.031;
-    public static double P_ANGLE = 0.023;
+    public static double P_ANGLE = 0.035;
     public static double I_ANGLE = 0.0005;
     public static double D_ANGLE = 0.0001;
     public static double yOffset = 2.78;
@@ -122,32 +122,36 @@ public abstract class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double bearingToGoal = aprilTags.getBearingToTag(alliance, isAuto);
-        if (bearingToGoal == -1000) return;
-        if (!isAuto) {
-            switch (alliance) {
-                case "red":
-                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() - 90);
-                    break;
-                case "blue":
-                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 90);
-            }
-        }else{
-            switch (alliance) {
-                case "red":
-                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() - 0);
-                    break;
-                case "blue":
-                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 0);
+
+        if (aprilTags.isTag(alliance)) {
+            if (!isAuto) {
+                switch (alliance) {
+                    case "red":
+                        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle() - 90);
+                        break;
+                    case "blue":
+                        odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 90);
+                        break;
+                }
+            } else {
+                switch (alliance) {
+                    case "red":
+                        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle() - 0);
+                        break;
+                    case "blue":
+                        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle() + 0);
+                }
             }
         }
+        double bearingToGoal = aprilTags.getBearingToTag(alliance, isAuto, odometry.getRobotX(),odometry.getRobotY());
+        if (bearingToGoal == -1000) return;
         telemetry.addData("aprilTagAngle",bearingToGoal );
         telemetry.addData("actualAngle",aprilTags.getRobotAngle());
 
         rotationControl.setTargetAngle(bearingToGoal);
     }
     public void setLauncherBasedOnTags(){
-        double distanceToGoal = aprilTags.getDistance(alliance);
+        double distanceToGoal = aprilTags.getDistance(alliance,odometry.getRobotX(), odometry.getRobotY());
         telemetry.addData("alliance", alliance);
         telemetry.addData("distance", distanceToGoal);
         trajectoryKinematics.calculateTrajectory(distanceToGoal);

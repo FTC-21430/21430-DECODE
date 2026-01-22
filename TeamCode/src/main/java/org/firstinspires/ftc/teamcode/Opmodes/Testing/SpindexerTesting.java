@@ -10,39 +10,39 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 @TeleOp
 public class SpindexerTesting extends BaseTeleOp {
     public static double pos = 0;
+    private Spindexer spindexer;
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,false);
+//        initialize(true,false);
+        spindexer = new Spindexer(hardwareMap,telemetry,true,false);
         waitForStart();
         while(opModeIsActive()){
             if (gamepad1.circleWasPressed()){
-                robot.spindexer.moveToNextIndex();
+                spindexer.moveToNextIndex();
             }
             if (gamepad1.triangleWasPressed()){
-                robot.spindexer.recalibrateSpindexerPosition();
+                spindexer.recalibrateSpindexerPosition();
             }
             if (gamepad1.squareWasPressed()){
-                robot.spindexer.eject();
+                spindexer.eject();
             }
             if (gamepad1.crossWasPressed()){
-                robot.spindexer.setSpindexerPos(pos);
+                spindexer.setSpindexerPos(pos);
             }
 
             if (gamepad1.rightBumperWasPressed()){
-                robot.spindexer.eject();
+                spindexer.eject();
             }
             if (gamepad2.crossWasPressed()){
-                robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+                spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
             }
             if (gamepad2.circleWasPressed()){
-                robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+                spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
             }
             if (gamepad2.triangleWasPressed()){
-                robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
+                spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
             }
-            robot.updateRobot(false,false,false);
-            robot.operatorStateMachine.updateStateMachine();
-            robot.bulkSensorBucket.clearCache();
+            spindexer.updateSpindexer();
             telemetry.update();
         }
     }

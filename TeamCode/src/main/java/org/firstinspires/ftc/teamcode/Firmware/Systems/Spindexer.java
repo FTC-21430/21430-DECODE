@@ -30,13 +30,14 @@ public class Spindexer {
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.24; // Timeout duration for ejection in seconds.
+    public static double ejectionTimeout = 0.11; // Timeout duration for ejection in seconds.
+    public static double ejectionTimein = 0.03;
     private final int SLOTH_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
     private double ejectorInPos = 0.42; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
-    private double calibrationTimeout = 1.2; // Timeout duration for calibration in seconds.
+    private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     private boolean ejectorOut = false;
 
@@ -68,7 +69,7 @@ public class Spindexer {
         intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
         intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
         if (autonomous){
-            ejectionTimeout = 0.24;
+            ejectionTimeout = 0.18;
         }
     }
 
@@ -80,7 +81,7 @@ public class Spindexer {
             if (RUNTIME.seconds() >= ejectionTimeout) {
                 moveEjector(false); // Retracts the ejector after ejection timeout.
             }
-            if (RUNTIME.seconds() >= ejectionTimeout*2){
+            if (RUNTIME.seconds() >= ejectionTimeout+ejectionTimein){
                 ejectorOut = false;
             }
         } else {

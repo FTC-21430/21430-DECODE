@@ -22,13 +22,16 @@ public class Lifter {
     //TODO: Find and tune values
     //TODO: Find height values. These are not even guestimates! RANDOM NUMBERS!
     private double MIN_HEIGHT = 0;
-    private double MAX_HEIGHT = 21.26; // inches
+    private double MAX_HEIGHT = 1; // inches
     public static double DEFENCE_HEIGHT = 0.1;
-    public static double MAX_ENCODER = ((((1+(46/17))) * (1+(46/17))) * (1+(46/17)) * 28) * 4.5; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
-    public static double pCon;
-    public static double iCon;
-    public static double dCon;
-    public static double fCon;
+    public static double HOMING_HEIGHT = 1;
+    public static double FLOOR_CONTACT_HEIGHT = 0.4;
+    public static double MAX_ENCODER = 1; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
+    public static double pCon = 0;
+    public static double iCon = 0;
+    public static double dCon = 0;
+    public static double fCon = 0;
+
     private boolean unlached = false;
     //TODO: we should make the homing logic work
     private boolean homing = false;
@@ -68,6 +71,7 @@ public class Lifter {
         //Potentially reverse in the future, TODO:Check
         liftLeft.setDirection(FORWARD);
         liftRight.setDirection(FORWARD);
+        unlockLatches();
     }
     public void setLiftPosition(double position){
         if (position>MAX_HEIGHT){
@@ -102,21 +106,38 @@ public class Lifter {
             }else{
                 leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
                 rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
+                if (leftHomingSwitchesPressed()){
+                    liftLeft.setPower(0);
+                    liftRight.setPower(0);
+                }else{
+                    liftLeft.setPower(leftLiftController.getPower());
+                    liftRight.setPower(rightLiftController.getPower());
+                }
+            }
+        }else {
+
+            if (getLiftPosition() < FLOOR_CONTACT_HEIGHT){
+                leftLiftController.updatePIDFConstants(pCon,iCon,dCon,0);
+            }else{
+                leftLiftController.updatePIDFConstants(pCon,iCon,dCon,fCon);
+            }
+
+            leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
+            rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
+            if (leftHomingSwitchesPressed()){
+                liftLeft.setPower(0);
+                liftRight.setPower(0);
+            }else{
                 liftLeft.setPower(leftLiftController.getPower());
                 liftRight.setPower(rightLiftController.getPower());
             }
-        }else {
-            leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
-            rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
-            liftLeft.setPower(leftLiftController.getPower());
-            liftRight.setPower(rightLiftController.getPower());
         }
-
     }
     public double ticksToInches(int ticks){
         //TODO: Actually make this work
 
-        double ticks2Inches = MAX_HEIGHT/MAX_ENCODER;
+//        double ticks2Inches = MAX_HEIGHT/MAX_ENCODER;
+        double ticks2Inches = 1.0;
         return ticks * ticks2Inches;
     }
     public double inchesToTicks(double inches){
@@ -160,9 +181,11 @@ public class Lifter {
     }
     public void home(){
         homing = true;
-        setLiftPosition(1);
+        setLiftPosition(HOMING_HEIGHT);
     }
     public double getLiftPosition(){
+        telemetry.addData("left", liftLeft.getCurrentPosition());
+        telemetry.addData("right",liftRight.getCurrentPosition());
         int position = (liftLeft.getCurrentPosition() + liftRight.getCurrentPosition())/2;
         return ticksToInches(position);
     }

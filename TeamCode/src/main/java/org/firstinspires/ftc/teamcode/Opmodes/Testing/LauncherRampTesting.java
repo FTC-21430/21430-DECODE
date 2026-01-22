@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 // Written by Tobin - 11/6
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
@@ -48,7 +47,7 @@ public class LauncherRampTesting extends BaseTeleOp {
             }
             launcher.setSpeed(speed);
             // update the launcher speed control so it does feel neglected.
-            launcher.updateSpeedControl();
+            launcher.update();
         }
     }
 }

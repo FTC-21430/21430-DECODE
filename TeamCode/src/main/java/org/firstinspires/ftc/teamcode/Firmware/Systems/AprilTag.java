@@ -15,9 +15,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Resources.AprilTagProcessorDistortion;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.teamcode.Resources.AprilTagProcessorImplWithDistortionCorrection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,12 +28,13 @@ import java.util.concurrent.TimeUnit;
 @Config
 public class AprilTag {
     private Telemetry telemetry;
-    private AprilTagProcessor aprilTagProcessor;
+    private AprilTagProcessorDistortion aprilTagProcessor;
     private VisionPortal visionPortal;
     private List<AprilTagDetection> tagsDetected = new ArrayList<>();
     private ExposureControl exposureControl;
     public static double RED_OFFSET = -2;
     public static double BLUE_OFFSET = -6;
+    private boolean hasChecked = false;
 
     private double lastAngle = 0.0;
     private double lastDistance= 0.0;
@@ -51,8 +55,10 @@ public class AprilTag {
 
         this.telemetry = telemetry;
         //The builder class is used to access multiple configurations for the aprilTagProcessor
-        aprilTagProcessor = new AprilTagProcessor.Builder()
-                .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561)
+        aprilTagProcessor = new AprilTagProcessorDistortion.Builder() {
+        }
+//                .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561,0,0,0,0,0)
+                .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561,-0.00753294707714,-0.0434429780623,-0.000204665343261,-0.000333947477339,0.0136237457353)
                 .setCameraPose(new Position(DistanceUnit.MM, cameraX,cameraY,cameraZ,0),new YawPitchRollAngles(AngleUnit.DEGREES,-90,-90,0,0))
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
@@ -74,6 +80,8 @@ public class AprilTag {
         telemetry.update();
         setExposure(exposure);
 
+        aprilTagProcessor.setPoseSolver(AprilTagProcessorDistortion.PoseSolver.OPENCV_ITERATIVE);
+
     }
 
     /**
@@ -86,6 +94,11 @@ public class AprilTag {
         exposureControl.setExposure(exposure,TimeUnit.MILLISECONDS);
 
     }
+
+    public void clearCache(){
+        hasChecked = false;
+    }
+
     // The displayDetectionTelemetry is used to get telemetry back about what tag it is detecting
     public void displayDetectionTelemetry(AprilTagDetection detectedID) {
         if (detectedID == null) {
@@ -127,6 +140,10 @@ public class AprilTag {
      //@param mode (options are: red, blue or obelisk)
 
     public void locateAprilTags(String mode) {
+        if (hasChecked){
+            return;
+        }
+        hasChecked = true;
         if (mode == "red") {
             //Red april tags
             update();
@@ -152,13 +169,13 @@ public class AprilTag {
     }
 
     // the getDistance function calculates the distance between the robot and the april tag
-    public double getDistance(String mode){
+    public double getDistance(String mode, double x, double y){
         locateAprilTags(mode);
         if (aprilTagID == 0) return lastDistance;
 
         double distance = 0.0;
-        double posX = getSpecific(aprilTagID).robotPose.getPosition().x;
-        double posY = getSpecific(aprilTagID).robotPose.getPosition().y;
+        double posX = x;
+        double posY = y;
         double goalX = getSpecific(aprilTagID).metadata.fieldPosition.get(0);
         double goalY = getSpecific(aprilTagID).metadata.fieldPosition.get(1);
         distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2)) - (cameraY / mmPerInch);
@@ -183,14 +200,14 @@ public class AprilTag {
 
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
-    public double getBearingToTag(String mode, Boolean isAuto){
+    public double getBearingToTag(String mode, Boolean isAuto, double x, double y){
 
         locateAprilTags(mode);
         if (aprilTagID == 0) return -1000;
         double angle;
 
-        double posX = getSpecific(aprilTagID).robotPose.getPosition().x;
-        double posY = getSpecific(aprilTagID).robotPose.getPosition().y;
+        double posX = x;
+        double posY = y;
         double goalX = 0;
         double goalY = 0;
         double coordinate_correction_offset = 0;

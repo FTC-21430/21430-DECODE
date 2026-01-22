@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 
@@ -25,6 +26,7 @@ public class LaunchTuningTesting extends LinearOpMode {
         // Init launcher
         launcher = new Launcher(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,true,false);
+        GobildaPinpointModuleFirmware odometry = new GobildaPinpointModuleFirmware(hardwareMap,4.9574,2.78,true);
 
         // We don't want the flywheel running right now
         launcher.setSpeed(0);
@@ -36,13 +38,13 @@ public class LaunchTuningTesting extends LinearOpMode {
 
             launcher.setLaunchAngle(angle);
             launcher.setSpeed(speed);
-            launcher.updateSpeedControl();
+            launcher.update();
             telemetry.addData("readyForLaunch", launcher.isUpToSpeed());
 
             telemetry.addLine("-----------------------------");
             telemetry.addData("angle", angle);
             telemetry.addData("speed", speed);
-            telemetry.addData("distance", aprilTagProcessing.getDistance("red"));
+            telemetry.addData("distance", aprilTagProcessing.getDistance("red",odometry.getRobotX(),odometry.getRobotY()));
             telemetry.addLine("------------------------------");
             if (aprilTagProcessing.isTag("red")) {
                 telemetry.addData("robotX", aprilTagProcessing.getRobotX());

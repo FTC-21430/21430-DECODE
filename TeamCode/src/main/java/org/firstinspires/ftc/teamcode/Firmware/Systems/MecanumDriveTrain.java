@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
-import com.sun.tools.javac.comp.Todo;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MecanumDriveTrain {
@@ -20,7 +17,7 @@ public class MecanumDriveTrain {
     double speedMultiplier = 1;
     public boolean fieldCentricDriving = false;
     private double avgDrivePower = 0;
-    private final double TURN_PRIORITY = 1.0;
+    private double turnPriority = 1.0;
 
     private Telemetry telemetry;
     /**
@@ -83,6 +80,12 @@ public class MecanumDriveTrain {
     public double getSpeedMultiplier(){
         return speedMultiplier;
     }
+    public void setTurnPriority(double priority){
+        turnPriority = priority;
+    }
+    public double getTurnPriority(){
+        return turnPriority;
+    }
 
     /**
      * Calculates Field Centic Driving (code that allows the driver controls to
@@ -118,10 +121,10 @@ public class MecanumDriveTrain {
             sidewaysPower = transformedMovementVectors.get(1);
         }
 
-        double powerFL = (forwardPower + sidewaysPower - turnPower*TURN_PRIORITY)*speedMultiplier;
-        double powerFR = (forwardPower - sidewaysPower + turnPower*TURN_PRIORITY)*speedMultiplier;
-        double powerBL = (forwardPower - sidewaysPower - turnPower*TURN_PRIORITY)*speedMultiplier;
-        double powerBR = (forwardPower + sidewaysPower + turnPower*TURN_PRIORITY)*speedMultiplier;
+        double powerFL = (forwardPower + sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+        double powerFR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+        double powerBL = (forwardPower - sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+        double powerBR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
 
 
         double powers[] = {powerFL, powerFR, powerBL, powerBR};

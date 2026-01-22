@@ -19,7 +19,7 @@ public class SpeedcontrolTesting extends BaseTeleOp {
             // Adjust the flywheel target speed using the left stick Y axis
             robot.launcher.setSpeed(targetSpeed);
             // Update the flywheel's speed control
-            robot.launcher.updateSpeedControl();
+            robot.launcher.update();
 
             // Telemetry output for debugging and monitoring
             telemetry.addData("Target Speed: ", robot.launcher.getTargetSpeed());
