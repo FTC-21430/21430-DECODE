@@ -30,8 +30,8 @@ public class Spindexer {
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.11; // Timeout duration for ejection in seconds.
-    public static double ejectionTimein = 0.03;
+    public static double ejectionTimeout = 0.145; // Timeout duration for ejection in seconds.
+    public static double ejectionTimein = 0.005;
     private final int SLOTH_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
@@ -41,9 +41,9 @@ public class Spindexer {
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     private boolean ejectorOut = false;
 
-    public static double intakeOffSet = -13.5;
-    public static double launchOffSet = 0.0;
-    public static double idleOffSet = 30.0;
+    public static double intakeOffSet = -5;
+    public static double launchOffSet = 6.0;
+    public static double idleOffSet = 20.0;
 
     public enum INDEX_TYPE{
         INTAKE,
@@ -164,6 +164,14 @@ public class Spindexer {
         }
         if (ejecting) return;
         double pos = (index * SLOTH_INCREMENT) % 360;
+        double current_pos = PADDLE_SERVO.getEncoderPosition();
+        double clockwiseTravel = pos - current_pos;
+        double counterTravel = current_pos - pos;
+        if (clockwiseTravel > counterTravel) {
+            PADDLE_SERVO.setDirection(true);
+        }else{
+            PADDLE_SERVO.setDirection(false);
+        }
         PADDLE_SERVO.setSpindexerPosition(pos);
     }
 
@@ -318,5 +326,8 @@ public class Spindexer {
     }
     public double getTarget(){
         return PADDLE_SERVO.getTargetPosition();
+    }
+    public void setPaddleDirection(boolean clockwise){
+        PADDLE_SERVO.setDirection(clockwise);
     }
 }
