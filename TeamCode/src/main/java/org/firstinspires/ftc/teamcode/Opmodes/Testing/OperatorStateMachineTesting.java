@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
+@TeleOp
 public class OperatorStateMachineTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,7 +31,10 @@ public class OperatorStateMachineTesting extends BaseTeleOp {
             if (gamepad1.dpadRightWasPressed()){
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
             }
+            robot.operatorStateMachine.updateStateMachine();
+            telemetry.update();
             robot.updateRobot(false,false,false);
+            robot.bulkSensorBucket.clearCache();
         }
     }
 }

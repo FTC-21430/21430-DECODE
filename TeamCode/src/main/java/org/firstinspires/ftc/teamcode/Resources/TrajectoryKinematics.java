@@ -28,11 +28,14 @@ public class TrajectoryKinematics {
             1750,
     };
 
+    private double autonomousLaunchDecrement = 0;
+
     // The return value for the angle of the ramp. - in degrees
     private double initialAngle = 0;
     // the return value for how fast the flywheel should go to achieve a launch. In degrees per second
     private double launchMagnitude = 0;
-    public TrajectoryKinematics(){
+    public TrajectoryKinematics(boolean isAuto){
+        autonomousLaunchDecrement = isAuto? 30:30;
     }
 
     /**
@@ -52,14 +55,19 @@ public class TrajectoryKinematics {
      */
     private double angleRegression(double distance){
         // values a-e represent the tuning values of this 4th degree polynomial calculated by Desmos using the distance and angle values above
-        double a = 1.59536 * Math.pow(10,-7);
-        double b = -1.17316 * Math.pow(10,-5);
-        double c = -5.85784 * Math.pow(10,-3);
-        double d = 0.865212;
-        double e = 0.0;
+        double a =-3.8327541 * Math.pow(10,-13);
+        double b = 2.88733484 * Math.pow(10,-10);
+        double c = -9.1384146 * Math.pow(10,-8);
+        double d = 1.5804336 * Math.pow(10,-5);
+        double e = -1.6266162 * Math.pow(10,-3);
+        double f = 1.0159161 * Math.pow(10, -1);
+        double g = -3.7433493 * Math.pow(10,0);
+        double h = 7.3853696 * Math.pow(10,1);
+        double i = -5.3187568 * Math.pow(10,2);
 
         // Math.pow is the exponent function, this is a fourth degree polynomial that is tuning based on real world testing
-        return a * Math.pow(distance,4)+ b * Math.pow(distance,3) + c * Math.pow(distance,2) + d * distance + e;
+        return a * Math.pow(distance,8)+ b * Math.pow(distance,7) + c * Math.pow(distance,6) + d * Math.pow(distance,5) + e * Math.pow(distance,4) + f * Math.pow(distance,3)
+                + g * Math.pow(distance,2) + h * Math.pow(distance,1) + i;
     }
 
     /**
@@ -69,12 +77,13 @@ public class TrajectoryKinematics {
      */
     private double magnitudeRegression(double distance){
         //quadratic tuning values
-        double a = 0.0302344;
-        double b = 2.50209;
-        double c = 1020.88125;
+        double a = 0.000461017;
+        double b = -0.096802;
+        double c = 11.34428;
+        double d = 909.04077;
 
         // Math.pow is the exponent function, this is a second degree polynomial that is tuning based on real world testing
-        return a * Math.pow(distance,2) + b * Math.pow(distance,1) + c;
+        return a * Math.pow(distance,3) + b * Math.pow(distance,2) + c * Math.pow(distance,1) + d - autonomousLaunchDecrement;
     }
 
     /**
@@ -91,5 +100,4 @@ public class TrajectoryKinematics {
      */
     public double getLaunchMagnitude(){
         return launchMagnitude;
-    }
-}
+    }}

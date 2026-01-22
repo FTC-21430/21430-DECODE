@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Firmware;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
@@ -35,38 +36,44 @@ public abstract class DecodeBot extends Robot{
   
     public OperatorStateMachine operatorStateMachine = null;
     //The PID values are a public because we need to tune it later and public makes it easier to do that
-    public static final double P_CONSTANT = 0.2;
-    public static final double I_CONSTANT = 0.1;
-    public static final double D_CONSTANT = 0.02;
-//    public static double yOffset = 5.118;
-//    public static double xOffset = 2.713;
+    public static final double P_CONSTANT = 0.14;
+    public static final double I_CONSTANT = 0.11;
+    public static final double D_CONSTANT = 0.031;
+    public static double P_ANGLE = 0.023;
+    public static double I_ANGLE = 0.0005;
+    public static double D_ANGLE = 0.0001;
+    public static double yOffset = 2.78;
+    public static double xOffset = 4.9574;
+    public static long cameraExposure = 10;
+    private boolean isAuto;
 
-    public static double xOffset = -3.125;
-    public static double yOffset = -7;
+//    public static double xOffset = -3.125;
+//    public static double yOffset = -7;
 
-    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto,String alliance){
+    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance, Gamepad gamepad2){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
         this.telemetry = telemetry;
         this.alliance = alliance;
+        this.isAuto = isAuto;
 
-        // TODO: change the pod offset values to what they are on the competition robot, currently tuned for software testing bot
         //Creating the classes as objects for future use
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
-        trajectoryKinematics = new TrajectoryKinematics();
+        trajectoryKinematics = new TrajectoryKinematics(isAuto);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
         launcher = new Launcher(hardwareMap,telemetry);
         intake = new Intake(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,reset);
-        lifter = new Lifter(hardwareMap, telemetry);
-        rotationControl = new RotationControl(0.3,0.025,0,0.0001,robotAngle,telemetry);
+        spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
+//        lifter = new Lifter(hardwareMap, telemetry);
+    rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
         aprilTags = new AprilTag();
-        aprilTags.init(hardwareMap,telemetry);
+
+        aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
-        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags);
+        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2);
     }
 
     //the function used to move to a spot on the field during auto
@@ -78,8 +85,10 @@ public abstract class DecodeBot extends Robot{
         while(!pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
+            operatorStateMachine.updateStateMachine();
             driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
             telemetry.update();
+            bulkSensorBucket.clearCache();
 
         }
     }
@@ -94,7 +103,9 @@ public abstract class DecodeBot extends Robot{
                 driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
 
             }
+            operatorStateMachine.updateStateMachine();
             telemetry.update();
+            bulkSensorBucket.clearCache();
         }
     }
 
@@ -111,11 +122,34 @@ public abstract class DecodeBot extends Robot{
         this.alliance = alliance;
     }
     public void aimBasedOnTags(){
-        double bearingToGoal = aprilTags.getBearingToTag(alliance);
-        rotationControl.setTargetAngle(odometry.getRobotAngle() + bearingToGoal);
+        double bearingToGoal = aprilTags.getBearingToTag(alliance, isAuto);
+        if (bearingToGoal == -1000) return;
+        if (!isAuto) {
+            switch (alliance) {
+                case "red":
+                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() - 90);
+                    break;
+                case "blue":
+                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 90);
+            }
+        }else{
+            switch (alliance) {
+                case "red":
+                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() - 0);
+                    break;
+                case "blue":
+                    odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 0);
+            }
+        }
+        telemetry.addData("aprilTagAngle",bearingToGoal );
+        telemetry.addData("actualAngle",aprilTags.getRobotAngle());
+
+        rotationControl.setTargetAngle(bearingToGoal);
     }
     public void setLauncherBasedOnTags(){
         double distanceToGoal = aprilTags.getDistance(alliance);
+        telemetry.addData("alliance", alliance);
+        telemetry.addData("distance", distanceToGoal);
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());

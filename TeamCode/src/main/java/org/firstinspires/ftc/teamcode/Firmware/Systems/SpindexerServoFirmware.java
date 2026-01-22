@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -17,15 +18,31 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class SpindexerServoFirmware {
     private final Servo spindexerServo; // Servo controlling the spindexer.
     private final double[] slots; // Degree values for each slot.
-    private final double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
+    private final double DIRECTION; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
 
     // The servo degree that is the current target
     private double targetPosition = 0;
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
-    private int positionTolerance = 30;
+    private int positionTolerance = 20;
     // what the PWM signal is for the zero position of the servo
-    private final double pwmAtZeroDegrees = 0.73;
+    private double pwmAtZeroDegrees = 0.73;
+
+    private double positionOffset = 0.0;
+
+    private double lastPosition;
+    private boolean isJamed = false;
+
+    public static double jamThreshold = 0.1;
+
+    private double lastTarget;
+
+    private double attemptedTarget;
+
+    private ElapsedTime deltaRuntime;
+    private ElapsedTime jamRuntime;
+    private Telemetry telemetry;
+    private int jamCount = 0;
 
     private final DcMotor spindexerEncoderMotorInstance; // Encoder motor instance for position tracking.
 
@@ -45,7 +62,10 @@ public class SpindexerServoFirmware {
         spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexerServo.setDirection(Servo.Direction.FORWARD);
         // Set direction based on spinClockwise parameter.
-        direction = spinClockwise ? 0.17 : 0.83;
+        DIRECTION = spinClockwise ? 0.17 : 0.83;
+        deltaRuntime = new ElapsedTime();
+        jamRuntime = new ElapsedTime();
+        this.telemetry = telemetry;
     }
 
     // Warp speed exit tolerance - The servo will always spin in one direction at full continuous speed until
@@ -53,19 +73,46 @@ public class SpindexerServoFirmware {
     // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
     public static double warpSpeedExitTolerance = 50; // Tolerance for exiting warp speed.
+    private double encoderPosition = 0;
+    public static double jamFreedTimeout = 0.3;
+    public static int jamsAmount = 8;
     /**
      * Updates the servo position based on the target position and tolerance.
      */
     public void update(){
+        lastPosition = encoderPosition;
+        encoderPosition = getEncoderPosition();
 
-        double encoderPosition = getEncoderPosition();
-
+        if (isJamed) {
+            if (jamRuntime.seconds() >= jamFreedTimeout){
+                targetPosition = attemptedTarget;
+                isJamed = false;
+            }
+        } else {
+            boolean jam = Math.abs(lastPosition - encoderPosition) * getDeltaTime() < jamThreshold && Math.abs((getEncoderPosition()+positionOffset)-targetPosition) > 40;
+            if (jam) {
+                jamCount += 1;
+            }else{
+                jamCount = 0;
+            }
+            if (jamCount > jamsAmount) {
+                isJamed = true;
+                jamCount = 0;
+                attemptedTarget = targetPosition;
+                targetPosition = lastTarget;
+                jamRuntime.reset();
+            }
+        }
+        telemetry.addData("jamCount", jamCount);
+        telemetry.addData("isJamed", isJamed);
+        telemetry.addData("movement", Math.abs(lastPosition - encoderPosition) * getDeltaTime());
+        telemetry.addData("isAtTarget", isAtTarget());
         // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
         if (Math.abs(encoderPosition - targetPosition) <= warpSpeedExitTolerance){
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
 
         } else {
-            spindexerServo.setPosition(direction);
+            spindexerServo.setPosition(DIRECTION);
 
         }
     }
@@ -75,10 +122,14 @@ public class SpindexerServoFirmware {
      * @param position Target position in degrees.
      */
     public void setSpindexerPosition(double position){
+
+        position += positionOffset;
+
         if (position > 360){
             position = position % 360; // Wraps position within 360 degrees.
         }
         position = clipPositionToRange(position);
+        lastTarget = targetPosition;
         targetPosition = position;
         update();
     }
@@ -91,6 +142,12 @@ public class SpindexerServoFirmware {
         if (slot < 1) slot = 3;
         if (slot > 3) slot = 1;
         setSpindexerPosition(slots[slot-1]);
+    }
+
+    public void setSpindexerOffset(double degrees){
+        targetPosition -= (positionOffset-degrees);
+        positionOffset = degrees;
+
     }
 
     /**
@@ -106,7 +163,8 @@ public class SpindexerServoFirmware {
      * @return True if at target, false otherwise.
      */
     public boolean isAtTarget(){
-        return Math.abs(getEncoderPosition()-targetPosition) < positionTolerance;
+
+        return Math.abs((getEncoderPosition()+positionOffset)-targetPosition) < positionTolerance && !isJamed;
     }
 
     /**
@@ -114,7 +172,7 @@ public class SpindexerServoFirmware {
      * @return Target position in degrees.
      */
     public double getTargetPosition() {
-        return targetPosition;
+        return targetPosition - positionOffset;
     }
 
     /**
@@ -188,5 +246,18 @@ public class SpindexerServoFirmware {
         final double controlledRangeMinDegree = -1000; // Minimum valid degree.
         final double controlledRangeMaxDegree = 1000; // Maximum valid degree.
         return Range.clip(position, controlledRangeMinDegree, controlledRangeMaxDegree);
+    }
+
+    /**
+     * get milliseconds since this function was last called
+     * @return
+     */
+    private double getDeltaTime(){
+        double time = deltaRuntime.milliseconds();
+        deltaRuntime.reset();
+        return time;
+    }
+    public boolean getIfJammed(){
+        return isJamed;
     }
 }

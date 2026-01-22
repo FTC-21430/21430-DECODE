@@ -16,11 +16,15 @@ public class RedTeleop extends BaseTeleOp {
     public void runOpMode() throws InterruptedException {
 
         // initializes the robot without resetting the odometry
-        initialize(false, false);
+        initialize(true, false);
         robot.setAlliance("red");
         robot.driveTrain.fieldCentricDriving(true);
 
+
+
         waitForStart();
+        robot.odometry.resetIMU();
+        robot.rotationControl.setTargetAngle(0);
         while(opModeIsActive()) {
 
             // get and update functions
@@ -30,6 +34,7 @@ public class RedTeleop extends BaseTeleOp {
             // resets Field Centric Driving
             if (gamepad1.shareWasPressed()) {
                 robot.odometry.resetIMU();
+                robot.rotationControl.setTargetAngle(0);
             }
             if (gamepad2.squareWasPressed()){
                 if (manualMode){
@@ -39,6 +44,8 @@ public class RedTeleop extends BaseTeleOp {
                 }
             }
 
+
+
             if (manualMode){
                 if (gamepad2.squareWasPressed()){
                     robot.spindexer.moveToNextIndex();
@@ -46,6 +53,7 @@ public class RedTeleop extends BaseTeleOp {
                 if (gamepad2.rightBumperWasPressed()) {
                     robot.spindexer.eject();
                 }
+
                 if (gamepad2.dpadDownWasPressed()){
                     robot.launchFrom("close");
                 } else if(gamepad2.dpadLeftWasPressed()){
@@ -57,7 +65,7 @@ public class RedTeleop extends BaseTeleOp {
                     robot.launcher.setSpeed(-400);
                     robot.spindexer.setSpindexerPos(60);
                 }
-                if (gamepad1.right_trigger > 0.4){
+                if (gamepad1.right_bumper){
                     robot.driveTrain.setSpeedMultiplier(0.5);
                 } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                     robot.driveTrain.setSpeedMultiplier(1);
@@ -68,7 +76,15 @@ public class RedTeleop extends BaseTeleOp {
                 } else {
                     robot.intake.setIntakePower(0);
                 }
+                if (gamepad2.left_trigger > 0.4){
+                    robot.intake.setIntakePower(0.4);
+                }
             }else{
+                if (gamepad1.right_bumper){
+                    robot.driveTrain.setSpeedMultiplier(0.5);
+                } else if (robot.driveTrain.getSpeedMultiplier() != 1){
+                    robot.driveTrain.setSpeedMultiplier(1);
+                }
                 if (gamepad2.triangleWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
@@ -90,11 +106,16 @@ public class RedTeleop extends BaseTeleOp {
                 if (gamepad2.dpadRightWasPressed()){
                     robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
                 }
+                if (gamepad2.touchpadWasPressed()){
+                    for (int i = 0; i < 3; i++){
+                        robot.spindexer.clearColor(i);
+                    }
+                }
 
                 robot.operatorStateMachine.updateStateMachine();
             }
 
-            if (gamepad1.cross){
+            if (gamepad1.crossWasPressed()){
                 robot.aimBasedOnTags();
             }else{
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());

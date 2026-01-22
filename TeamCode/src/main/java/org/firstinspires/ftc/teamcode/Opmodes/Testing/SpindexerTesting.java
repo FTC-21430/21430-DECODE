@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
@@ -29,7 +31,17 @@ public class SpindexerTesting extends BaseTeleOp {
             if (gamepad1.rightBumperWasPressed()){
                 robot.spindexer.eject();
             }
+            if (gamepad2.crossWasPressed()){
+                robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+            }
+            if (gamepad2.circleWasPressed()){
+                robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+            }
+            if (gamepad2.triangleWasPressed()){
+                robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
+            }
             robot.updateRobot(false,false,false);
+            robot.operatorStateMachine.updateStateMachine();
             robot.bulkSensorBucket.clearCache();
             telemetry.update();
         }

@@ -17,14 +17,36 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
         robot.rotationControl.setTargetAngle(robotAngle);
         robot.driveTrain.fieldCentricDriving(false);
         while (!robot.pathFollowing.isWithinTargetTolerance(robot.odometry.getRobotX(), robot.odometry.getRobotY()) && robot.opMode.opModeIsActive()) {
-//            int tempId = robot.aprilTags.getMotifID();
-//            if (tempId != 0) {
-//                motifId = tempId;
-//            }
+            int tempId = robot.aprilTags.getMotifID();
+            if (tempId != 0) {
+                motifId = tempId;
+            }
+            telemetry.addData("motifID", motifId);
             robot.updateRobot(false, false, false);
+            robot.operatorStateMachine.updateStateMachine();
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
             robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(), robot.pathFollowing.getPowerF(), robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             telemetry.update();
+            robot.bulkSensorBucket.clearCache();
+        }
+    }
+    public void chillAndDetect(boolean holdPos, double timeout){
+        double startTime = runtime.seconds();
+        while (runtime.seconds() < startTime + timeout && opModeIsActive()){
+            int tempId = robot.aprilTags.getMotifID();
+            if (tempId != 0) {
+                motifId = tempId;
+            }
+            telemetry.addData("motifID", motifId);
+            robot.updateRobot(false,false,false);
+            if (holdPos){
+                robot.pathFollowing.followPath(robot.odometry.getRobotX(),robot.odometry.getRobotY(),robot.odometry.getRobotAngle());
+                robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(),robot.pathFollowing.getPowerF(),robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()),robot.odometry.getRobotAngle());
+
+            }
+            robot.operatorStateMachine.updateStateMachine();
+            telemetry.update();
+            robot.bulkSensorBucket.clearCache();
         }
     }
 
@@ -52,14 +74,16 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
                 break;
         }
-
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
-        while(robot.operatorStateMachine.getCurrentState() == OperatorStateMachine.State.LAUNCH) {
+        while(robot.operatorStateMachine.getCurrentState() == OperatorStateMachine.State.LAUNCH && opModeIsActive()) {
             robot.updateRobot(false, false, false);
+
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
             robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(), robot.pathFollowing.getPowerF(), robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.operatorStateMachine.updateStateMachine();
+            telemetry.addData("motif",motifId);
             telemetry.update();
+            robot.bulkSensorBucket.clearCache();
         }
     }
 }

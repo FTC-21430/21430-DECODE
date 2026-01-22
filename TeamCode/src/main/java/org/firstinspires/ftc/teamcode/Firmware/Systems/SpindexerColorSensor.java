@@ -13,17 +13,17 @@ public class SpindexerColorSensor {
 
 // constants for color ranges. At the moment the difference is calculated based on the Hue value in the HSV color space. One tuning set for each potential color we are searching for
     private final float[] noneValues = new float[]{
-            90,
+            120,
             0,
             0
     };
     private final float[] purpleValues = new float[]{
-            230,
+            200,
             0,
             0
     };
     private final float[] greenValues = new float[]{
-            165,
+            150,
             0,
             0
     };
@@ -111,7 +111,7 @@ public class SpindexerColorSensor {
      * gets value from the sensor and converts from RGBA to HSV
      * @return returns color in HSV
      */
-    private float[] getRawData(){
+    public float[] getRawData(){
         float[] hsvValues = new float[3];
         NormalizedRGBA colors = sensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);

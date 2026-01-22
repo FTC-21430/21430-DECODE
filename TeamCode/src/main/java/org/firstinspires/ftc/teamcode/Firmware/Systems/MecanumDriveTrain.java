@@ -8,6 +8,7 @@ import com.sun.tools.javac.comp.Todo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MecanumDriveTrain {
@@ -19,6 +20,7 @@ public class MecanumDriveTrain {
     double speedMultiplier = 1;
     public boolean fieldCentricDriving = false;
     private double avgDrivePower = 0;
+    private final double TURN_PRIORITY = 1.0;
 
     private Telemetry telemetry;
     /**
@@ -48,8 +50,8 @@ public class MecanumDriveTrain {
         // F R F R for software testing bot, competition bot has F R R F
         motorFL.setDirection(DcMotor.Direction.FORWARD);
         motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -116,23 +118,45 @@ public class MecanumDriveTrain {
             sidewaysPower = transformedMovementVectors.get(1);
         }
 
+        double powerFL = (forwardPower + sidewaysPower - turnPower*TURN_PRIORITY)*speedMultiplier;
+        double powerFR = (forwardPower - sidewaysPower + turnPower*TURN_PRIORITY)*speedMultiplier;
+        double powerBL = (forwardPower - sidewaysPower - turnPower*TURN_PRIORITY)*speedMultiplier;
+        double powerBR = (forwardPower + sidewaysPower + turnPower*TURN_PRIORITY)*speedMultiplier;
+
+
+        double powers[] = {powerFL, powerFR, powerBL, powerBR};
+        double maxPower = getMaxDouble(powers);
+        if (maxPower>1) {
+            for (int i = 0; i<4;i++){
+                powers[i] /= maxPower;
+            }
+        }
         // Main bot
-//        motorFL.setPower(Range.clip(forwardPower + sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-//        motorFR.setPower(Range.clip(forwardPower - sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
-//        motorBL.setPower(Range.clip(forwardPower - sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-//        motorBR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
+        motorFL.setPower(powers[0]);
+        motorFR.setPower(powers[1]);
+        motorBL.setPower(powers[2]);
+        motorBR.setPower(powers[3]);
 
 
         // Software Testing Bot
-        motorFL.setPower(Range.clip(forwardPower + sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-        motorFR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
-        motorBL.setPower(Range.clip(forwardPower - sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
-        motorBR.setPower(Range.clip(forwardPower - sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
+//        motorFL.setPower(Range.clip(forwardPower + sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
+//        motorFR.setPower(Range.clip(forwardPower + sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
+//        motorBL.setPower(Range.clip(forwardPower - sidewaysPower - turnPower, -1.0, 1.0) * speedMultiplier);
+//        motorBR.setPower(Range.clip(forwardPower - sidewaysPower + turnPower, -1.0, 1.0) * speedMultiplier);
 
         //Finds average Drive Power
         //Divide by 2 to give us closer values to the use case
         //TODO: why do we need this here?
         avgDrivePower = (Math.abs(forwardPower) + Math.abs(sidewaysPower) + Math.abs(turnPower))/2;
+    }
+    private double getMaxDouble(double[] array){
+        double largest = 0;
+        for(double item:array){
+            if (item>largest) {
+                largest = item;
+            }
+        }
+        return largest;
     }
     public double getAvgDrivePower(){
         return avgDrivePower;

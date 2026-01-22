@@ -31,7 +31,7 @@ public class GobildaPinpointModuleFirmware {
         pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD
         );
 

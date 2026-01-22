@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Firmware;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
@@ -9,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLO
 import java.util.ArrayList;
 import java.util.List;
 
+@Config
 // Controls the automation for the mechanisms on the robot. Mainly, the launcher, spindexer, and intake.
 public class OperatorStateMachine {
 
@@ -20,7 +26,7 @@ public class OperatorStateMachine {
     }
 
     // The idle speed the flywheel will be set too when not actively shooting
-    private double idleSpeed = 1000;
+    public static double idleSpeed = 1000;
     // The launcher instance
     private Launcher launcher;
     // The Spindexer Instance
@@ -37,7 +43,12 @@ public class OperatorStateMachine {
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
     // Logic to ensure that a launch is completed before it starts the next launch
-    private boolean launching = false;
+    private boolean prepping = false;
+    private boolean launched = false;
+    public static double launchingTimeout = 0.5;
+    private ElapsedTime runtime = null;
+    private Gamepad gamepad2 = null;
+    private ElapsedTime launchTimer = null;
 
     /**
      * The constructor for this class, Stores all of the instances of the components of the robot
@@ -48,12 +59,15 @@ public class OperatorStateMachine {
      * @param telemetry
      * @param setLauncherBasedOnTags - One function we need from DecodeBot.java but this is just a refernce to call method, not anything else in DecodeBot!
      */
-    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags){
+    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags, Gamepad gamepad2){
         this.launcher = launcher;
         this.spindexer = spindexer;
         this.intake = intake;
         this.telemetry = telemetry;
         this.setLauncherBasedOnTags = setLauncherBasedOnTags;
+        this.runtime = new ElapsedTime();
+        this.gamepad2 = gamepad2;
+        this.launchTimer = new ElapsedTime();
     }
 
     // Will Trigger the transition from one state to the next
@@ -103,7 +117,15 @@ public class OperatorStateMachine {
 
     // Will call the corresponding update function to the current state
     public void updateStateMachine(){
+//        for (COLORS color : spindexer.indexColors){
+//            telemetry.addData("A Color", color);
+//        }
+//        telemetry.addData("spin target", spindexer.getTarget());
+        if (gamepad2.left_trigger > 0.4){
+            intake.setIntakePower(0.4);
+        }
         switch (currentState){
+
             case IDLE:
                 idleState();
                 break;
@@ -132,6 +154,9 @@ public class OperatorStateMachine {
      * retracts and slows down launcher, updates spindexer
      */
     private void idleState(){
+        if (!(gamepad2.left_trigger >= 0.4)){
+            intake.setIntakePower(0.3);
+        }
         launcher.retractRamp();
         launcher.setSpeed(idleSpeed);
         launcher.updateSpeedControl();
@@ -142,13 +167,28 @@ public class OperatorStateMachine {
      * The intake state update method
      * Handles all logic for intaking new artifacts and storing their color
      */
-    private void intakeState(){
 
-        if (spindexer.getIntakeSwitch()){
+
+    private int ballSampling = 0;
+    private void intakeState (){
+//        telemetry.addData("holdingIntake", holdingIntake);
+//        telemetry.addData("time", runtime.seconds());
+
+        if (!(gamepad2.left_trigger >= 0.4)){
+            intake.setIntakePower(-1);
+        }
+
+        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch())){
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
+            ballSampling = 0;
+        } else if (spindexer.isAtRest() && spindexer.getColorInIntake() != COLORS.NONE) {
+            ++ballSampling;
+        }else{
+            ballSampling = 0;
         }
-        if (spindexer.isFull()){
+
+        if (spindexer.isFull() && spindexer.isAtRest()){
             moveToState(State.IDLE);
         }
 
@@ -162,22 +202,44 @@ public class OperatorStateMachine {
      * Handles the logic for shooting the balls in the right order
      */
     private void launchState(){
+        if (!(gamepad2.left_trigger >= 0.4)){
+            intake.setIntakePower(0.1);
+        }
+//        telemetry.addData("speed", launcher.getSpeed());
+//        telemetry.addData("up to speed", launcher.isUpToSpeed());
+//        telemetry.addData("get target speed", launcher.getTargetSpeed());
         setLauncherBasedOnTags.run();
 
-        if (!launchQueue.isEmpty() && !launching){
-            spindexer.prepColor(launchQueue.get(launchQueue.size()-1));
-            launching = true;
+        if (!launchQueue.isEmpty() && !prepping && !launched){
+            COLORS toPrep = launchQueue.remove(0);
+            spindexer.prepColor(toPrep);
+            prepping = true;
         }
 
-        if (launching && spindexer.isAtRest() && launcher.isUpToSpeed()){
+        // When prepped and launcher is ready, eject and clear the stored color
+        if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed() && launcher.rampReady()){
             spindexer.eject();
-            spindexer.clearColor(spindexer.getCurrentIndexInLaunch());
-        }
-        if (launching && !spindexer.isEjectorOut() && spindexer.isAtRest()){
-            launching = false;
+            prepping = false;
+            launched = true;
+            launchTimer.reset();
+
+            // Clear the color from the spindexer and remove it from the queue so we don't re-prep it
+
+            int clearedIndex = spindexer.getCurrentIndexInLaunch() -1;
+            if (clearedIndex < 0){
+                moveToState(State.IDLE);
+                spindexer.setColorIndexing(COLORS.NONE,COLORS.NONE,COLORS.NONE);
+            }
+            spindexer.clearColor(clearedIndex);
         }
 
-        if (launchQueue.isEmpty() && !launching){
+        // Wait for ejector to fully retract before allowing next cycle
+        if (launched && !spindexer.isEjectorOut() && launchTimer.seconds() >= launchingTimeout){
+            launched = false;
+        }
+
+        // If nothing left to launch and nothing in progress, go idle
+        if (launchQueue.isEmpty() && !prepping && !launched && !spindexer.isEjectorOut()){
             moveToState(State.IDLE);
         }
 
@@ -189,6 +251,7 @@ public class OperatorStateMachine {
      * Transition from idle to intake
      */
     private void idleToIntake(){
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         intake.turnOn();
     }
     /**
@@ -198,13 +261,16 @@ public class OperatorStateMachine {
         for (int i = 0; i < 3; i++){
             addToQueue(COLORS.NONE);
         }
+
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         intake.turnOff();
-        launching = false;
+        prepping = false;
     }
     /**
      * Transition from intake to idle
      */
     private void intakeToIdle(){
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         intake.turnOff();
     }
     /**
@@ -212,20 +278,24 @@ public class OperatorStateMachine {
      */
     private void intakeToLaunch(){
         intake.turnOff();
-        launching = false;
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
+        prepping = false;
     }
     /**
      * Transition from launch to intake
      */
     private void launchToIntake(){
+
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         intake.turnOn();
-        launching = false;
+        prepping = false;
     }
     /**
      * Transition from idle to launch
      */
     private void idleToLaunch(){
-        launching = false;
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
+        prepping = false;
     }
     public List<COLORS> getLaunchQueue(){
         return launchQueue;
