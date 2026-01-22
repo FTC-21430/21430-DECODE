@@ -115,10 +115,12 @@ public class RedTeleop extends BaseTeleOp {
                 robot.operatorStateMachine.updateStateMachine();
             }
 
-            if (gamepad1.crossWasPressed()){
+            if (gamepad1.cross){
                 robot.aimBasedOnTags();
+                robot.driveTrain.setTurnPriority(1.0);
             }else{
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
+                robot.driveTrain.setTurnPriority(1.0);
             }
 
             //sets drive power and what gamepad does

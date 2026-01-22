@@ -552,18 +552,13 @@ public class AprilTagProcessorImplWithDistortionCorrection extends AprilTagProce
         cameraMatrix.put(2,1,0);
         cameraMatrix.put(2,2,1);
     }
-
-    private MatOfDouble distortionMatrix;
-    void constructDistortionMatrix(){
-        distortionMatrix = new MatOfDouble(1,5);
-
-        distortionMatrix.put(0,0,k1);
-        distortionMatrix.put(0,1,k2);
-        distortionMatrix.put(0,2,p1);
-        distortionMatrix.put(0,3,p2);
-        distortionMatrix.put(0,4,k3);
-
-    }
+private MatOfDouble distortionMatrix;
+void constructDistortionMatrix(){
+    // OpenCV's solvePnP accepts distortion coefficients as a MatOfDouble.
+    // Order: k1, k2, p1, p2, k3
+    distortionMatrix = new MatOfDouble();
+    distortionMatrix.put(0,0,k1,k2,p1,p2,k3);
+}
     /**
      * Converts an AprilTag pose to an OpenCV pose
      * @param aprilTagPose pose to convert

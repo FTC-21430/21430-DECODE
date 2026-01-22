@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
 
+@TeleOp
 public class LifterTeleop extends LinearOpMode {
 private Lifter lift = null;
     @Override
@@ -36,6 +39,8 @@ private Lifter lift = null;
             if (gamepad1.dpadDownWasPressed()){
                 lift.home();
             }
+            telemetry.addData("height", lift.getLiftPosition());
+            telemetry.update();
             lift.update();
         }
     }

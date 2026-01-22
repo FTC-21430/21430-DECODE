@@ -57,6 +57,7 @@ public class AprilTag {
         //The builder class is used to access multiple configurations for the aprilTagProcessor
         aprilTagProcessor = new AprilTagProcessorDistortion.Builder() {
         }
+//                .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561,0,0,0,0,0)
                 .setLensIntrinsics(589.64467121, 589.64467121, 632.98824788, 477.488107561,-0.00753294707714,-0.0434429780623,-0.000204665343261,-0.000333947477339,0.0136237457353)
                 .setCameraPose(new Position(DistanceUnit.MM, cameraX,cameraY,cameraZ,0),new YawPitchRollAngles(AngleUnit.DEGREES,-90,-90,0,0))
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
@@ -79,7 +80,7 @@ public class AprilTag {
         telemetry.update();
         setExposure(exposure);
 
-        aprilTagProcessor.setPoseSolver(AprilTagProcessorDistortion.PoseSolver.OPENCV_SOLVEPNP_EPNP);
+        aprilTagProcessor.setPoseSolver(AprilTagProcessorDistortion.PoseSolver.OPENCV_ITERATIVE);
 
     }
 
@@ -168,13 +169,13 @@ public class AprilTag {
     }
 
     // the getDistance function calculates the distance between the robot and the april tag
-    public double getDistance(String mode){
+    public double getDistance(String mode, double x, double y){
         locateAprilTags(mode);
         if (aprilTagID == 0) return lastDistance;
 
         double distance = 0.0;
-        double posX = getSpecific(aprilTagID).robotPose.getPosition().x;
-        double posY = getSpecific(aprilTagID).robotPose.getPosition().y;
+        double posX = x;
+        double posY = y;
         double goalX = getSpecific(aprilTagID).metadata.fieldPosition.get(0);
         double goalY = getSpecific(aprilTagID).metadata.fieldPosition.get(1);
         distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2)) - (cameraY / mmPerInch);
@@ -199,14 +200,14 @@ public class AprilTag {
 
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
-    public double getBearingToTag(String mode, Boolean isAuto){
+    public double getBearingToTag(String mode, Boolean isAuto, double x, double y){
 
         locateAprilTags(mode);
         if (aprilTagID == 0) return -1000;
         double angle;
 
-        double posX = getSpecific(aprilTagID).robotPose.getPosition().x;
-        double posY = getSpecific(aprilTagID).robotPose.getPosition().y;
+        double posX = x;
+        double posY = y;
         double goalX = 0;
         double goalY = 0;
         double coordinate_correction_offset = 0;
