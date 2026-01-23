@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class SpindexerServoFirmware {
     private final Servo spindexerServo; // Servo controlling the spindexer.
     private final double[] slots; // Degree values for each slot.
-    private final double DIRECTION; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
+    private double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
 
     // The servo degree that is the current target
     private double targetPosition = 0;
@@ -33,7 +33,7 @@ public class SpindexerServoFirmware {
     private double lastPosition;
     private boolean isJamed = false;
 
-    public static double jamThreshold = 0.1;
+    public static double jamThreshold = 0.001;
 
     private double lastTarget;
 
@@ -62,7 +62,7 @@ public class SpindexerServoFirmware {
         spindexerEncoderMotorInstance.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexerServo.setDirection(Servo.Direction.FORWARD);
         // Set direction based on spinClockwise parameter.
-        DIRECTION = spinClockwise ? 0.17 : 0.83;
+        direction = spinClockwise ? 0.17 : 0.83;
         deltaRuntime = new ElapsedTime();
         jamRuntime = new ElapsedTime();
         this.telemetry = telemetry;
@@ -72,10 +72,10 @@ public class SpindexerServoFirmware {
     // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
     // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
-    public static double warpSpeedExitTolerance = 60; // Tolerance for exiting warp speed.
+    public static double warpSpeedExitTolerance = 120; // Tolerance for exiting warp speed.
     private double encoderPosition = 0;
     public static double jamFreedTimeout = 0.18;
-    public static int jamsAmount = 8;
+    public static int jamsAmount = 16;
     /**
      * Updates the servo position based on the target position and tolerance.
      */
@@ -112,11 +112,15 @@ public class SpindexerServoFirmware {
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
 
         } else {
-            spindexerServo.setPosition(DIRECTION);
+            spindexerServo.setPosition(direction);
 
         }
     }
 
+
+    public void setDirection(boolean clockwise){
+        direction = clockwise? 0.17:0.83;
+    }
     /**
      * Sets the spindexer to a specific position in degrees.
      * @param position Target position in degrees.

@@ -44,7 +44,8 @@ public class OperatorStateMachine {
     // Logic to ensure that a launch is completed before it starts the next launch
     private boolean prepping = false;
     private boolean launched = false;
-    public static double launchingTimeout = 0.5;
+    public static double launchingTimeout = 0.1;
+    public static double sortingTimeout = 0.5;
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
@@ -196,6 +197,7 @@ public class OperatorStateMachine {
 
     }
 
+    private double currentLaunchTimeout = 0;
     /**
      * The launch state update method
      * Handles the logic for shooting the balls in the right order
@@ -214,6 +216,8 @@ public class OperatorStateMachine {
             spindexer.prepColor(toPrep);
             prepping = true;
             launcher.setGatePosition(true);
+            currentLaunchTimeout = toPrep != COLORS.NONE? sortingTimeout:launchingTimeout;
+
         }
 
 
