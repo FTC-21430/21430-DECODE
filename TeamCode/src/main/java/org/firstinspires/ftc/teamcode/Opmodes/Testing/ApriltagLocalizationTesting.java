@@ -24,7 +24,7 @@ public class ApriltagLocalizationTesting extends BaseTeleOp {
                 telemetry.addData("aprilY", robot.aprilTags.getRobotY());
                 telemetry.addData("aprilYaw", robot.aprilTags.getRobotAngle());
             }
-            robot.aimBasedOnTags();
+            robot.aimAtGoal();
             robot.bulkSensorBucket.clearCache();
             robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.aprilTags.clearCache();

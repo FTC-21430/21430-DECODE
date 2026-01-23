@@ -55,7 +55,7 @@ public class RedScrimmageTeleop extends BaseTeleOp {
                 robot.intake.setIntakePower(0);
             }
             if (gamepad1.cross){
-                robot.aimBasedOnTags();
+                robot.aimAtGoal();
             }else{
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
             }

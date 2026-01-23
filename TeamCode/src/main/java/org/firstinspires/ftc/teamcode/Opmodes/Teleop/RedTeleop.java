@@ -114,10 +114,12 @@ public class RedTeleop extends BaseTeleOp {
 
                 robot.operatorStateMachine.updateStateMachine();
             }
-
-            if (gamepad1.cross){
-                robot.aimBasedOnTags();
-                robot.driveTrain.setTurnPriority(1.0);
+            if (gamepad1.left_bumper){
+                robot.updateOdometryOnTags();
+            }
+            if (gamepad1.left_trigger > 0.2){
+                robot.aimAtGoal();
+                robot.driveTrain.setTurnPriority((gamepad1.left_trigger/2)+0.8);
             }else{
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
                 robot.driveTrain.setTurnPriority(1.0);

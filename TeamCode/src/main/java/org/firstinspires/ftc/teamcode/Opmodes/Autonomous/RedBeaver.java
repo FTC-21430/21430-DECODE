@@ -29,11 +29,11 @@ public class RedBeaver extends BaseAuto {
         }else{
             robot.chill(true,0.3);
         }
-        robot.aimBasedOnTags();
+        robot.aimAtGoal();
         robot.setLauncherBasedOnTags();
 
         robot.chill(true,0.3);
-        robot.aimBasedOnTags();
+        robot.aimAtGoal();
         autonomousLaunching(motifId);
 //
     }
@@ -53,7 +53,7 @@ public class RedBeaver extends BaseAuto {
         robot.chill(false,0.2);
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
-        robot.aimBasedOnTags();
+        robot.aimAtGoal();
         robot.chill(true,0.2);
         sortedLaunch(false, true);
         detectMotifWhileMoveTo(-39,40,210,10);
