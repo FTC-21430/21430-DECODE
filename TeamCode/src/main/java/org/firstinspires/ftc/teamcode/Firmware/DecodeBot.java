@@ -128,6 +128,7 @@ public abstract class DecodeBot extends Robot{
            return;
         }
         odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
+        rotationControl.setTargetAngle(aprilTags.getRobotAngle());
     }
     public void aimAtGoal(){
         double bearingToGoal = trajectoryKinematics.getBearingToTag(alliance, isAuto, odometry.getRobotX(),odometry.getRobotY());
