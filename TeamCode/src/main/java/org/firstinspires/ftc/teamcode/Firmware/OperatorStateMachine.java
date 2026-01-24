@@ -254,7 +254,8 @@ public class OperatorStateMachine {
                 runtime.reset();
                 launchTimeOuting = true;
             }
-            if (runtime.seconds() >= launcherTimeOut) {
+            if (runtime.seconds() >= launcherTimeOut && launchTimeOuting == true) {
+                launchTimeOuting = false;
                 moveToState(State.IDLE);
                 launcher.setGatePosition(false);
             }
