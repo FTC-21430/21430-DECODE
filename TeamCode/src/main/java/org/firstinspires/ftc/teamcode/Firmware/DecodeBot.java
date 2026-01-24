@@ -61,7 +61,7 @@ public abstract class DecodeBot extends Robot{
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
         trajectoryKinematics = new TrajectoryKinematics(isAuto);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
-        driveTrain = new MecanumDriveTrain(hardwareMap, telemetry);
+        driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
         launcher = new Launcher(hardwareMap,telemetry);
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
@@ -115,39 +115,22 @@ public abstract class DecodeBot extends Robot{
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         odometry.updateOdometry();
 //        operatorStateMachine.updateStateMachine();
+        aprilTags.clearCache();
     }
 
     // red or blue
     public void setAlliance(String alliance){
         this.alliance = alliance;
     }
-    public void aimBasedOnTags(){
 
-        if (aprilTags.isTag(alliance)) {
-            if (!isAuto) {
-                switch (alliance) {
-                    case "red":
-                        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle() - 90);
-                        break;
-                    case "blue":
-                        odometry.overridePosition(odometry.getRobotX(), odometry.getRobotY(), aprilTags.getRobotAngle() + 90);
-                        break;
-                }
-            } else {
-                switch (alliance) {
-                    case "red":
-                        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle() - 0);
-                        break;
-                    case "blue":
-                        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle() + 0);
-                }
-            }
+    public void updateOdometryOnTags(){
+        if (!aprilTags.isTag(alliance)) {
+           return;
         }
+        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
+    }
+    public void aimAtGoal(){
         double bearingToGoal = aprilTags.getBearingToTag(alliance, isAuto, odometry.getRobotX(),odometry.getRobotY());
-        if (bearingToGoal == -1000) return;
-        telemetry.addData("aprilTagAngle",bearingToGoal );
-        telemetry.addData("actualAngle",aprilTags.getRobotAngle());
-
         rotationControl.setTargetAngle(bearingToGoal);
     }
     public void setLauncherBasedOnTags(){

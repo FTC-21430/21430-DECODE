@@ -5,10 +5,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MecanumDriveTrain {
+    private static final Logger log = LoggerFactory.getLogger(MecanumDriveTrain.class);
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
@@ -20,6 +24,7 @@ public class MecanumDriveTrain {
     private double turnPriority = 1.0;
 
     private Telemetry telemetry;
+    private String alliance = "red";
     /**
      * constructor for mecanum drive train
      * -assigns motors from hardware map
@@ -27,8 +32,9 @@ public class MecanumDriveTrain {
      * -sets zero power behavior to brake
      * @param hardwareMap hardware map of robot
      */
-    public MecanumDriveTrain(HardwareMap hardwareMap, Telemetry telemetry) {
+    public MecanumDriveTrain(HardwareMap hardwareMap, Telemetry telemetry, String alliance) {
         this.telemetry = telemetry;
+        this.alliance = alliance;
         motorFL = hardwareMap.get(DcMotor.class, "fl");
         motorFR = hardwareMap.get(DcMotor.class, "fr");
         motorBL = hardwareMap.get(DcMotor.class, "bl");
@@ -97,6 +103,14 @@ public class MecanumDriveTrain {
      * @return
      */
     private List<Double> calculateFieldCentricDriving(double forwardPower, double sidewaysPower,double robotHeading){
+        switch (alliance){
+            case "red":
+                robotHeading+=90;
+                break;
+            case "blue":
+                robotHeading -= 90;
+                break;
+        }
         double fwdPower = forwardPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading));
         double sidePower = -forwardPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading));
         List<Double> power = new ArrayList<Double>();

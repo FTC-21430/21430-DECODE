@@ -201,16 +201,12 @@ public class AprilTag {
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
     public double getBearingToTag(String mode, Boolean isAuto, double x, double y){
-
-        locateAprilTags(mode);
-        if (aprilTagID == 0) return -1000;
         double angle;
-
         double posX = x;
         double posY = y;
         double goalX = 0;
         double goalY = 0;
-        double coordinate_correction_offset = 0;
+        double coordinate_correction_offset = 90;
         double FLYWHEEL_OFFSET = 0;
 
 
@@ -218,19 +214,11 @@ public class AprilTag {
             case "red":
                 goalX = -67.2;
                 goalY = 60;
-                coordinate_correction_offset = 0;
-                if (isAuto){
-                    coordinate_correction_offset += 90;
-                }
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
             case "blue":
                 goalX = -60.2;
                 goalY = -60;
-                coordinate_correction_offset = 180;
-                if (isAuto){
-                    coordinate_correction_offset -= 90;
-                }
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
         }
