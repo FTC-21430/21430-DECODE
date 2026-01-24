@@ -206,39 +206,6 @@ public class AprilTag {
         return aprilTagID != 0;
     }
 
-
-
-    // the getBearingToTag is used to turn the robot so it is facing the center of the tag
-    public double getBearingToTag(String mode, Boolean isAuto, double x, double y){
-        double angle;
-        double posX = x;
-        double posY = y;
-        double goalX = 0;
-        double goalY = 0;
-        double coordinate_correction_offset = 90;
-        double FLYWHEEL_OFFSET = 0;
-
-
-        switch (mode) {
-            case "red":
-                goalX = -67.2;
-                goalY = 60;
-                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
-                break;
-            case "blue":
-                goalX = -60.2;
-                goalY = -60;
-                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
-                break;
-        }
-
-        double x_difference = posX-goalX;
-        double y_difference = posY-goalY;
-
-        angle = 90+Math.toDegrees(Math.atan2(y_difference,x_difference));
-        return angle - FLYWHEEL_OFFSET + coordinate_correction_offset;
-
-    }
     // the getMotifID function gets the ID of the motif on the obelisk
     public int getMotifID(){
         //Still need to call detection telemetry for April tag id to be set
