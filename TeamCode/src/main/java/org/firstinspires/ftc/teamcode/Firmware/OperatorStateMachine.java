@@ -49,7 +49,7 @@ public class OperatorStateMachine {
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
-    private double launcherTimeOut = 0;
+    public static double launcherTimeOut = 0.5;
     private boolean launchTimeOuting = false;
 
     /**
@@ -253,10 +253,8 @@ public class OperatorStateMachine {
             if (!launchTimeOuting) {
                 runtime.reset();
                 launchTimeOuting = true;
-            } else {
-                launcherTimeOut = runtime.seconds();
             }
-            if (launcherTimeOut == 0.5) {
+            if (runtime.seconds() >= launcherTimeOut) {
                 moveToState(State.IDLE);
                 launcher.setGatePosition(false);
             }
