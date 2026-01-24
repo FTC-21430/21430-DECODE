@@ -123,8 +123,8 @@ public abstract class DecodeBot extends Robot{
         this.alliance = alliance;
     }
 
-    public void updateOdometryOnTags(){
-        if (aprilTags.updateAprilValues(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle())){
+    public void updateOdometryOnTags(boolean hardUpdate){
+        if (aprilTags.updateAprilValues(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle(),hardUpdate)){
             odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
         }
     }

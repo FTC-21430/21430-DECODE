@@ -258,15 +258,21 @@ public class AprilTag {
      * @param currentYaw from odometry
      * @return returns true if there is a found tag, false if there is not. Uses either red or blue goal to calibrate.
      */
-    public boolean updateAprilValues(double currentX, double currentY, double currentYaw) {
+    public boolean updateAprilValues(double currentX, double currentY, double currentYaw, boolean hardUpdate) {
         if (!isTag("both")) return false;
         double aprilX = getSpecific(aprilTagID).robotPose.getPosition().x;
         double aprilY = getSpecific(aprilTagID).robotPose.getPosition().y;
         double aprilYaw = getSpecific(aprilTagID).robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
 
-        x = filterAprilResult(currentX, aprilX);
-        y = filterAprilResult(currentY, aprilY);
-        angle = filterAprilResult(currentYaw, aprilYaw);
+        if (hardUpdate){
+            x = aprilX;
+            y = aprilY;
+            angle = aprilYaw;
+        }else {
+            x = filterAprilResult(currentX, aprilX);
+            y = filterAprilResult(currentY, aprilY);
+            angle = filterAprilResult(currentYaw, aprilYaw);
+        }
         return true;
     }
 
