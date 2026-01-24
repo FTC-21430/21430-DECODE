@@ -124,10 +124,9 @@ public abstract class DecodeBot extends Robot{
     }
 
     public void updateOdometryOnTags(){
-        if (!aprilTags.isTag(alliance)) {
-           return;
+        if (aprilTags.updateAprilValues(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle())){
+            odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
         }
-        odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
     }
     public void aimAtGoal(){
         double bearingToGoal = aprilTags.getBearingToTag(alliance, isAuto, odometry.getRobotX(),odometry.getRobotY());
