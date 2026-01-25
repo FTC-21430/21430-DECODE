@@ -124,8 +124,9 @@ public abstract class DecodeBot extends Robot{
     }
 
     public void updateOdometryOnTags(boolean hardUpdate){
-        if (aprilTags.updateAprilValues(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle(),hardUpdate)){
+        if (aprilTags.updateAprilValues(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle(),hardUpdate,alliance)){
             odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
+            rotationControl.setTargetAngle(aprilTags.getRobotAngle()-aprilTags.getRotationError());
         }
     }
     public void aimAtGoal(){

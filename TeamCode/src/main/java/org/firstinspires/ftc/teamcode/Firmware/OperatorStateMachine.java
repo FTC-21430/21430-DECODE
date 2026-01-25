@@ -245,7 +245,7 @@ public class OperatorStateMachine {
         // Wait for ejector to fully retract before allowing next cycle
         if (launched && !spindexer.isEjectorOut() && launchTimer.seconds() >= launchingTimeout){
             launched = false;
-            launcher.setGatePosition(false);
+//            launcher.setGatePosition(false);
         }
 
         // If nothing left to launch and nothing in progress, go idle
