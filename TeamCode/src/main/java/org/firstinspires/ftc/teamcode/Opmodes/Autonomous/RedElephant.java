@@ -50,20 +50,11 @@ public class RedElephant extends BaseAuto {
         //This is the starting location of the robot
         robot.odometry.overridePosition(-49.82,54.5782,125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
-        robot.chill(false,0.2);
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
         robot.aimAtGoal();
         robot.chill(true,0.2);
         sortedLaunch(false, true);
-        detectMotifWhileMoveTo(-39,40,210,10);
-        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-
-        //move to launch position
-        robot.autoMoveTo(-15.5, 19, 132, 8);
-        // launch preloads
-        robot.aimAtGoal();
-        autonomousLaunching(motifId);
 
         //move off the line
         robot.autoMoveTo(-50, 18, 90, 4);
