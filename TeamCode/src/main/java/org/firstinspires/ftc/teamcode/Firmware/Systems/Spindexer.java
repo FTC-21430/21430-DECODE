@@ -34,15 +34,15 @@ public class Spindexer {
     public static double ejectionTimein = 0.005;
     private final int SLOTH_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
-    private double ejectorOutPos = 0.7; // Position of the ejector when pushed out.
-    private double ejectorInPos = 0.42; // Position of the ejector when retracted.
+    private double ejectorOutPos = 0.8; // Position of the ejector when pushed out.
+    private double ejectorInPos = 0.545; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     private boolean ejectorOut = false;
 
-    public static double intakeOffSet = -5;
-    public static double launchOffSet = 6.0;
+    public static double intakeOffSet = 0;
+    public static double launchOffSet = 6.2;
     public static double idleOffSet = 20.0;
 
     public enum INDEX_TYPE{

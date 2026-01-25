@@ -35,6 +35,7 @@ public class AprilTag {
     public static double RED_OFFSET = -2;
     public static double BLUE_OFFSET = -6;
     private boolean hasChecked = false;
+    private double lastRotationError = 0;
 
     private double lastAngle = 0.0;
     private double lastDistance= 0.0;
@@ -115,6 +116,9 @@ public class AprilTag {
         if (detectedID.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
             telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detectedID.ftcPose.range, detectedID.ftcPose.bearing, detectedID.ftcPose.elevation));
+            telemetry.addData("aprilX", detectedID.robotPose.getPosition().x);
+            telemetry.addData("aprilY", detectedID.robotPose.getPosition().y);
+            telemetry.addData("aprilAngle", detectedID.robotPose.getOrientation().getYaw());
             aprilTagID = detectedID.id;
         }else{
             aprilTagID = 0;
@@ -201,6 +205,9 @@ public class AprilTag {
     public double getRobotAngle(){
         return angle;
     }
+    public double getRotationError(){
+        return lastRotationError;
+    }
     public boolean isTag(String mode){
         locateAprilTags(mode);
         return aprilTagID != 0;
@@ -218,6 +225,7 @@ public class AprilTag {
         }
     }
 
+
     /**
      * updates this classes x, y, and angle values using a basic common filter algorithm
      * @param currentX from odometry
@@ -225,8 +233,8 @@ public class AprilTag {
      * @param currentYaw from odometry
      * @return returns true if there is a found tag, false if there is not. Uses either red or blue goal to calibrate.
      */
-    public boolean updateAprilValues(double currentX, double currentY, double currentYaw, boolean hardUpdate) {
-        if (!isTag("both")) return false;
+    public boolean updateAprilValues(double currentX, double currentY, double currentYaw, boolean hardUpdate, String alliance) {
+        if (!isTag(alliance)) return false;
         double aprilX = getSpecific(aprilTagID).robotPose.getPosition().x;
         double aprilY = getSpecific(aprilTagID).robotPose.getPosition().y;
         double aprilYaw = getSpecific(aprilTagID).robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
@@ -236,22 +244,27 @@ public class AprilTag {
             y = aprilY;
             angle = aprilYaw;
         }else {
-            x = filterAprilResult(currentX, aprilX);
-            y = filterAprilResult(currentY, aprilY);
-            angle = filterAprilResult(currentYaw, aprilYaw);
+            x = filterAprilResult(currentX, aprilX,false);
+            y = filterAprilResult(currentY, aprilY,false);
+            angle = filterAprilResult(currentYaw, aprilYaw, true);
         }
         return true;
     }
 
+    public static double disallowedErrorThreshold = 20;
     /**
      * Scales a value with a common filter algorithm
      * @param currentValue the current value of what we think it is
      * @param aprilValue the new value we don't fully trust
      * @return the scaled value that will shift toward the right amount over time
      */
-    public double filterAprilResult(double currentValue, double aprilValue){
+    public double filterAprilResult(double currentValue, double aprilValue, boolean storeError){
         double error = aprilValue - currentValue;
+        if (Math.abs(error) > disallowedErrorThreshold) return currentValue;
+
         error *= filterScalar;
+        if (storeError) lastRotationError = error;
+
         return currentValue + error;
     }
 

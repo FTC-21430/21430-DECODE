@@ -8,59 +8,53 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
+import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
 @TeleOp
-public class LaunchTuningTesting extends LinearOpMode {
-
-    Launcher launcher;
-    Spindexer spindexer;
-    AprilTag aprilTagProcessing;
-
+public class LaunchTuningTesting extends BaseTeleOp {
     public static double angle = 0;
     public static double speed = 0;
-
     @Override
     public void runOpMode() throws InterruptedException {
-
+        initialize(true,false);
         // Init launcher
-        launcher = new Launcher(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,true,false);
-        GobildaPinpointModuleFirmware odometry = new GobildaPinpointModuleFirmware(hardwareMap,4.9574,2.78,true);
-
         // We don't want the flywheel running right now
-        launcher.setSpeed(0);
-
-        aprilTagProcessing = new AprilTag();
-        aprilTagProcessing.init(hardwareMap,telemetry,10);
+        robot.launcher.setSpeed(0);
+        robot.rotationControl.setTargetAngle(0);
+        robot.launcher.setGatePosition(true);
         waitForStart();
         while (opModeIsActive()){
-
-            launcher.setLaunchAngle(angle);
-            launcher.setSpeed(speed);
-            launcher.update();
-            telemetry.addData("readyForLaunch", launcher.isUpToSpeed());
-
+            robot.intake.setIntakePower(-0.6);
+            robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
+            robot.odometry.updateOdometry();
+            robot.updateOdometryOnTags(false);
+            robot.aimAtGoal();
+            robot.launcher.setLaunchAngle(angle);
+            robot.launcher.setSpeed(speed);
+            robot.launcher.update();
+            telemetry.addData("readyForLaunch", robot.launcher.isUpToSpeed());
             telemetry.addLine("-----------------------------");
             telemetry.addData("angle", angle);
             telemetry.addData("speed", speed);
-            telemetry.addData("distance", aprilTagProcessing.getDistance("red",odometry.getRobotX(),odometry.getRobotY()));
+            telemetry.addData("distance", robot.aprilTags.getDistance("red",robot.odometry.getRobotX(),robot.odometry.getRobotY()));
             telemetry.addLine("------------------------------");
-            if (aprilTagProcessing.isTag("red")) {
-                telemetry.addData("robotX", aprilTagProcessing.getRobotX());
-                telemetry.addData("robotY", aprilTagProcessing.getRobotY());
-                telemetry.addData("robotAngle", aprilTagProcessing.getRobotAngle());
+            if (robot.aprilTags.isTag("red")) {
+                telemetry.addData("robotX", robot.aprilTags.getRobotX());
+                telemetry.addData("robotY", robot.aprilTags.getRobotY());
+                telemetry.addData("robotAngle", robot.aprilTags.getRobotAngle());
             }
             telemetry.update();
-
             if (gamepad1.circleWasPressed()){
-                spindexer.moveToNextIndex();
+                robot.spindexer.moveToNextIndex();
             }
             if (gamepad1.crossWasPressed()){
-                spindexer.eject();
+                robot.spindexer.eject();
             }
-
-            spindexer.updateSpindexer();
+            robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
+            robot.bulkSensorBucket.clearCache();
+            robot.spindexer.updateSpindexer();
+            robot.aprilTags.clearCache();
         }
     }
 }

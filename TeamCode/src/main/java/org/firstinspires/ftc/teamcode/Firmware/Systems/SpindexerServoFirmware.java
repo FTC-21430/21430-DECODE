@@ -26,14 +26,14 @@ public class SpindexerServoFirmware {
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
     public static int positionTolerance = 45;
     // what the PWM signal is for the zero position of the servo
-    private double pwmAtZeroDegrees = 0.73;
+    public static double pwmAtZeroDegrees = 0.71;
 
     private double positionOffset = 0.0;
 
     private double lastPosition;
     private boolean isJamed = false;
 
-    public static double jamThreshold = 0.001;
+    public static double jamThreshold = 0.0001;
 
     private double lastTarget;
 
@@ -109,11 +109,12 @@ public class SpindexerServoFirmware {
         telemetry.addData("isAtTarget", isAtTarget());
         // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
         if (Math.abs(encoderPosition - targetPosition) <= warpSpeedExitTolerance){
-            spindexerServo.setPosition(degreesToServoPWM(targetPosition));
 
+            spindexerServo.setPosition(degreesToServoPWM(targetPosition));
+            telemetry.addData("SPIN output", degreesToServoPWM(targetPosition));
         } else {
             spindexerServo.setPosition(direction);
-
+            telemetry.addData("SPIN output", direction);
         }
     }
 
