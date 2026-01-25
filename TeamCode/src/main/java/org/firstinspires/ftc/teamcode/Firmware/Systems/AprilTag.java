@@ -35,6 +35,7 @@ public class AprilTag {
     public static double RED_OFFSET = -2;
     public static double BLUE_OFFSET = -6;
     private boolean hasChecked = false;
+    private double lastRotationError = 0;
 
     private double lastAngle = 0.0;
     private double lastDistance= 0.0;
@@ -48,6 +49,9 @@ public class AprilTag {
     public static double cameraX = 30;
     public static double cameraY = -144.5;
     public static double cameraZ = 350;
+
+    private double x, y, angle = 0;
+    public static double filterScalar = 0.1;
 
 
 
@@ -112,6 +116,9 @@ public class AprilTag {
         if (detectedID.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
             telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detectedID.ftcPose.range, detectedID.ftcPose.bearing, detectedID.ftcPose.elevation));
+            telemetry.addData("aprilX", detectedID.robotPose.getPosition().x);
+            telemetry.addData("aprilY", detectedID.robotPose.getPosition().y);
+            telemetry.addData("aprilAngle", detectedID.robotPose.getOrientation().getYaw());
             aprilTagID = detectedID.id;
         }else{
             aprilTagID = 0;
@@ -165,6 +172,12 @@ public class AprilTag {
             if (aprilTagID != 0) return;
             AprilTagDetection id23 = getSpecific(23);
             displayDetectionTelemetry(id23);
+        } else if (mode == "both"){
+            update();
+            AprilTagDetection id24 = getSpecific(24);
+            displayDetectionTelemetry(id24);
+            AprilTagDetection id20 = getSpecific(20);
+            displayDetectionTelemetry(id20);
         }
     }
 
@@ -184,13 +197,16 @@ public class AprilTag {
     }
     // Locate AprilTags must be called before this!
     public double getRobotX(){
-        return getSpecific(aprilTagID).robotPose.getPosition().x;
+        return x;
     }
     public double getRobotY(){
-        return getSpecific(aprilTagID).robotPose.getPosition().y;
+        return y;
     }
     public double getRobotAngle(){
-        return getSpecific(aprilTagID).robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
+        return angle;
+    }
+    public double getRotationError(){
+        return lastRotationError;
     }
     public boolean isTag(String mode){
         locateAprilTags(mode);
@@ -207,6 +223,49 @@ public class AprilTag {
         if (visionPortal !=null){
             visionPortal.close();
         }
+    }
+
+
+    /**
+     * updates this classes x, y, and angle values using a basic common filter algorithm
+     * @param currentX from odometry
+     * @param currentY from odometry
+     * @param currentYaw from odometry
+     * @return returns true if there is a found tag, false if there is not. Uses either red or blue goal to calibrate.
+     */
+    public boolean updateAprilValues(double currentX, double currentY, double currentYaw, boolean hardUpdate, String alliance) {
+        if (!isTag(alliance)) return false;
+        double aprilX = getSpecific(aprilTagID).robotPose.getPosition().x;
+        double aprilY = getSpecific(aprilTagID).robotPose.getPosition().y;
+        double aprilYaw = getSpecific(aprilTagID).robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
+
+        if (hardUpdate){
+            x = aprilX;
+            y = aprilY;
+            angle = aprilYaw;
+        }else {
+            x = filterAprilResult(currentX, aprilX,false);
+            y = filterAprilResult(currentY, aprilY,false);
+            angle = filterAprilResult(currentYaw, aprilYaw, true);
+        }
+        return true;
+    }
+
+    public static double disallowedErrorThreshold = 20;
+    /**
+     * Scales a value with a common filter algorithm
+     * @param currentValue the current value of what we think it is
+     * @param aprilValue the new value we don't fully trust
+     * @return the scaled value that will shift toward the right amount over time
+     */
+    public double filterAprilResult(double currentValue, double aprilValue, boolean storeError){
+        double error = aprilValue - currentValue;
+        if (Math.abs(error) > disallowedErrorThreshold) return currentValue;
+
+        error *= filterScalar;
+        if (storeError) lastRotationError = error;
+
+        return currentValue + error;
     }
 
     //This function is just returning the telemetry

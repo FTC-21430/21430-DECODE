@@ -49,6 +49,8 @@ public class OperatorStateMachine {
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
+    public static double launcherTimeOut = 0.5;
+    private boolean launchTimeOuting = false;
 
     /**
      * The constructor for this class, Stores all of the instances of the components of the robot
@@ -243,13 +245,20 @@ public class OperatorStateMachine {
         // Wait for ejector to fully retract before allowing next cycle
         if (launched && !spindexer.isEjectorOut() && launchTimer.seconds() >= launchingTimeout){
             launched = false;
-            launcher.setGatePosition(false);
+//            launcher.setGatePosition(false);
         }
 
         // If nothing left to launch and nothing in progress, go idle
         if (launchQueue.isEmpty() && !prepping && !launched && !spindexer.isEjectorOut()){
-            moveToState(State.IDLE);
-            launcher.setGatePosition(false);
+            if (!launchTimeOuting) {
+                runtime.reset();
+                launchTimeOuting = true;
+            }
+            if (runtime.seconds() >= launcherTimeOut && launchTimeOuting == true) {
+                launchTimeOuting = false;
+                moveToState(State.IDLE);
+                launcher.setGatePosition(false);
+            }
         }
 
         launcher.update();
