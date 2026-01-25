@@ -35,7 +35,7 @@ public class TrajectoryKinematics {
     // the return value for how fast the flywheel should go to achieve a launch. In degrees per second
     private double launchMagnitude = 0;
     public TrajectoryKinematics(boolean isAuto){
-        autonomousLaunchDecrement = isAuto? 30:30;
+        autonomousLaunchDecrement = isAuto? 00:00;
     }
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
@@ -105,7 +105,7 @@ public class TrajectoryKinematics {
         double d = 1029.23661;
 
         // Math.pow is the exponent function, this is a second degree polynomial that is tuning based on real world testing
-        return a * Math.pow(distance,3) + b * Math.pow(distance,2) + c * Math.pow(distance,1) + d - autonomousLaunchDecrement;
+        return a * Math.pow(distance,3) + b * Math.pow(distance,2) + c * Math.pow(distance,1) + d;
     }
 
     /**
