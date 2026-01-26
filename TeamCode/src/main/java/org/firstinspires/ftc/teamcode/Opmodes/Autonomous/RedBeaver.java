@@ -70,9 +70,9 @@ public class RedBeaver extends BaseAuto {
 
 //
 //        //The robot bumps the gate
-        detectMotifWhileMoveTo(-8.4,44,180,2.5);
+        detectMotifWhileMoveTo(-9.4,44,180,2.5);
 
-        detectMotifWhileMoveTo(-8.4,53.3,180,3);
+        detectMotifWhileMoveTo(-9.4,53.3,180,3);
         chillAndDetect(true,0.4);
 
 //

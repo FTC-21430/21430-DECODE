@@ -24,7 +24,7 @@ public class SpindexerServoFirmware {
     private double targetPosition = 0;
 
     // how many degrees of tolerance there will be for the isAtTarget() Function to return true
-    public static int positionTolerance = 45;
+    public static int positionTolerance = 38;
     // what the PWM signal is for the zero position of the servo
     public static double pwmAtZeroDegrees = 0.71;
 
@@ -76,6 +76,7 @@ public class SpindexerServoFirmware {
     private double encoderPosition = 0;
     public static double jamFreedTimeout = 0.18;
     public static int jamsAmount = 16;
+    private boolean hasReachedTarget = false;
     /**
      * Updates the servo position based on the target position and tolerance.
      */
@@ -111,10 +112,14 @@ public class SpindexerServoFirmware {
         if (Math.abs(encoderPosition - targetPosition) <= warpSpeedExitTolerance){
 
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
+            hasReachedTarget = true;
             telemetry.addData("SPIN output", degreesToServoPWM(targetPosition));
         } else {
-            spindexerServo.setPosition(direction);
-            telemetry.addData("SPIN output", direction);
+            if (!hasReachedTarget){
+                spindexerServo.setPosition(direction);
+                telemetry.addData("SPIN output", direction);
+            }
+
         }
     }
 
@@ -127,6 +132,7 @@ public class SpindexerServoFirmware {
      * @param position Target position in degrees.
      */
     public void setSpindexerPosition(double position){
+        hasReachedTarget = false;
 
         position += positionOffset;
 
@@ -186,9 +192,9 @@ public class SpindexerServoFirmware {
      */
     public double getEncoderPosition(){
 
-        double pos = this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition()) % 360;
+        double pos = Math.abs(this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition())) % 360;
         if (pos > 290) pos = pos - 360;
-        return pos;
+        return Math.abs(pos);
     }
 
     /**

@@ -8,17 +8,17 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 public class RedFar6And9 extends BaseAuto {
     private void sortedLaunch(boolean finalLaunch, boolean firstLaunch) {
         if (!firstLaunch) {
-            robot.autoMoveTo(52,1,60,2);
+            robot.autoMoveTo(52,19,170,2);
         }
         if (!finalLaunch) {
             if (firstLaunch) {
-                robot.autoMoveTo(52, 19, 7, 8);
+                robot.autoMoveTo(52, 19, 170, 8);
             } else {
-                robot.autoMoveTo(52, 19, 9, 8);
+                robot.autoMoveTo(52, 19, 170, 8);
             }
 
         } else {
-            robot.autoMoveTo(-35, 18, 116, 4);
+            robot.autoMoveTo(52, 19, 170, 8);
         }
         if (!firstLaunch) {
             robot.chill(true, 0.8);
@@ -36,7 +36,6 @@ public class RedFar6And9 extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         initialize(true, true);
         robot.setAlliance("red");
         robot.odometry.recalibrateIMU();
@@ -44,7 +43,7 @@ public class RedFar6And9 extends BaseAuto {
 
         waitForStart();
         //This is the starting location of the robot
-        robot.odometry.overridePosition(-49.82,54.5782,125.08);
+        robot.odometry.overridePosition(64,13,180);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         robot.chill(false,0.2);
         //This is the position that the robot moves to to shoot the first three balls
@@ -52,7 +51,36 @@ public class RedFar6And9 extends BaseAuto {
         robot.aimAtGoal();
         robot.chill(true,0.2);
         sortedLaunch(false, true);
-        detectMotifWhileMoveTo(-39,40,210,10);
+        //Move to corner set
+        //robot.autoMoveTo(,,,);
+        //Intake
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        //Move to launch zone
+        //robot.autoMoveTo(,,,);
+        //Launch
+        //robot.autoMoveTo(,,,);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
+        //Intake 2nd set
+        //robot.autoMoveTo(,,,);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        //Open gate
+        //robot.autoMoveTo(,,,);
+        //Launch 2nd from close zone
+        //robot.autoMoveTo(,,,);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
+        //Intake closest set
+        //robot.autoMoveTo(,,,);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        //Launch
+        //robot.autoMoveTo(,,,);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
+        //Intake 3rd set
+        //robot.autoMoveTo(,,,);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        //Launch from far
+        //robot.autoMoveTo(,,,);
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
+        //move off line
+        //robot.autoMoveTo(,,,);
     }
 }
