@@ -70,6 +70,9 @@ public class OperatorStateMachine {
         this.runtime = new ElapsedTime();
         this.gamepad2 = gamepad2;
         this.launchTimer = new ElapsedTime();
+        addToQueue(COLORS.NONE);
+        addToQueue(COLORS.NONE);
+        addToQueue(COLORS.NONE);
     }
 
     // Will Trigger the transition from one state to the next
@@ -280,6 +283,7 @@ public class OperatorStateMachine {
     private void idleToIntake(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         intake.turnOn();
+        intake.openGate();
     }
     /**
      * Transition from launch to idle
@@ -291,6 +295,7 @@ public class OperatorStateMachine {
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         intake.turnOff();
+        intake.openGate();
         prepping = false;
     }
     /**
@@ -299,12 +304,14 @@ public class OperatorStateMachine {
     private void intakeToIdle(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         intake.turnOff();
+        intake.closeGate();
     }
     /**
      * Transition from intake to launch
      */
     private void intakeToLaunch(){
         intake.turnOff();
+        intake.closeGate();
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
         prepping = false;
     }
@@ -315,6 +322,7 @@ public class OperatorStateMachine {
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         intake.turnOn();
+        intake.openGate();
         prepping = false;
     }
     /**
