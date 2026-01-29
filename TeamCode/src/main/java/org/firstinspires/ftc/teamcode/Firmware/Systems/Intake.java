@@ -28,10 +28,16 @@ public class Intake {
     public void turnOff(){
         setIntakePower(0);
     }
+    public void updateIntake(){
+        gate.updateGate();
+    }
     public void openGate(){
         gate.openGate();
     }
     public void closeGate(){
         gate.closeGate();
+    }
+    public boolean isGateStopped(){
+        return gate.isStopped();
     }
 }
