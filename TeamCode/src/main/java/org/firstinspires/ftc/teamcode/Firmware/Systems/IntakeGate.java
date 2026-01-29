@@ -21,10 +21,10 @@ public class IntakeGate {
     private Telemetry telemetry = null;
 
     /** Servo position used when the gate is closed. Range: 0.0 - 1.0 */
-    public static double closedPos = 1;
+    public static double closedPos = 0.92;
 
     /** Servo position used when the gate is open. Range: 0.0 - 1.0 */
-    public static double openPos = 0.892;
+    public static double openPos = 0.3;
 
     /**
      * Time in seconds to wait after commanding a motion before considering the gate stopped.

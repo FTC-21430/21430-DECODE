@@ -49,6 +49,7 @@ public class OperatorStateMachine {
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
+    private ElapsedTime preppingTimer = null;
     public static double launcherTimeOut = 0.5;
     private boolean launchTimeOuting = false;
 
@@ -70,6 +71,7 @@ public class OperatorStateMachine {
         this.runtime = new ElapsedTime();
         this.gamepad2 = gamepad2;
         this.launchTimer = new ElapsedTime();
+        this.preppingTimer =new ElapsedTime();
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
@@ -187,6 +189,7 @@ public class OperatorStateMachine {
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
             ballSampling = 0;
+            switchSampling = 0;
         } else{
             if (spindexer.isAtRest() && spindexer.getColorInIntake() != COLORS.NONE) {
                 ++ballSampling;
@@ -212,6 +215,8 @@ public class OperatorStateMachine {
     }
 
     private double currentLaunchTimeout = 0;
+    public static double preppingTimeout = 2;
+
     /**
      * The launch state update method
      * Handles the logic for shooting the balls in the right order
@@ -220,15 +225,13 @@ public class OperatorStateMachine {
         if (!(gamepad2.left_trigger >= 0.4)){
             intake.setIntakePower(0.1);
         }
-//        telemetry.addData("speed", launcher.getSpeed());
-//        telemetry.addData("up to speed", launcher.isUpToSpeed());
-//        telemetry.addData("get target speed", launcher.getTargetSpeed());
         setLauncherBasedOnTags.run();
 
         if (!launchQueue.isEmpty() && !prepping && !launched){
             COLORS toPrep = launchQueue.remove(0);
             spindexer.prepColor(toPrep);
             prepping = true;
+            preppingTimer.reset();
             launcher.setGatePosition(true);
             currentLaunchTimeout = toPrep != COLORS.NONE? sortingTimeout:launchingTimeout;
 
@@ -238,7 +241,7 @@ public class OperatorStateMachine {
         // When prepped and launcher is ready, eject and clear the stored color
 
 
-        if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed() && launcher.rampReady()){
+        if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed() && launcher.rampReady() && preppingTimer.seconds() >= preppingTimeout){
             spindexer.eject();
             prepping = false;
             launched = true;
@@ -248,16 +251,17 @@ public class OperatorStateMachine {
 
             int clearedIndex = spindexer.getCurrentIndexInLaunch() -1;
             if (clearedIndex < 0){
+                telemetry.speak("ERROR, negative launch clear index");
+
                 moveToState(State.IDLE);
                 spindexer.setColorIndexing(COLORS.NONE,COLORS.NONE,COLORS.NONE);
+            }else{
+                spindexer.clearColor(clearedIndex);
             }
-            spindexer.clearColor(clearedIndex);
         }
-
         // Wait for ejector to fully retract before allowing next cycle
         if (launched && !spindexer.isEjectorOut() && launchTimer.seconds() >= launchingTimeout){
             launched = false;
-//            launcher.setGatePosition(false);
         }
 
         // If nothing left to launch and nothing in progress, go idle
@@ -266,7 +270,7 @@ public class OperatorStateMachine {
                 runtime.reset();
                 launchTimeOuting = true;
             }
-            if (runtime.seconds() >= launcherTimeOut && launchTimeOuting == true) {
+            if (runtime.seconds() >= launcherTimeOut && launchTimeOuting) {
                 launchTimeOuting = false;
                 moveToState(State.IDLE);
                 launcher.setGatePosition(false);
@@ -297,6 +301,7 @@ public class OperatorStateMachine {
         intake.turnOff();
         intake.openGate();
         prepping = false;
+        launched = false;
     }
     /**
      * Transition from intake to idle
@@ -314,6 +319,7 @@ public class OperatorStateMachine {
         intake.closeGate();
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
         prepping = false;
+        launched = false;
     }
     /**
      * Transition from launch to intake
@@ -324,6 +330,7 @@ public class OperatorStateMachine {
         intake.turnOn();
         intake.openGate();
         prepping = false;
+        launched = false;
     }
     /**
      * Transition from idle to launch
@@ -331,6 +338,7 @@ public class OperatorStateMachine {
     private void idleToLaunch(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
         prepping = false;
+        launched = false;
     }
     public List<COLORS> getLaunchQueue(){
         return launchQueue;

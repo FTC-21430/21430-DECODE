@@ -73,6 +73,8 @@ public class Spindexer {
         }
     }
 
+    private int stoppedSampling = 0;
+
     /**
      * Updates the spindexer state, handling ejection and calibration timeouts.
      */
@@ -93,6 +95,11 @@ public class Spindexer {
             telemetry.addData("Encoder", getEncoderPosition());
             telemetry.addData("target", PADDLE_SERVO.getTargetPosition());
             PADDLE_SERVO.update(); // Updates the spindexer servo position.
+        if (PADDLE_SERVO.isAtTarget()){
+            ++stoppedSampling;
+        }else{
+            stoppedSampling = 0;
+        }
     }
 
     public void setIndexOffset(INDEX_TYPE type){
@@ -131,12 +138,6 @@ public class Spindexer {
                 } else if (indexColors[((launchIndex+1)%3)] != COLORS.NONE) {
                     moveIndexToLaunch(((launchIndex+1)%3)+1);
                 }else{
-                    for (int i = 0; i < 3; i++){
-                        if (!preppedCatalog[i]){
-                            moveIndexToLaunch(i+1);
-                            return;
-                        }
-                    }
                     moveToNextIndex();
                 }
             }
@@ -233,12 +234,14 @@ public class Spindexer {
         calibrating = true; // Sets the spindexer to calibration mode.
         RUNTIME.reset(); // Resets the timer for calibration timeout.
     }
+
+    public static int stoppedSamplingThreshold = 4;
     /**
      * Checks if the spindexer is at rest (not moving).
      * @return True if at rest, false otherwise.
      */
     public boolean isAtRest(){
-        return PADDLE_SERVO.isAtTarget();
+        return stoppedSampling >= stoppedSamplingThreshold;
     }
 
     public void refreshOffset(){
@@ -266,15 +269,16 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInLaunch(){
-        switch ((int) Math.round(PADDLE_SERVO.getTargetPosition()/120)){
+        switch ((int) Math.abs(Math.round(PADDLE_SERVO.getTargetPosition()/120))){
             case 0:
                 return 3;
             case 1:
                 return 1;
             case 2:
                 return 2;
+            default:
+                return 1;
         }
-        return -1;
     }
 
     /**

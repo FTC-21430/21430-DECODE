@@ -90,7 +90,7 @@ public class SpindexerServoFirmware {
                 isJamed = false;
             }
         } else {
-            boolean jam = Math.abs(lastPosition - encoderPosition) * getDeltaTime() < jamThreshold && Math.abs((getEncoderPosition()+positionOffset)-targetPosition) > 40;
+            boolean jam = Math.abs(lastPosition - encoderPosition) * getDeltaTime() < jamThreshold && !isAtTarget();
             if (jam) {
                 jamCount += 1;
             }else{
@@ -106,7 +106,7 @@ public class SpindexerServoFirmware {
         }
         telemetry.addData("jamCount", jamCount);
         telemetry.addData("isJamed", isJamed);
-        telemetry.addData("movement", Math.abs(lastPosition - encoderPosition) * getDeltaTime());
+        telemetry.addData("movement", Math.abs(lastPosition - encoderPosition) / getDeltaTime());
         telemetry.addData("isAtTarget", isAtTarget());
         // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
         if (Math.abs(encoderPosition - targetPosition) <= warpSpeedExitTolerance){
