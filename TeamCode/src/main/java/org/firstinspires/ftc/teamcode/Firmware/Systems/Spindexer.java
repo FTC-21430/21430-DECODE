@@ -42,7 +42,7 @@ public class Spindexer {
     private boolean ejectorOut = false;
 
     public static double intakeOffSet = 0;
-    public static double launchOffSet = 7.4;
+    public static double launchOffSet = 9.2;
     public static double idleOffSet = 20.0;
 
     public enum INDEX_TYPE{
@@ -167,7 +167,7 @@ public class Spindexer {
         double current_pos = PADDLE_SERVO.getEncoderPosition();
         double clockwiseTravel = pos - current_pos;
         double counterTravel = current_pos - pos;
-        if (clockwiseTravel > counterTravel) {
+        if (clockwiseTravel < counterTravel) {
             PADDLE_SERVO.setDirection(true);
         }else{
             PADDLE_SERVO.setDirection(false);
@@ -319,6 +319,9 @@ public class Spindexer {
     }
 
     public boolean getIntakeSwitch(){
+        telemetry.addData("intakeSwitch1", intakeLimitSwitchOne.getState());
+        telemetry.addData("intakeSwitch2", intakeLimitSwitchTwo.getState());
+
         return intakeLimitSwitchOne.getState() || intakeLimitSwitchTwo.getState();
     }
     public boolean isFull(){

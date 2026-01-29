@@ -172,23 +172,32 @@ public class OperatorStateMachine {
 
 
     private int ballSampling = 0;
+    private int switchSampling = 0;
+    public static int ballSamplingThreshold = 10;
+    public static int switchSamplingThreshold = 5;
     private void intakeState (){
-//        telemetry.addData("holdingIntake", holdingIntake);
-//        telemetry.addData("time", runtime.seconds());
-
         if (!(gamepad2.left_trigger >= 0.4)){
             intake.setIntakePower(-1);
         }
 
-        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= 20){
+        if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= ballSamplingThreshold || switchSampling > switchSamplingThreshold){
             spindexer.storeColorAtIndex();
             spindexer.moveToNextIndex();
             ballSampling = 0;
-        } else if (spindexer.isAtRest() && spindexer.getColorInIntake() != COLORS.NONE) {
-            ++ballSampling;
-        }else{
-            ballSampling = 0;
+        } else{
+            if (spindexer.isAtRest() && spindexer.getColorInIntake() != COLORS.NONE) {
+                ++ballSampling;
+            }else{
+                ballSampling = 0;
+            }
+            if (spindexer.isAtRest() && spindexer.getIntakeSwitch()){
+                ++switchSampling;
+            }else{
+                switchSampling = 0;
+            }
         }
+        telemetry.addData("ballSampling", ballSampling);
+        telemetry.addData("switchSampling", switchSampling);
 
         if (spindexer.isFull() && spindexer.isAtRest()){
             moveToState(State.IDLE);
