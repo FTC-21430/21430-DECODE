@@ -34,7 +34,8 @@ public class RedDolphin extends BaseAuto {
         autonomousLaunching(motifId);
 
         //move off the line
-        robot.autoMoveTo(40,58,180,2);
+        robot.autoMoveTo(60,45,180,6);
+        robot.chill(true, 0.4);
         //end auto
     }
 }
