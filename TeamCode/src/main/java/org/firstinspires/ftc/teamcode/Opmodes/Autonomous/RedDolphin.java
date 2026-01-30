@@ -15,10 +15,10 @@ public class RedDolphin extends BaseAuto {
         robot.setAlliance("red");
         robot.odometry.recalibrateIMU();
         robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
-
         while (opModeInInit()){
             int tempID = robot.aprilTags.getMotifID();
             if (tempID != 0) motifId = tempID;
+            telemetry.addData("TempID", tempID);
             telemetry.addData("CurrentMotif", motifId);
             telemetry.update();
         }
@@ -34,7 +34,8 @@ public class RedDolphin extends BaseAuto {
         autonomousLaunching(motifId);
 
         //move off the line
-        robot.autoMoveTo(40,58,180,2);
+        robot.autoMoveTo(60,45,180,6);
+        robot.chill(true,0.4);
         //end auto
     }
 }
