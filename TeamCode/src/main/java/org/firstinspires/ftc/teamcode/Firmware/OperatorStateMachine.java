@@ -44,13 +44,13 @@ public class OperatorStateMachine {
     // Logic to ensure that a launch is completed before it starts the next launch
     private boolean prepping = false;
     private boolean launched = false;
-    public static double launchingTimeout = 0.1;
-    public static double sortingTimeout = 0.5;
+    public static double launchingTimeout = 0.03;
+    public static double sortingTimeout = 0.15;
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
-    public static double launcherTimeOut = 0.5;
+    public static double launcherTimeOut = 0.3;
     private boolean launchTimeOuting = false;
 
     /**
@@ -178,8 +178,8 @@ public class OperatorStateMachine {
 
     private int ballSampling = 0;
     private int switchSampling = 0;
-    public static int ballSamplingThreshold = 10;
-    public static int switchSamplingThreshold = 5;
+    public static int ballSamplingThreshold = 5;
+    public static int switchSamplingThreshold = 12;
     private void intakeState (){
         if (!(gamepad2.left_trigger >= 0.4)){
             intake.setIntakePower(-1);
@@ -215,7 +215,7 @@ public class OperatorStateMachine {
     }
 
     private double currentLaunchTimeout = 0;
-    public static double preppingTimeout = 2;
+    public static double preppingTimeout = 0.01;
 
     /**
      * The launch state update method

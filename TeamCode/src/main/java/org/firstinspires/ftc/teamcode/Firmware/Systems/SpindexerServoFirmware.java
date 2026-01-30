@@ -72,7 +72,7 @@ public class SpindexerServoFirmware {
     // we get close enough to the target position that the servo will be in range (not in the gap area outside of its it's range)
     // At this point, we will directly address the servo PWM to the position that we are trying to stop at.
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
-    public static double warpSpeedExitTolerance = 120; // Tolerance for exiting warp speed.
+    public static double warpSpeedExitTolerance = 65; // Tolerance for exiting warp speed.
     private double encoderPosition = 0;
     private double rawEncoderPosition = 0;
     public static double jamFreedTimeout = 0.18;
@@ -123,7 +123,7 @@ public class SpindexerServoFirmware {
         }
     }
     private boolean isWithinPreciseControl(){
-        return getAngleDisplacement(encoderPosition, targetPosition) <= warpSpeedExitTolerance;
+        return getAngleDisplacement(Math.abs(encoderPosition), targetPosition) <= warpSpeedExitTolerance;
     }
     private void sensorUpdate(){
         lastRawPosition = rawEncoderPosition;
@@ -139,7 +139,6 @@ public class SpindexerServoFirmware {
         // returns true only if we should be moving at full speed and we are not moving how we should be.
         return !isCloseToTarget && isTooSlow;
     }
-
     
     private double getMovementVelocity(){
         double delta = getDeltaTime();
@@ -166,7 +165,7 @@ public class SpindexerServoFirmware {
         targetPosition = position;
 
         double delta = ((targetPosition - encoderPosition + 540.0) % 360.0) - 180.0; // normalized to (-180,180]
-        boolean spinClockwise = delta < 0.0;
+        boolean spinClockwise = delta >= 0.0;
         setDirection(spinClockwise);
 
         update();
@@ -218,7 +217,7 @@ public class SpindexerServoFirmware {
      * @return Encoder position in degrees.
      */
     public double getEncoderPosition(){
-        double pos =this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition()) % 360;
+        double pos = ((this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition())%360) + 360) % 360;
         return pos;
     }
     private double getRawEncoderPosition(){
@@ -310,6 +309,8 @@ public class SpindexerServoFirmware {
 
     }
     private double getAngleDisplacement(double a, double b){
+        a = Math.abs(a);
+        b = Math.abs(b);
         double rawError = a - b;
         final double degreesInRotation = 360;
         double normalizedError = Math.abs((rawError+180) % degreesInRotation -180);
