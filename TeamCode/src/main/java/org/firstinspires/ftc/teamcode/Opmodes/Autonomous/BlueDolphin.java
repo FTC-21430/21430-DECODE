@@ -24,17 +24,17 @@ public class BlueDolphin extends BaseAuto {
         }
         robot.setAlliance("blue");
         //This is the starting location of the robot
-        robot.odometry.overridePosition(64,-13,0);
+        robot.odometry.overridePosition(64,-13,-180);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         robot.chill(false,0.2);
 
-        robot.autoMoveTo(58,-13,15,4);
+        robot.autoMoveTo(58,-13,-165,4);
         // launch preloads
         robot.aimAtGoal();
         autonomousLaunching(motifId);
 
         //move off the line
-        robot.autoMoveTo(60,-45,0,6);
+        robot.autoMoveTo(60,-45,-180,6);
         robot.chill(true, 0.4);
         //end auto
     }
