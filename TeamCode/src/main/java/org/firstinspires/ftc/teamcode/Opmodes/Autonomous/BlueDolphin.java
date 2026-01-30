@@ -12,7 +12,7 @@ public class BlueDolphin extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true, true);
-        robot.setAlliance("red");
+        robot.setAlliance("blue");
         robot.odometry.recalibrateIMU();
         robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
 
@@ -22,7 +22,7 @@ public class BlueDolphin extends BaseAuto {
             telemetry.addData("CurrentMotif", motifId);
             telemetry.update();
         }
-        robot.setAlliance("red");
+        robot.setAlliance("blue");
         //This is the starting location of the robot
         robot.odometry.overridePosition(64,-13,0);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);

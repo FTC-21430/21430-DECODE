@@ -37,7 +37,7 @@ public class BlueFar6And9 extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true, true);
-        robot.setAlliance("red");
+        robot.setAlliance("blue");
         robot.odometry.recalibrateIMU();
         robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
 
