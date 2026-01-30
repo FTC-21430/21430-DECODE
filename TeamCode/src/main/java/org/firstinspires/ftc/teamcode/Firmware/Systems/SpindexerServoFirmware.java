@@ -30,10 +30,10 @@ public class SpindexerServoFirmware {
 
     private double positionOffset = 0.0;
 
-    private double lastPosition;
+    private double lastRawPosition;
     private boolean isJamed = false;
 
-    public static double jamThreshold = 0.0001;
+    public static double jamThreshold = 0.1;
 
     private double lastTarget;
 
@@ -74,24 +74,26 @@ public class SpindexerServoFirmware {
     // This is the solution to being able to always turn one way and also use the limited range servo features of this servo.
     public static double warpSpeedExitTolerance = 120; // Tolerance for exiting warp speed.
     private double encoderPosition = 0;
+    private double rawEncoderPosition = 0;
     public static double jamFreedTimeout = 0.18;
     public static int jamsAmount = 16;
     private boolean hasReachedTarget = false;
+    private double deltaTime = 0;
     /**
      * Updates the servo position based on the target position and tolerance.
      */
     public void update(){
-        lastPosition = encoderPosition;
-        encoderPosition = getEncoderPosition();
+        updateDeltaTime();
+        sensorUpdate();
 
         if (isJamed) {
             if (jamRuntime.seconds() >= jamFreedTimeout){
                 targetPosition = attemptedTarget;
+                hasReachedTarget = false;
                 isJamed = false;
             }
         } else {
-            boolean jam = Math.abs(lastPosition - encoderPosition) * getDeltaTime() < jamThreshold && !isAtTarget();
-            if (jam) {
+            if (checkForJam()) {
                 jamCount += 1;
             }else{
                 jamCount = 0;
@@ -106,11 +108,10 @@ public class SpindexerServoFirmware {
         }
         telemetry.addData("jamCount", jamCount);
         telemetry.addData("isJamed", isJamed);
-        telemetry.addData("movement", Math.abs(lastPosition - encoderPosition) / getDeltaTime());
+        telemetry.addData("movement", getMovementVelocity());
         telemetry.addData("isAtTarget", isAtTarget());
         // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
-        if (Math.abs(encoderPosition - targetPosition) <= warpSpeedExitTolerance){
-
+        if (isWithinPreciseControl()){
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
             hasReachedTarget = true;
             telemetry.addData("SPIN output", degreesToServoPWM(targetPosition));
@@ -119,11 +120,34 @@ public class SpindexerServoFirmware {
                 spindexerServo.setPosition(direction);
                 telemetry.addData("SPIN output", direction);
             }
-
         }
     }
+    private boolean isWithinPreciseControl(){
+        return getAngleDisplacement(encoderPosition, targetPosition) <= warpSpeedExitTolerance;
+    }
+    private void sensorUpdate(){
+        lastRawPosition = rawEncoderPosition;
+        rawEncoderPosition = getRawEncoderPosition();
+        encoderPosition = getEncoderPosition();
+    }
 
+    private boolean checkForJam(){
+        // check for if the spindexer is close enough to its target that it should be stopped.
+        boolean isCloseToTarget = getAngleDisplacement(encoderPosition, targetPosition) < positionTolerance;
+        double velocity = getMovementVelocity();
+        boolean isTooSlow = Math.abs(velocity) < jamThreshold;
+        // returns true only if we should be moving at full speed and we are not moving how we should be.
+        return !isCloseToTarget && isTooSlow;
+    }
 
+    
+    private double getMovementVelocity(){
+        double delta = getDeltaTime();
+        // correct delta time if it is zero to avoid divide by zero issues.
+
+        double velocity = (rawEncoderPosition - lastRawPosition)/delta; // angular velocity in deg / sec
+        return velocity;
+    }
     public void setDirection(boolean clockwise){
         direction = clockwise? 0.17:0.83;
     }
@@ -135,13 +159,16 @@ public class SpindexerServoFirmware {
         hasReachedTarget = false;
 
         position += positionOffset;
-
-        if (position > 360){
-            position = position % 360; // Wraps position within 360 degrees.
-        }
+        position = position % 360; // Wraps position within 360 degrees.
         position = clipPositionToRange(position);
+
         lastTarget = targetPosition;
         targetPosition = position;
+
+        double delta = ((targetPosition - encoderPosition + 540.0) % 360.0) - 180.0; // normalized to (-180,180]
+        boolean spinClockwise = delta < 0.0;
+        setDirection(spinClockwise);
+
         update();
     }
 
@@ -175,7 +202,7 @@ public class SpindexerServoFirmware {
      */
     public boolean isAtTarget(){
 
-        return Math.abs((getEncoderPosition()+positionOffset)-targetPosition) < positionTolerance && !isJamed;
+        return getAngleDisplacement(encoderPosition,targetPosition) < positionTolerance && !isJamed;
     }
 
     /**
@@ -191,10 +218,12 @@ public class SpindexerServoFirmware {
      * @return Encoder position in degrees.
      */
     public double getEncoderPosition(){
-
-        double pos = Math.abs(this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition())) % 360;
-        if (pos > 290) pos = pos - 360;
-        return Math.abs(pos);
+        double pos =this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition()) % 360;
+        return pos;
+    }
+    private double getRawEncoderPosition(){
+        double pos = this.encoderTicksToDegrees(spindexerEncoderMotorInstance.getCurrentPosition());
+        return pos;
     }
 
     /**
@@ -211,6 +240,8 @@ public class SpindexerServoFirmware {
     public void resetEncoderPosition(){
         spindexerEncoderMotorInstance.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         spindexerEncoderMotorInstance.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        sensorUpdate();
+        lastRawPosition = 0;
     }
 
     /**
@@ -259,16 +290,33 @@ public class SpindexerServoFirmware {
         return Range.clip(position, controlledRangeMinDegree, controlledRangeMaxDegree);
     }
 
+    private void updateDeltaTime(){
+        double time = deltaRuntime.seconds();
+        deltaRuntime.reset();
+        time = time <= 0? 0.0001:time;
+        deltaTime = time;
+
+    }
+
     /**
      * get milliseconds since this function was last called
      * @return
      */
     private double getDeltaTime(){
-        double time = deltaRuntime.milliseconds();
-        deltaRuntime.reset();
-        return time;
+        return deltaTime;
     }
     public boolean getIfJammed(){
         return isJamed;
+
+    }
+    private double getAngleDisplacement(double a, double b){
+        double rawError = a - b;
+        final double degreesInRotation = 360;
+        double normalizedError = Math.abs((rawError+180) % degreesInRotation -180);
+        return normalizedError;
+    }
+    public boolean isOverSlot(){
+        //TODO Make this happen, we are depricating this feature to do TIME CRUNCH!!!
+        return true;
     }
 }

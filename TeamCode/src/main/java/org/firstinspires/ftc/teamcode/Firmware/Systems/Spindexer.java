@@ -32,7 +32,7 @@ public class Spindexer {
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
     public static double ejectionTimeout = 0.145; // Timeout duration for ejection in seconds.
     public static double ejectionTimein = 0.08;
-    private final int SLOTH_INCREMENT = 120; // Degrees between slots.
+    private final int SLOT_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.8; // Position of the ejector when pushed out.
     private double ejectorInPos = 0.545; // Position of the ejector when retracted.
@@ -164,15 +164,7 @@ public class Spindexer {
             return;
         }
         if (ejecting) return;
-        double pos = (index * SLOTH_INCREMENT) % 360;
-        double current_pos = PADDLE_SERVO.getEncoderPosition();
-        double clockwiseTravel = pos - current_pos;
-        double counterTravel = current_pos - pos;
-        if (clockwiseTravel < counterTravel) {
-            PADDLE_SERVO.setDirection(true);
-        }else{
-            PADDLE_SERVO.setDirection(false);
-        }
+        double pos = (index * SLOT_INCREMENT) % 360;
         PADDLE_SERVO.setSpindexerPosition(pos);
     }
 
@@ -189,7 +181,7 @@ public class Spindexer {
             return;
         }
         if (ejecting) return;
-        double pos = ((index-1) * SLOTH_INCREMENT);
+        double pos = ((index-1) * SLOT_INCREMENT);
         PADDLE_SERVO.setSpindexerPosition(pos);
     }
 
@@ -219,7 +211,7 @@ public class Spindexer {
      * Ejects the current item if the spindexer is at a valid slot.
      */
     public void eject(){
-        if (PADDLE_SERVO.isAtTarget() && PADDLE_SERVO.getTargetPosition() % SLOTH_INCREMENT == 0){
+        if (PADDLE_SERVO.isAtTarget()){
             moveEjector(true); // Pushes the ejector out for ejection.
             RUNTIME.reset(); // Resets the timer for ejection timeout.
         }
@@ -253,12 +245,12 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInIntake(){
-        switch ((int) PADDLE_SERVO.getTargetPosition()){
+        switch ((int) Math.round(PADDLE_SERVO.getTargetPosition()/120)){
             case 0:
                 return 1;
-            case 120:
+            case 1:
                 return 2;
-            case 240:
+            case 2:
                 return 3;
         }
         return -1;
@@ -269,7 +261,7 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInLaunch(){
-        switch ((int) Math.abs(Math.round(PADDLE_SERVO.getTargetPosition()/120))){
+        switch ((int) Math.round(PADDLE_SERVO.getTargetPosition()/120)){
             case 0:
                 return 3;
             case 1:
