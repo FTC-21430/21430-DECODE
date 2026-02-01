@@ -34,6 +34,10 @@ public class TrajectoryKinematics {
     private double initialAngle = 0;
     // the return value for how fast the flywheel should go to achieve a launch. In degrees per second
     private double launchMagnitude = 0;
+
+    private double targetCorrectionX, targetCorrectionY;
+    public static double velocityScalarX = 0.1;
+    public static double velocityScalarY = 0.1;
     public TrajectoryKinematics(boolean isAuto){
         autonomousLaunchDecrement = isAuto? 00:00;
     }
@@ -61,6 +65,9 @@ public class TrajectoryKinematics {
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
         }
+
+        goalX += targetCorrectionX;
+        goalY += targetCorrectionY;
 
         double x_difference = posX-goalX;
         double y_difference = posY-goalY;
@@ -90,6 +97,11 @@ public class TrajectoryKinematics {
        double a = -0.18684;
        double b = 67.55822;
        return a * distance + b;
+    }
+
+    public void updateVelocities(double velocityX, double velocityY){
+        targetCorrectionX = velocityX * velocityScalarX;
+        targetCorrectionY = velocityY * velocityScalarY;
     }
 
     /**

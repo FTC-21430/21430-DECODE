@@ -131,6 +131,7 @@ public abstract class DecodeBot extends Robot{
         }
     }
     public void aimAtGoal(){
+        trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
         double bearingToGoal = trajectoryKinematics.getBearingToTag(alliance, isAuto, odometry.getRobotX(),odometry.getRobotY());
         rotationControl.setTargetAngle(bearingToGoal);
     }
