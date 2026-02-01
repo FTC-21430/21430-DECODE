@@ -100,8 +100,8 @@ public class TrajectoryKinematics {
     }
 
     public void updateVelocities(double velocityX, double velocityY){
-        targetCorrectionX = velocityX * velocityScalarX;
-        targetCorrectionY = velocityY * velocityScalarY;
+        targetCorrectionX = -velocityX * velocityScalarX;
+        targetCorrectionY = -velocityY * velocityScalarY;
     }
 
     /**
