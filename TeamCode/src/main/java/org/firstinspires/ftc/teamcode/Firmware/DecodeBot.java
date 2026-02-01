@@ -45,6 +45,7 @@ public abstract class DecodeBot extends Robot{
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
+    public static double idleSpeed = 1000;
     private boolean isAuto;
 
 //    public static double xOffset = -3.125;
@@ -73,7 +74,7 @@ public abstract class DecodeBot extends Robot{
         bulkSensorBucket.clearCache();
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
-        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2);
+        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics);
     }
 
     //the function used to move to a spot on the field during auto
@@ -141,6 +142,14 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+    }
+
+    public void revFlywheel(){
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+    }
+
+    public void idleFlywheel(){
+        launcher.setSpeed(idleSpeed);
     }
 
     public static double closeSpeed = 1200;
