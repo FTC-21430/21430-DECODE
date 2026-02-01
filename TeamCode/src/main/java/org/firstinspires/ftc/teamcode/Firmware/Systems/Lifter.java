@@ -22,15 +22,16 @@ public class Lifter {
     //TODO: Find and tune values
     //TODO: Find height values. These are not even guestimates! RANDOM NUMBERS!
     private double MIN_HEIGHT = 0;
-    private double MAX_HEIGHT = 1; // inches
+    private double MAX_HEIGHT = 21.5; // inches
     public static double DEFENCE_HEIGHT = 0.1;
     public static double HOMING_HEIGHT = 1;
     public static double FLOOR_CONTACT_HEIGHT = 0.4;
-    public static double MAX_ENCODER = 1; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
-    public static double pCon = 0;
+    public static double MAX_ENCODER = 2020; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
+    public static double pCon = 0.05;
     public static double iCon = 0;
     public static double dCon = 0;
     public static double fCon = 0;
+    public static double powerLimit = 0.1;
 
     private boolean unlached = false;
     //TODO: we should make the homing logic work
@@ -69,7 +70,7 @@ public class Lifter {
         rightLiftController = new PIDFController(pCon, iCon, dCon, fCon, new ElapsedTime());
 
         //Potentially reverse in the future, TODO:Check
-        liftLeft.setDirection(FORWARD);
+        liftLeft.setDirection(REVERSE);
         liftRight.setDirection(FORWARD);
         unlockLatches();
     }
@@ -110,8 +111,10 @@ public class Lifter {
                     liftLeft.setPower(0);
                     liftRight.setPower(0);
                 }else{
-                    liftLeft.setPower(leftLiftController.getPower());
-                    liftRight.setPower(rightLiftController.getPower());
+                    double powerL = leftLiftController.getPower()>powerLimit?powerLimit: leftLiftController.getPower();
+                    double powerR = rightLiftController.getPower()>powerLimit?powerLimit:leftLiftController.getPower();
+                    liftLeft.setPower(powerL);
+                    liftRight.setPower(powerR);
                 }
             }
         }else {
@@ -128,8 +131,10 @@ public class Lifter {
                 liftLeft.setPower(0);
                 liftRight.setPower(0);
             }else{
-                liftLeft.setPower(leftLiftController.getPower());
-                liftRight.setPower(rightLiftController.getPower());
+                double powerL = leftLiftController.getPower()>powerLimit?powerLimit: leftLiftController.getPower();
+                double powerR = rightLiftController.getPower()>powerLimit?powerLimit:leftLiftController.getPower();
+                liftLeft.setPower(powerL);
+                liftRight.setPower(powerR);
             }
         }
     }
