@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
-
-// This Autonomous is for when the robot starts in the close zone
 @Autonomous
 public class RedElephant extends BaseAuto {
+
     private void sortedLaunch(boolean finalLaunch, boolean firstLaunch){
         if (!firstLaunch) {
             robot.autoMoveTo(-15.5, 30, 195, 25);
@@ -38,8 +37,10 @@ public class RedElephant extends BaseAuto {
         autonomousLaunching(motifId);
 //
     }
+
     @Override
     public void runOpMode() throws InterruptedException {
+
         initialize(true, true);
         robot.setAlliance("red");
         robot.odometry.recalibrateIMU();
@@ -49,14 +50,17 @@ public class RedElephant extends BaseAuto {
         //This is the starting location of the robot
         robot.odometry.overridePosition(-49.82,54.5782,125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+        robot.chill(false,0.2);
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
         robot.aimAtGoal();
         robot.chill(true,0.2);
         sortedLaunch(false, true);
 
-        //move off the line
-        robot.autoMoveTo(-50, 18, 90, 4);
+////      park off of launch line and close to the gate to clear the classifier at teleop start
+        robot.autoMoveTo(-60, 18, 90, 4);
         robot.chill(true,0.2);
+
+
     }
 }

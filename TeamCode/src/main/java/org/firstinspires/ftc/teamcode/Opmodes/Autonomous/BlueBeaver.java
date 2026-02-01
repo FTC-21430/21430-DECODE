@@ -83,9 +83,9 @@ public class BlueBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-5,-43.7,-176,4);
+        detectMotifWhileMoveTo(-6.5,-45.7,-176,4);
 
-        detectMotifWhileMoveTo(16,-43.7,-177,4);
+        detectMotifWhileMoveTo(16,-45.7,-177,4);
 
 
         robot.chill(true, 0.2);
@@ -96,9 +96,9 @@ public class BlueBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(18.5,-43,-177,4);
+        robot.autoMoveTo(15.5,-44,-177,4);
         robot.chill(true,0.2);
-        robot.autoMoveTo(31,-43.7,-177,4);
+        robot.autoMoveTo(31,-44.7,-177,4);
         robot.chill(true, 0.2);
 
 

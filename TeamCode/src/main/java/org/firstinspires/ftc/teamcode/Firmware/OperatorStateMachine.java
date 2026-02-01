@@ -45,7 +45,7 @@ public class OperatorStateMachine {
     private boolean prepping = false;
     private boolean launched = false;
     public static double launchingTimeout = 0.03;
-    public static double sortingTimeout = 0.15;
+    public static double sortingTimeout = 0.23;
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;

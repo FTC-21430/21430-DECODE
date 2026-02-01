@@ -66,13 +66,13 @@ public class RedBeaver extends BaseAuto {
         detectMotifWhileMoveTo(-27,44,180,3);
 
 
-        detectMotifWhileMoveTo(-8,44,180,4);
+        detectMotifWhileMoveTo(-11,44,180,4);
 
 //
 //        //The robot bumps the gate
-        detectMotifWhileMoveTo(-5,44,180,2.5);
+        detectMotifWhileMoveTo(-7.5,44,180,2.5);
 
-        detectMotifWhileMoveTo(-3,53.3,180,3);
+        detectMotifWhileMoveTo(-7,53.3,180,3);
         chillAndDetect(true,0.4);
 
 //
@@ -82,9 +82,9 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-8,46,176,3);
+        detectMotifWhileMoveTo(-10,42.5,176,3);
 
-        detectMotifWhileMoveTo(15,46,177,4);
+        detectMotifWhileMoveTo(15,42.5,177,4);
 
 
         robot.chill(true, 0.2);
@@ -95,9 +95,9 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(18.5,44,175,4);
+        robot.autoMoveTo(15.5,40,175,4);
         robot.chill(true,0.2);
-        robot.autoMoveTo(29.3,44,175,4);
+        robot.autoMoveTo(31.3,40,175,4);
         robot.chill(true, 0.2);
 
 

@@ -74,6 +74,7 @@ public abstract class DecodeBot extends Robot{
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
         operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2);
+        driveTrain.setAlliance(alliance);
     }
 
     //the function used to move to a spot on the field during auto
@@ -122,6 +123,7 @@ public abstract class DecodeBot extends Robot{
     // red or blue
     public void setAlliance(String alliance){
         this.alliance = alliance;
+        driveTrain.setAlliance(alliance);
     }
 
     public void updateOdometryOnTags(boolean hardUpdate){

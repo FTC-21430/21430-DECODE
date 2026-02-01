@@ -51,12 +51,12 @@ public class TrajectoryKinematics {
 
         switch (mode) {
             case "red":
-                goalX = -67.2;
+                goalX = -66.7;
                 goalY = 60;
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
             case "blue":
-                goalX = -60.2;
+                goalX = -58.4;
                 goalY = -60;
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
