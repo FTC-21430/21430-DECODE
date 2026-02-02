@@ -13,6 +13,7 @@ private Lifter lift = null;
         lift = new Lifter(hardwareMap, telemetry);
         waitForStart();
         while (opModeIsActive()) {
+            lift.updateConstants();
             if (gamepad1.squareWasPressed()) {
                 //lift
                 lift.lift();
@@ -41,7 +42,9 @@ private Lifter lift = null;
             }
             telemetry.addData("height", lift.getLiftPosition());
             telemetry.update();
+
             lift.update();
+
         }
     }
 }
