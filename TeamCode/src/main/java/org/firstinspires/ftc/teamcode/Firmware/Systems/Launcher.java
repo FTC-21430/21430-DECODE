@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 /**
  * Controls the launcher system, including the flywheel speed.
@@ -21,6 +22,8 @@ public class Launcher {
     // so callers can know whether the gate is still moving (useful when sequencing shots).
     private final LauncherGate GATE;
 
+    private final TrajectoryKinematics TRAJECTORY_KINEMATICS;
+
     //the speed at which the flywheel remains when there is nothing to do :`(
     public double idleSpeed = 1000;
 
@@ -29,8 +32,7 @@ public class Launcher {
      * @param hardwareMap the hardware map to use
      * @param telemetry the telemetry to use
      */
-    public Launcher(HardwareMap hardwareMap, Telemetry telemetry){
-
+    public Launcher(HardwareMap hardwareMap, Telemetry telemetry, TrajectoryKinematics TRAJECTORY_KINEMATICS){
         // PID constants for flywheel speed control (values can be overridden with a different function) used only for flywheel initialization
         final double FLYWHELLSPEEDCONTROLP = 300;
         final double FLYWHELLSPEEDCONTROLI = 1;
@@ -47,6 +49,7 @@ public class Launcher {
         // the gate has finished moving.
         RAMP = new LauncherRamp(hardwareMap);
         GATE = new LauncherGate(hardwareMap,telemetry);
+        this.TRAJECTORY_KINEMATICS = TRAJECTORY_KINEMATICS;
         GATE.closeGate();
         RAMP.retract();
     }
@@ -67,16 +70,22 @@ public class Launcher {
         return FLYWHEEL.getCurrentSpeed();
     }
 
-    public double getIdleSpeed(){
-        return idleSpeed;
-    }
-
     /**
      * Gets the target flywheel speed.
      * @return the target speed in degrees per second
      */
     public double getTargetSpeed(){
         return FLYWHEEL.getTargetSpeed();
+    }
+
+    // this allows the operator rev flywheel before launching, decreasing wait time
+    public void revFlywheel(){
+        setSpeed(TRAJECTORY_KINEMATICS.getLaunchMagnitude());
+    }
+
+    //this sets the flywheel to the base speed it's at while driving around
+    public void idleFlywheel(){
+        setSpeed(idleSpeed);
     }
 
     /**

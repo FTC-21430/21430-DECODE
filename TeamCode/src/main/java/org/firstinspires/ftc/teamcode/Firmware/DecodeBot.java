@@ -62,7 +62,7 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics = new TrajectoryKinematics(isAuto);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
-        launcher = new Launcher(hardwareMap,telemetry);
+        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
@@ -141,16 +141,6 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
-    }
-
-    // this allows the operator rev flywheel before launching, decreasing wait time
-    public void revFlywheel(){
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
-    }
-
-    //this sets the flywheel to the base speed it's at while driving around
-    public void idleFlywheel(){
-        launcher.setSpeed(launcher.getIdleSpeed());
     }
 
     public static double closeSpeed = 1200;

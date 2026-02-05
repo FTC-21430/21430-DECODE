@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
+import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 // uncomment Config to use FTC dashboard
 @Config
@@ -25,7 +26,7 @@ public class LauncherRampTesting extends BaseTeleOp {
     public void runOpMode() throws InterruptedException {
 
         // Init launcher
-        launcher = new Launcher(hardwareMap, telemetry);
+        launcher = new Launcher(hardwareMap, telemetry, new TrajectoryKinematics(false));
         // We don't want the flywheel running right now
         launcher.setSpeed(0);
 

@@ -42,8 +42,6 @@ public class RedTeleop extends BaseTeleOp {
                 }
             }
 
-
-
             if (manualMode){
                 if (gamepad2.squareWasPressed()){
                     robot.spindexer.moveToNextIndex();
@@ -110,9 +108,9 @@ public class RedTeleop extends BaseTeleOp {
                     }
                 }
                 if (gamepad2.triangle){
-                    robot.revFlywheel();
+                    robot.launcher.revFlywheel();
                 } else {
-                    robot.idleFlywheel();
+                    robot.launcher.idleFlywheel();
                 }
 
                 robot.operatorStateMachine.updateStateMachine();

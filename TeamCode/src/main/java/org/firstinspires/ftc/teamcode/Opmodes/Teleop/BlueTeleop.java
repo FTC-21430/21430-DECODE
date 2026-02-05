@@ -83,7 +83,7 @@ public class BlueTeleop extends BaseTeleOp {
                 } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                     robot.driveTrain.setSpeedMultiplier(1);
                 }
-                if (gamepad2.triangleWasPressed()){
+                if (gamepad1.crossWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
                 if (gamepad2.circleWasPressed()){
@@ -108,6 +108,11 @@ public class BlueTeleop extends BaseTeleOp {
                     for (int i = 0; i < 3; i++){
                         robot.spindexer.clearColor(i);
                     }
+                }
+                if (gamepad2.triangle){
+                    robot.launcher.revFlywheel();
+                } else {
+                    robot.launcher.idleFlywheel();
                 }
 
                 robot.operatorStateMachine.updateStateMachine();
