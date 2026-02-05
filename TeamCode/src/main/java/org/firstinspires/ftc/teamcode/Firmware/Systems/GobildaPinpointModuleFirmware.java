@@ -19,8 +19,8 @@ public class GobildaPinpointModuleFirmware {
 //    stored x and y and angle components
     private double robotX, robotY; // in inches
     private double robotAngle; // in degrees
+    // These are the current velocities of the robot, updates each iteration.
     private double velocityX, velocityY;
-    private double lastTime = 0;
     private double time;
     private Telemetry telemetry;
     private ElapsedTime runtime;
@@ -47,7 +47,6 @@ public class GobildaPinpointModuleFirmware {
         }
 
         runtime = new ElapsedTime();
-        lastTime = runtime.seconds();
     }
 
     /**
@@ -55,6 +54,7 @@ public class GobildaPinpointModuleFirmware {
      * Call this every iteration to ensure non-stale values (stale = old from a different moment in time)
      */
     public void updateOdometry(){
+        // store the last iterations values so we can calculate the velocities!
         lastRobotX= robotX;
         lastRobotY = robotY;
 
@@ -76,7 +76,6 @@ public class GobildaPinpointModuleFirmware {
     }
     // returns the time between loop iterations - resets between calls!
     private double getDeltaTime(){
-        lastTime = time;
         time = runtime.seconds();
         runtime.reset();
         return time;
@@ -112,8 +111,6 @@ public class GobildaPinpointModuleFirmware {
     public void overridePosition(double x, double y, double angle){
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,x,y, AngleUnit.DEGREES,angle));
         updateOdometry();
-        lastRobotY = robotY;
-        lastRobotX = robotX;
     }
 
     // just reset the IMU value to 0, but don't change anything else or recalibrate
