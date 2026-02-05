@@ -1,19 +1,44 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
-
 import java.util.ArrayList;
 
-// The goal of this class is to input in the distance from the april tag and return the needed launch angle and speed to hit the goal
+/**
+ * TrajectoryKinematics
+
+ * Utility class used to estimate launcher ramp angle and flywheel speed needed to score
+ * into the goal from a measured distance. This class uses simple regression functions
+ * (tuned from empirical testing) to convert a distance in inches to:
+ * - an initial ramp angle in degrees
+ * - a flywheel speed (magnitude) in degrees per second
+
+ * Important notes and assumptions:
+ * - All distances are in inches unless otherwise noted.
+ * - Angles are in degrees.
+ * - Flywheel "magnitude" is treated as degrees per second (an angular velocity command
+ *   for the flywheel motor controller).
+ * - The regression functions here are based on limited prototype testing. They are
+ *   intended as simple mapping functions and should be re-tuned with larger datasets
+ *   for production use.
+ * - This class does not perform physical ballistic calculations. Instead it returns
+ *   values from tuned regression polynomials (see {@link #angleRegression} and
+ *   {@link #magnitudeRegression}).
+ *
+ * Thread-safety: This class is not synchronized. If accessed concurrently from multiple
+ * threads (for example multiple opmodes), callers should ensure external synchronization
+ * or use separate instances.
+ */
 public class TrajectoryKinematics {
-    // A list of values that the angles have been measured at. The order of these values need to be related to the angles and magnitudes list.
-    // TODO: these values need to be tuned in a sample size of every 5 inches. Current values were from early season prototype testing
-    // NOTE: these values are not actually used, but are the values that the regression functions were made. These values were really calculated in Desmos Graphing Calculator
+    // A list of example sample distances/angles/magnitudes used for deriving the
+    // regression functions (kept here for reference). These arrays are not used
+    // directly by the calculation methods below but represent the tuning dataset.
+    // NOTE: These were collected from early-season prototype testing and should be
+    // replaced with larger, regularly spaced data (for example every 5 inches).
+    @SuppressWarnings("unused")
     private final double[] distances = {
             24,
             81,
@@ -22,12 +47,14 @@ public class TrajectoryKinematics {
 
     };
 
+    @SuppressWarnings("unused")
     private final double[] angles = {
             20,
             35,
             35,
             35
     };
+    @SuppressWarnings("unused")
     private final double[] magnitudes = {
             1100,
             1400,
@@ -35,51 +62,102 @@ public class TrajectoryKinematics {
             1750,
     };
 
-    private double autonomousLaunchDecrement = 0;
-
-    // The return value for the angle of the ramp. - in degrees
+    // The computed initial ramp angle (degrees).
     private double initialAngle = 0;
-    // the return value for how fast the flywheel should go to achieve a launch. In degrees per second
+    // The computed flywheel speed (degrees per second).
     private double launchMagnitude = 0;
+
+    // Corrections applied to the goal coordinates to compensate for robot motion.
+    // These offsets are in the same units as goal coordinates (inches).
+    private double targetCorrectionX, targetCorrectionY;
+
+    // Scalars that convert robot velocity (units depend on caller) into a positional
+    // correction for the target. Typical usage: updateVelocities() multiplies the
+    // provided velocity by these scalars to compute a small offset to the aim point.
+    // The units and meaning of velocityX/velocityY should be consistent with the
+    // chosen scalars (for example inches per second * seconds-of-lag -> inches).
+    public static double velocityScalarX = 0.1;
+    public static double velocityScalarY = 0.1;
+
+    /**
+     * Create a TrajectoryKinematics instance.
+     *
+     * @param isAuto true if the instance will be used in autonomous mode. Currently
+     *               this parameter is accepted for API compatibility but not used.
+     */
     public TrajectoryKinematics(boolean isAuto){
-        autonomousLaunchDecrement = isAuto? 00:00;
+        // Intentionally left blank. Previously there was an autonomous adjustment
+        // variable here; it was removed because it was not used. Keep the
+        // constructor argument for compatibility with existing callers.
     }
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
+    /**
+     * Compute a heading (bearing) that points the robot toward the center of the goal
+     * (april tag). This function converts the robot's (x,y) position and the selected
+     * alliance color into an absolute bearing (degrees) that the robot should face.
+     *
+     * Notes on units and coordinate system:
+     * - posX / posY are the robot's position in the same coordinate system as the
+     *   goalX/goalY constants (inches).
+     * - The returned heading is in degrees and includes a fixed coordinate correction
+     *   offset for the robot's mounting and components.
+     *
+     * @param mode "red" or "blue" alliance; selects a different goal coordinate.
+     * @param isAuto not currently used inside the method (kept for API compatibility).
+     * @param x robot X position (inches)
+     * @param y robot Y position (inches)
+     * @return heading in degrees the robot should face to aim at the goal
+     */
+    @SuppressWarnings("unused")
     public double getBearingToTag(String mode, Boolean isAuto, double x, double y){
         double angle;
-        double posX = x;
-        double posY = y;
         double goalX = 0;
         double goalY = 0;
+        // coordinate correction applied to the final output to align robot coordinate frame
         double coordinate_correction_offset = 90;
+        // small angular offset to account for the flywheel being offset from the robot center
         double FLYWHEEL_OFFSET = 0;
 
 
         switch (mode) {
             case "red":
+                // These are empirically set goal coordinates (inches) for the red alliance
                 goalX = -67.2;
                 goalY = 60;
+                // Geometry: Math.atan(5/123.5) represents a small angular offset due to
+                // the flywheel's vertical/horizontal displacement relative to the robot
+                // center. The numbers are empirical and should be documented in design notes.
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
             case "blue":
+                // Empirically determined goal coordinates (inches) for the blue alliance
                 goalX = -60.2;
                 goalY = -60;
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
         }
 
-        double x_difference = posX-goalX;
-        double y_difference = posY-goalY;
+        // Apply small corrections that compensate for robot motion or measurement bias.
+        goalX += targetCorrectionX;
+        goalY += targetCorrectionY;
 
+        double x_difference = x - goalX;
+        double y_difference = y - goalY;
+
+        // atan2 arguments are (y, x) but here we want the bearing relative to robot axes.
+        // Convert to degrees and offset to match the robot's heading convention.
         angle = 90+Math.toDegrees(Math.atan2(y_difference,x_difference));
         return angle - FLYWHEEL_OFFSET + coordinate_correction_offset;
 
     }
 
     /**
-     * Updates the return variables based on the two regression functions
-     * @param distanceInches Inches, the distance from the front (camera side) of the robot and the april tag.
+     * Updates the computed trajectory values (initialAngle and launchMagnitude) using
+     * the tuned regression functions. Call this before retrieving values via
+     * {@link #getInitialAngle} and {@link #getLaunchMagnitude}.
+     *
+     * @param distanceInches distance from front of robot to april tag (inches)
      */
     public void calculateTrajectory(double distanceInches) {
    // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
@@ -88,21 +166,47 @@ public class TrajectoryKinematics {
     }
 
     /**
-     * the regression function tuned by Desmos calculator and based on real world testing data.
-     * @param distance Inches, the distance from the front (camera side) of the robot and the april tag.
-     * @return returns the angle the ramp needs to be to hit the goal from the given distance
+     * Regression mapping from distance (inches) to launcher ramp angle (degrees).
+     * Implementation detail: this is a simple linear fit (tuned empirically). If
+     * you expect distances outside the measured range, re-tune the regression and/or
+     * clamp values appropriately.
+     *
+     * @param distance Inches from front (camera side) of the robot to the april tag
+     * @return ramp angle in degrees
      */
     private double angleRegression(double distance){
-        // values a-e represent the tuning values of this 4th degree polynomial calculated by Desmos using the distance and angle values above
+        // values a-e represent the tuning values of this 1st-degree polynomial
        double a = -0.18684;
        double b = 67.55822;
        return a * distance + b;
     }
 
     /**
-     * The regression function for flywheel speed tuned by Desmos calculator and based on real world testing data.
-     * @param distance Inches, the distance from the front (camera side) of the robot and the april tag.
-     * @return degrees per second, the speed the flywheel needs to be to hit the goal from the given distance
+     * Update the target corrections from measured robot velocity. The method uses
+     * small scalar factors (see {@link #velocityScalarX} and {@link #velocityScalarY})
+     * to convert velocity into a positional offset for the aim point.
+     *
+     * Example: if the robot is moving forward, the aim should lead the target in the
+     * direction of motion to compensate for travel during the projectile's flight time.
+     *
+     * @param velocityX robot velocity along X (units depend on caller; scalars convert to inches)
+     * @param velocityY robot velocity along Y (units depend on caller; scalars convert to inches)
+     */
+    public void updateVelocities(double velocityX, double velocityY){
+        targetCorrectionX = -velocityX * velocityScalarX;
+        targetCorrectionY = -velocityY * velocityScalarY;
+    }
+
+    /**
+     * Regression mapping from distance (inches) to flywheel angular speed
+     * (degrees per second). This polynomial was tuned from prototype testing.
+     *
+     * Implementation details:
+     * - The polynomial uses a cubic term plus quadratic, linear, and constant terms.
+     * - If you change units for distance, update these coefficients accordingly.
+     *
+     * @param distance Inches from front (camera side) of the robot to the april tag.
+     * @return flywheel speed in degrees per second
      */
     private double magnitudeRegression(double distance){
         //quadratic tuning values
@@ -116,16 +220,18 @@ public class TrajectoryKinematics {
     }
 
     /**
-     * Getter for initial angle
-     * @return degrees
+     * Getter for initial angle (degrees). Call {@link #calculateTrajectory} first.
+     *
+     * @return computed ramp angle in degrees
      */
     public double getInitialAngle(){
         return initialAngle;
     }
 
     /**
-     * getter for the flywheel speed
-     * @return degrees per second
+     * getter for the flywheel speed (degrees per second). Call {@link #calculateTrajectory} first.
+     *
+     * @return computed flywheel angular velocity (degrees/sec)
      */
     public double getLaunchMagnitude(){
         return launchMagnitude;

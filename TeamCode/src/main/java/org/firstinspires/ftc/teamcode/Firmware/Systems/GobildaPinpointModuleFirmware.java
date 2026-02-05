@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -12,12 +14,16 @@ public class GobildaPinpointModuleFirmware {
 
     // variable location for stored pinpoint from hardware map
     private final GoBildaPinpointDriver pinpoint;
+    private double lastRobotX, lastRobotY;
 
 //    stored x and y and angle components
     private double robotX, robotY; // in inches
     private double robotAngle; // in degrees
-
+    // These are the current velocities of the robot, updates each iteration.
+    private double velocityX, velocityY;
+    private double time;
     private Telemetry telemetry;
+    private ElapsedTime runtime;
     /**
      * Constructor for this class.
      * @param hardwareMap used to get the module from hardware map
@@ -39,6 +45,8 @@ public class GobildaPinpointModuleFirmware {
             pinpoint.resetPosAndIMU();
             pinpoint.recalibrateIMU();
         }
+
+        runtime = new ElapsedTime();
     }
 
     /**
@@ -46,12 +54,31 @@ public class GobildaPinpointModuleFirmware {
      * Call this every iteration to ensure non-stale values (stale = old from a different moment in time)
      */
     public void updateOdometry(){
+        // store the last iterations values so we can calculate the velocities!
+        lastRobotX= robotX;
+        lastRobotY = robotY;
+
         pinpoint.update();
         Pose2D position =  pinpoint.getPosition();
 //        Our frame of reference and the gobilda frame of reference is different, so you units needed to change.
         robotX = position.getX(DistanceUnit.INCH);
         robotY = position.getY(DistanceUnit.INCH);
         robotAngle = Math.toDegrees(pinpoint.getHeading(UnnormalizedAngleUnit.RADIANS));
+
+        updateVelocity();
+
+    }
+    // Updates the velocityX and velocityY variables based new robot variables. MUST CALL WITHIN updateOdometry()!
+    private void updateVelocity(){
+        double dt = getDeltaTime();
+        velocityX = (robotX - lastRobotX)/dt;
+        velocityY = (robotY - lastRobotY)/dt;
+    }
+    // returns the time between loop iterations - resets between calls!
+    private double getDeltaTime(){
+        time = runtime.seconds();
+        runtime.reset();
+        return time;
     }
 
     // getter for robot X - Inches from center of field, facing from red alliance station
@@ -66,6 +93,14 @@ public class GobildaPinpointModuleFirmware {
     public double getRobotAngle(){
         return robotAngle;
     }
+    // getter for the velocityX variable
+    public double getVelocityX(){
+        return velocityX;
+    }
+    // getter for the velocityY variable
+    public double getVelocityY(){
+        return velocityY;
+    }
 
     /**
      * Override the position of the robot based on external localisation values
@@ -75,6 +110,7 @@ public class GobildaPinpointModuleFirmware {
      */
     public void overridePosition(double x, double y, double angle){
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,x,y, AngleUnit.DEGREES,angle));
+        updateOdometry();
     }
 
     // just reset the IMU value to 0, but don't change anything else or recalibrate
