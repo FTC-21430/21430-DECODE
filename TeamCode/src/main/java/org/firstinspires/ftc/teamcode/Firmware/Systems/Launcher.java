@@ -21,6 +21,9 @@ public class Launcher {
     // so callers can know whether the gate is still moving (useful when sequencing shots).
     private final LauncherGate GATE;
 
+    //the speed at which the flywheel remains when there is nothing to do :`(
+    public double idleSpeed = 1000;
+
     /**
      * Constructs a Launcher with the given hardware map and telemetry.
      * @param hardwareMap the hardware map to use
@@ -62,6 +65,10 @@ public class Launcher {
      */
     public double getSpeed(){
         return FLYWHEEL.getCurrentSpeed();
+    }
+
+    public double getIdleSpeed(){
+        return idleSpeed;
     }
 
     /**

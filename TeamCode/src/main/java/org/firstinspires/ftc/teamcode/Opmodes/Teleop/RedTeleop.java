@@ -20,8 +20,6 @@ public class RedTeleop extends BaseTeleOp {
         robot.setAlliance("red");
         robot.driveTrain.fieldCentricDriving(true);
 
-
-
         waitForStart();
         robot.odometry.resetIMU();
         robot.rotationControl.setTargetAngle(0);

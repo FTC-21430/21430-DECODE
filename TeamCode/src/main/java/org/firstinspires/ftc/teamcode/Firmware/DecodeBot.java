@@ -45,7 +45,6 @@ public abstract class DecodeBot extends Robot{
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
-    public static double idleSpeed = 1000;
     private boolean isAuto;
 
 //    public static double xOffset = -3.125;
@@ -144,12 +143,14 @@ public abstract class DecodeBot extends Robot{
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
     }
 
+    // this allows the operator rev flywheel before launching, decreasing wait time
     public void revFlywheel(){
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
     }
 
+    //this sets the flywheel to the base speed it's at while driving around
     public void idleFlywheel(){
-        launcher.setSpeed(idleSpeed);
+        launcher.setSpeed(launcher.getIdleSpeed());
     }
 
     public static double closeSpeed = 1200;

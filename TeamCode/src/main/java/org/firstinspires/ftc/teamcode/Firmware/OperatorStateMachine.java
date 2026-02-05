@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Firmware;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
@@ -167,7 +166,7 @@ public class OperatorStateMachine {
             intake.setIntakePower(0.3);
         }
         launcher.retractRamp();
-        launcher.setSpeed(DecodeBot.idleSpeed);
+        launcher.setSpeed(launcher.getIdleSpeed());
         launcher.update();
         spindexer.updateSpindexer();
     }
