@@ -122,6 +122,7 @@ public abstract class DecodeBot extends Robot{
     // red or blue
     public void setAlliance(String alliance){
         this.alliance = alliance;
+        driveTrain.setAlliance(alliance);
     }
 
     public void updateOdometryOnTags(boolean hardUpdate){
