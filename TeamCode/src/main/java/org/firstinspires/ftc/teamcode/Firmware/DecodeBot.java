@@ -62,7 +62,7 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics = new TrajectoryKinematics(isAuto);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
-        launcher = new Launcher(hardwareMap,telemetry);
+        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
@@ -73,7 +73,7 @@ public abstract class DecodeBot extends Robot{
         bulkSensorBucket.clearCache();
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
-        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2);
+        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics);
     }
 
     //the function used to move to a spot on the field during auto
@@ -122,6 +122,7 @@ public abstract class DecodeBot extends Robot{
     // red or blue
     public void setAlliance(String alliance){
         this.alliance = alliance;
+        driveTrain.setAlliance(alliance);
     }
 
     public void updateOdometryOnTags(boolean hardUpdate){

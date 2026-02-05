@@ -20,8 +20,6 @@ public class RedTeleop extends BaseTeleOp {
         robot.setAlliance("red");
         robot.driveTrain.fieldCentricDriving(true);
 
-
-
         waitForStart();
         robot.odometry.resetIMU();
         robot.rotationControl.setTargetAngle(0);
@@ -43,8 +41,6 @@ public class RedTeleop extends BaseTeleOp {
                     manualMode = true;
                 }
             }
-
-
 
             if (manualMode){
                 if (gamepad2.squareWasPressed()){
@@ -85,7 +81,7 @@ public class RedTeleop extends BaseTeleOp {
                 } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                     robot.driveTrain.setSpeedMultiplier(1);
                 }
-                if (gamepad2.triangleWasPressed()){
+                if (gamepad1.crossWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
                 if (gamepad2.circleWasPressed()){
@@ -110,6 +106,11 @@ public class RedTeleop extends BaseTeleOp {
                     for (int i = 0; i < 3; i++){
                         robot.spindexer.clearColor(i);
                     }
+                }
+                if (gamepad2.triangle){
+                    robot.launcher.revFlywheel();
+                } else {
+                    robot.launcher.idleFlywheel();
                 }
 
                 robot.operatorStateMachine.updateStateMachine();

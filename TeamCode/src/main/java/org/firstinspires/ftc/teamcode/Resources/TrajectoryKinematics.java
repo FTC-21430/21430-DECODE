@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
+import java.util.ArrayList;
 
 /**
  * TrajectoryKinematics
