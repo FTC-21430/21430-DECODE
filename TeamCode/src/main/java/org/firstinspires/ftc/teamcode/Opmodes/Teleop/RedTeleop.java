@@ -15,7 +15,7 @@ public class RedTeleop extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initialize(false, false);
+        initialize(true, false,false);
         robot.setAlliance("red");
         robot.driveTrain.fieldCentricDriving(true);
 

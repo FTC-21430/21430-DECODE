@@ -14,8 +14,8 @@ public class BlueTeleop extends BaseTeleOp {
     // The main code that runs during init
     @Override
     public void runOpMode() throws InterruptedException {
-        
-        initialize(false, false);
+
+        initialize(true,false, false);
         robot.setAlliance("blue");
         robot.driveTrain.fieldCentricDriving(true);
         robot.aprilTags.setExposure(10);
