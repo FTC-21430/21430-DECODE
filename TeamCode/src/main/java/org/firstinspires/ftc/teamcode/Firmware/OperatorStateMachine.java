@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode.Firmware;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
+import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,6 @@ public class OperatorStateMachine {
     }
 
     // The idle speed the flywheel will be set too when not actively shooting
-    public static double idleSpeed = 1000;
     // The launcher instance
     private Launcher launcher;
     // The Spindexer Instance
@@ -50,8 +49,11 @@ public class OperatorStateMachine {
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
+    private TrajectoryKinematics trajectoryKinematics = null;
     public static double launcherTimeOut = 0.3;
     private boolean launchTimeOuting = false;
+
+    // Will Trigger the transition from one state to the next
 
     /**
      * The constructor for this class, Stores all of the instances of the components of the robot
@@ -62,7 +64,7 @@ public class OperatorStateMachine {
      * @param telemetry
      * @param setLauncherBasedOnTags - One function we need from DecodeBot.java but this is just a refernce to call method, not anything else in DecodeBot!
      */
-    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags, Gamepad gamepad2){
+    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags, Gamepad gamepad2, TrajectoryKinematics trajectoryKinematics){
         this.launcher = launcher;
         this.spindexer = spindexer;
         this.intake = intake;
@@ -72,12 +74,11 @@ public class OperatorStateMachine {
         this.gamepad2 = gamepad2;
         this.launchTimer = new ElapsedTime();
         this.preppingTimer =new ElapsedTime();
+        this.trajectoryKinematics = trajectoryKinematics;
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
     }
-
-    // Will Trigger the transition from one state to the next
     public void moveToState(State state){
         switch (currentState){
             case IDLE:
@@ -165,7 +166,7 @@ public class OperatorStateMachine {
             intake.setIntakePower(0.3);
         }
         launcher.retractRamp();
-        launcher.setSpeed(idleSpeed);
+        launcher.setSpeed(launcher.getIdleSpeed());
         launcher.update();
         spindexer.updateSpindexer();
     }
@@ -346,5 +347,4 @@ public class OperatorStateMachine {
     public State getCurrentState(){
         return currentState;
     }
-
 }
