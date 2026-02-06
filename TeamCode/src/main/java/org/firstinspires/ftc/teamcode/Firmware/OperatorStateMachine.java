@@ -166,7 +166,7 @@ public class OperatorStateMachine {
             intake.setIntakePower(0.3);
         }
         launcher.retractRamp();
-        launcher.setSpeed(launcher.getIdleSpeed());
+        launcher.idleFlywheel();
         launcher.update();
         spindexer.updateSpindexer();
     }
