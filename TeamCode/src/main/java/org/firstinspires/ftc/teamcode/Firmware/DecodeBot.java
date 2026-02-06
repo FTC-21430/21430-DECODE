@@ -146,16 +146,19 @@ public abstract class DecodeBot extends Robot{
     public static double parkPosX = 28;
     public static double parkPosY = -40;
     public void park(){
+        double angle = 90;
         switch (alliance){
             case "red":
                 parkPosY *= -1;
+                angle *= -1;
                 break;
             case "blue":
                 parkPosY *= 1;
+                angle *= 1;
                 break;
         }
         pathFollowing.setTargetPosition(parkPosX,parkPosY);
-        rotationControl.setTargetAngle(0.0);
+        rotationControl.setTargetAngle(angle);
         pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
         driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
     }
