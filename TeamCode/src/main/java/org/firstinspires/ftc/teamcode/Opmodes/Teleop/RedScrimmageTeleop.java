@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
+@Disabled
 public class RedScrimmageTeleop extends BaseTeleOp {
 
     // The main code that runs during init

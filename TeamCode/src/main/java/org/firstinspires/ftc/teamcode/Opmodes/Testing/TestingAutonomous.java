@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 @Autonomous
+@Disabled
 public class TestingAutonomous extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {

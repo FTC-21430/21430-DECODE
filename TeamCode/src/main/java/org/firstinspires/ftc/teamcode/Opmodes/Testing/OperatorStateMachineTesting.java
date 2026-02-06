@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
+@Disabled
 public class OperatorStateMachineTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
