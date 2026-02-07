@@ -11,7 +11,7 @@ public class RedScrimmageTeleop extends BaseTeleOp {
     public void runOpMode() throws InterruptedException {
 
         // initializes the robot without resetting the odometry
-        initialize(false, false);
+        initialize(true, false,false);
         robot.setAlliance("red");
         robot.driveTrain.fieldCentricDriving(true);
 

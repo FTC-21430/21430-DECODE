@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class AutoMoveForwardAntEater extends BaseAuto{
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true, false);
+        initialize(true, true,false);;
         waitForStart();
         robot.driveTrain.setDrivePower(0.4, 0, 0, 0);
         sleep(1000);

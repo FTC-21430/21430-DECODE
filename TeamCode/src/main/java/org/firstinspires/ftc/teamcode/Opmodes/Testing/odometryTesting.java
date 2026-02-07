@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 public class odometryTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true, false);
+        initialize(true, false,false);
         telemetry.addLine("Initialized");
         telemetry.update();
         waitForStart();
