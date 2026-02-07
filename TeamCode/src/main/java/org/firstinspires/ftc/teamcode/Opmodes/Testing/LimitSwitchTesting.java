@@ -16,7 +16,7 @@ public class LimitSwitchTesting extends BaseTeleOp {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,false);
+        initialize(true, false,false);
         waitForStart();
         while (opModeIsActive()){
             telemetry.addData("spindexerSwitch", robot.spindexer.getIntakeSwitch());

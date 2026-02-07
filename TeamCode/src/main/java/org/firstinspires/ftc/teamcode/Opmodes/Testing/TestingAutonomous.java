@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 public class TestingAutonomous extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,true);
+        initialize(true, true,false);
         waitForStart();
         double start = robot.runtime.seconds();
 

@@ -19,7 +19,7 @@ public class LaunchTuningTesting extends BaseTeleOp {
     public static double speed = 0;
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,false);
+        initialize(true, false,false);
         // Init launcher
         // We don't want the flywheel running right now
         robot.launcher.setSpeed(0);

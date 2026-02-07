@@ -14,7 +14,7 @@ public class MovementPIDTuning extends BaseTeleOp {
     public static double P,I,D;
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,true);
+        initialize(true, false,false);
         waitForStart();
         robot.odometry.overridePosition(0,0,0);
         while (opModeIsActive()){

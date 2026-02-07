@@ -50,7 +50,7 @@ public abstract class DecodeBot extends Robot{
 //    public static double xOffset = -3.125;
 //    public static double yOffset = -7;
 
-    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance, Gamepad gamepad2){
+    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
         this.telemetry = telemetry;
@@ -58,13 +58,13 @@ public abstract class DecodeBot extends Robot{
         this.isAuto = isAuto;
 
         //Creating the classes as objects for future use
-        odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
+        odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,resetOdemetry);
         trajectoryKinematics = new TrajectoryKinematics(isAuto);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
         launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
+        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
         aprilTags = new AprilTag();

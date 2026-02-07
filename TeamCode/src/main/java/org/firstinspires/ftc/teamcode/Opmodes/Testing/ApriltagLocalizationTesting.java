@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 public class ApriltagLocalizationTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true, true);
+        initialize(true, false,false);
         robot.odometry.recalibrateIMU();
         waitForStart();
         robot.odometry.overridePosition(0, 0, 0);

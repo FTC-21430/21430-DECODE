@@ -15,13 +15,11 @@ public class BlueTeleop extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        // initializes the robot without resetting the odometry
-        initialize(false, false);
+        initialize(true,false, false);
         robot.setAlliance("blue");
         robot.driveTrain.fieldCentricDriving(true);
         robot.aprilTags.setExposure(10);
         waitForStart();
-        robot.odometry.resetIMU();
         robot.rotationControl.setTargetAngle(0);
         while(opModeIsActive()) {
 

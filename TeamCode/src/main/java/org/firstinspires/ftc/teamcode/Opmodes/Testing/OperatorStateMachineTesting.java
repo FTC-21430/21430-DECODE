@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 public class OperatorStateMachineTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,false);
+        initialize(true, false,false);
         waitForStart();
         while (opModeIsActive()){
             if (gamepad1.triangleWasPressed()){

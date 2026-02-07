@@ -12,7 +12,7 @@ public class SpeedcontrolTesting extends BaseTeleOp {
     public static double targetSpeed = 0.0;
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true, false);
+        initialize(true, false,false);
         telemetry.addLine("Waiting for start");
         telemetry.update();
         waitForStart();
