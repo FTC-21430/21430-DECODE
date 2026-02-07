@@ -114,11 +114,24 @@ public class RedTeleop extends BaseTeleOp {
 
                 robot.operatorStateMachine.updateStateMachine();
             }
+            // end of automated mode code
+
+            if (gamepad2.leftBumperWasPressed()){
+                robot.lifter.lift();
+            }
+            if (gamepad2.rightBumperWasPressed()){
+                robot.lifter.home();
+            }
+            if (gamepad2.left_trigger>0.6){
+                robot.lifter.lockLatches();
+            }
+
             if (gamepad1.left_bumper){
                 robot.updateOdometryOnTags(true);
             }else{
                 robot.updateOdometryOnTags(false);
             }
+
             if (gamepad1.left_trigger > 0.2){
                 robot.aimAtGoal();
                 robot.driveTrain.setTurnPriority((gamepad1.left_trigger/2)+0.8);
