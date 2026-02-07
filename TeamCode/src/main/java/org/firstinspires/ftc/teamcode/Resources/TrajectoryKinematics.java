@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.mmPerInch;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
  * threads (for example multiple opmodes), callers should ensure external synchronization
  * or use separate instances.
  */
+@Config
 public class TrajectoryKinematics {
     // A list of example sample distances/angles/magnitudes used for deriving the
     // regression functions (kept here for reference). These arrays are not used
@@ -150,6 +154,29 @@ public class TrajectoryKinematics {
         angle = 90+Math.toDegrees(Math.atan2(y_difference,x_difference));
         return angle - FLYWHEEL_OFFSET + coordinate_correction_offset;
 
+    }
+    public double getDistance(String mode, double x, double y){
+        double distance = 0.0;
+        double posX = x;
+        double posY = y;
+        double goalX = 0;
+        double goalY = 0;
+                switch (mode) {
+            case "red":
+                // These are empirically set goal coordinates (inches) for the red alliance
+                goalX = -67.2;
+                goalY = 60;
+                break;
+            case "blue":
+                // Empirically determined goal coordinates (inches) for the blue alliance
+                goalX = -60.2;
+                goalY = -60;
+                break;
+        }
+        goalX += targetCorrectionX;
+        goalY += targetCorrectionY;
+        distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2));
+        return distance;
     }
 
     /**

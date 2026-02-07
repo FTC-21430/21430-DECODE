@@ -137,12 +137,13 @@ public abstract class DecodeBot extends Robot{
         rotationControl.setTargetAngle(bearingToGoal);
     }
     public void setLauncherBasedOnTags(){
-        double distanceToGoal = aprilTags.getDistance(alliance,odometry.getRobotX(), odometry.getRobotY());
+        trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
+        double distanceToGoal = trajectoryKinematics.getDistance(alliance,odometry.getRobotX(),odometry.getRobotY());
         telemetry.addData("alliance", alliance);
         telemetry.addData("distance", distanceToGoal);
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        launcher.revFlywheel();
     }
 
     public static double closeSpeed = 1200;

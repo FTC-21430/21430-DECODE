@@ -166,7 +166,6 @@ public class OperatorStateMachine {
             intake.setIntakePower(0.3);
         }
         launcher.retractRamp();
-        launcher.setSpeed(launcher.getIdleSpeed());
         launcher.update();
         spindexer.updateSpindexer();
     }
@@ -227,6 +226,7 @@ public class OperatorStateMachine {
             intake.setIntakePower(0.1);
         }
         setLauncherBasedOnTags.run();
+        launcher.revFlywheel();
 
         if (!launchQueue.isEmpty() && !prepping && !launched){
             COLORS toPrep = launchQueue.remove(0);
