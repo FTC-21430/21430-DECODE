@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
+@Disabled
 @TeleOp
 public class LaunchTuningTesting extends BaseTeleOp {
     public static double angle = 0;

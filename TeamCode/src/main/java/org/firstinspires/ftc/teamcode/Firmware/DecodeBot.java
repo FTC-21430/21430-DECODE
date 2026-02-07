@@ -115,6 +115,7 @@ public abstract class DecodeBot extends Robot{
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         intake.updateIntake();
         odometry.updateOdometry();
+        lifter.update();
 //        operatorStateMachine.updateStateMachine();
         aprilTags.clearCache();
     }

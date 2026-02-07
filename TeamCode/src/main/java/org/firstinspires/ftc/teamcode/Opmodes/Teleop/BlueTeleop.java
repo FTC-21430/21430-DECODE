@@ -117,6 +117,15 @@ public class BlueTeleop extends BaseTeleOp {
 
                 robot.operatorStateMachine.updateStateMachine();
             }
+            if (gamepad2.leftBumperWasPressed()){
+                robot.lifter.lift();
+            }
+            if (gamepad2.rightBumperWasPressed()){
+                robot.lifter.home();
+            }
+            if (gamepad2.left_trigger>0.6){
+                robot.lifter.lockLatches();
+            }
             if (gamepad1.left_bumper){
                 robot.updateOdometryOnTags(true);
             }else{

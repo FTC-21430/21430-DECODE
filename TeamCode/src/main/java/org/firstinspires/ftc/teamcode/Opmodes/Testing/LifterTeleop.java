@@ -13,6 +13,7 @@ private Lifter lift = null;
         lift = new Lifter(hardwareMap, telemetry);
         waitForStart();
         while (opModeIsActive()) {
+            lift.updateConstants();
             if (gamepad1.squareWasPressed()) {
                 //lift
                 lift.lift();
@@ -27,7 +28,7 @@ private Lifter lift = null;
             }
             if (gamepad1.triangleWasPressed()) {
                 //open latches
-                lift.unlockLatches();
+                lift.testDrop();
             }
             if (gamepad1.touchpadWasPressed()){
                 lift.home();
@@ -39,9 +40,11 @@ private Lifter lift = null;
             if (gamepad1.dpadDownWasPressed()){
                 lift.home();
             }
-            telemetry.addData("height", lift.getLiftPosition());
-            telemetry.update();
+            telemetry.addData("heightL", lift.getLiftPositionLeft());
+            telemetry.addData("heightR", lift.getLiftPositionRight());
             lift.update();
+            telemetry.update();
+
         }
     }
 }
