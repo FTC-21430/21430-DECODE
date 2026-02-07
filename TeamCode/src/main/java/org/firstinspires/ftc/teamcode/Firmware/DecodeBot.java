@@ -144,6 +144,25 @@ public abstract class DecodeBot extends Robot{
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
     }
+    public static double parkPosX = 28;
+    public static double parkPosY = -40;
+    public void park(){
+        double angle = 90;
+        switch (alliance){
+            case "red":
+                parkPosY *= -1;
+                angle *= -1;
+                break;
+            case "blue":
+                parkPosY *= 1;
+                angle *= 1;
+                break;
+        }
+        pathFollowing.setTargetPosition(parkPosX,parkPosY);
+        rotationControl.setTargetAngle(angle);
+        pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
+        driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+    }
 
     public static double closeSpeed = 1200;
     public static double midSpeed = 1400;
