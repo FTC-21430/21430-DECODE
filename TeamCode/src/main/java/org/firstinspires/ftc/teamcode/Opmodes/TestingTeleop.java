@@ -10,7 +10,7 @@ public class TestingTeleop extends BaseTeleOp{
     public void runOpMode() throws InterruptedException {
 
         // initializes the robot without resetting the odometry
-        initialize(true, false);
+        initialize(true, true,false);
         robot.driveTrain.fieldCentricDriving(true);
 
         waitForStart();
