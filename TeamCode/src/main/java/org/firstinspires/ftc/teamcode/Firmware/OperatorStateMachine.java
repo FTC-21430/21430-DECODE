@@ -178,7 +178,7 @@ public class OperatorStateMachine {
 
     private int ballSampling = 0;
     private int switchSampling = 0;
-    public static int ballSamplingThreshold = 4;
+    public static int ballSamplingThreshold = 1;
     public static int switchSamplingThreshold = 6;
     private void intakeState (){
         if (!(gamepad2.left_trigger >= 0.4)){
