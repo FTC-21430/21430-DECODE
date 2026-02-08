@@ -129,8 +129,12 @@ public class TrajectoryKinematics {
         switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
-                tempGoalY = 60;
+                tempGoalY = 52;
                 tempGoalX = -64.2;
+                if (isAuto){
+                    tempGoalY = 50;
+                    tempGoalX = -60.2;
+                }
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
                 // center. The numbers are empirical and should be documented in design notes.
@@ -166,8 +170,9 @@ public class TrajectoryKinematics {
                 switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
-                tempGoalY = 58;
-                tempGoalX = -66.2;
+                tempGoalY = 54;
+                tempGoalX = -62.2;
+
                 break;
             case "blue":
                 // Empirically determined goal coordinates (inches) for the blue alliance

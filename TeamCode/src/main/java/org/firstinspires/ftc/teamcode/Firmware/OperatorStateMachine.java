@@ -44,13 +44,13 @@ public class OperatorStateMachine {
     private boolean prepping = false;
     private boolean launched = false;
     public static double launchingTimeout = 0.0;
-    public static double sortingTimeout = 0.1;
+    public static double sortingTimeout = 0.12;
     private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
     private TrajectoryKinematics trajectoryKinematics = null;
-    public static double launcherTimeOut = 0.2;
+    public static double launcherTimeOut = 0.25;
     private boolean launchTimeOuting = false;
 
     // Will Trigger the transition from one state to the next

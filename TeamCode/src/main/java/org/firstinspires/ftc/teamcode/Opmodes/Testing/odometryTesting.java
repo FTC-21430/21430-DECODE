@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
-@Disabled
+//@Disabled
 public class odometryTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
