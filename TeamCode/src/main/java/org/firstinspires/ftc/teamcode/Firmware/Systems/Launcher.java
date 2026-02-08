@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 // Written by Tobin
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 /**
  * Controls the launcher system, including the flywheel speed.
  */
+@Config
 public class Launcher {
     // Flywheel subsystem instance
     private final Flywheel FLYWHEEL;
@@ -26,6 +28,7 @@ public class Launcher {
 
     //the speed at which the flywheel remains when there is nothing to do :`(
     public double idleSpeed = 1000;
+    public static double accuracyThreshold = 50;
 
     /**
      * Constructs a Launcher with the given hardware map and telemetry.
@@ -41,7 +44,7 @@ public class Launcher {
         // Initialize the flywheel with PID constants
         FLYWHEEL = new Flywheel(hardwareMap, telemetry, new ElapsedTime(), FLYWHELLSPEEDCONTROLP, FLYWHELLSPEEDCONTROLI, FLYWHELLSPEEDCONTROLD);
         // Set the accuracy threshold for speed control (in degrees per second)
-        FLYWHEEL.setAccuracyThreshold(50);
+        FLYWHEEL.setAccuracyThreshold(accuracyThreshold);
 
         // Initialize the ramp and gate. The gate is a simple servo controller
         // used to momentarily open and close the launcher release mechanism.
@@ -80,6 +83,7 @@ public class Launcher {
 
     // this allows the operator rev flywheel before launching, decreasing wait time
     public void revFlywheel(){
+
         setSpeed(TRAJECTORY_KINEMATICS.getLaunchMagnitude());
     }
 

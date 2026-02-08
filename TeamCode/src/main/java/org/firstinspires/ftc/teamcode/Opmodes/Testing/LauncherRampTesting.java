@@ -26,7 +26,7 @@ public class LauncherRampTesting extends BaseTeleOp {
     public void runOpMode() throws InterruptedException {
 
         // Init launcher
-        launcher = new Launcher(hardwareMap, telemetry, new TrajectoryKinematics(false));
+        launcher = new Launcher(hardwareMap, telemetry, new TrajectoryKinematics(false, telemetry));
         // We don't want the flywheel running right now
         launcher.setSpeed(0);
 

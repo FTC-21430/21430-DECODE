@@ -31,7 +31,7 @@ public class GobildaPinpointModuleFirmware {
      * @param yPodOffset configures the pinpoint for how we have set it up to ensure current results -CM
      * @param reset should we reset and recalibrate the sensor and its positions / angles? false for transition between auto and teleop to avoid transition error (non-fatal, just difference of value)
      */
-    public GobildaPinpointModuleFirmware(HardwareMap hardwareMap, double xPodOffset, double yPodOffset, boolean reset){
+    public GobildaPinpointModuleFirmware(HardwareMap hardwareMap, Telemetry telemetry, double xPodOffset, double yPodOffset, boolean reset){
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.INCH);
@@ -45,6 +45,8 @@ public class GobildaPinpointModuleFirmware {
             pinpoint.resetPosAndIMU();
             pinpoint.recalibrateIMU();
         }
+
+        this.telemetry = telemetry;
 
         runtime = new ElapsedTime();
     }
@@ -73,6 +75,8 @@ public class GobildaPinpointModuleFirmware {
         double dt = getDeltaTime();
         velocityX = (robotX - lastRobotX)/dt;
         velocityY = (robotY - lastRobotY)/dt;
+        telemetry.addData("velocityX", velocityX);
+        telemetry.addData("velocityY", velocityY);
     }
     // returns the time between loop iterations - resets between calls!
     private double getDeltaTime(){

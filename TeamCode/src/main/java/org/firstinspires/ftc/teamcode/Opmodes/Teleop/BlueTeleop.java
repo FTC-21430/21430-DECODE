@@ -26,6 +26,7 @@ public class BlueTeleop extends BaseTeleOp {
             // get and update functions
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
+            robot.updateTrajectories();
 
             // resets Field Centric Driving
             if (gamepad1.shareWasPressed()) {
