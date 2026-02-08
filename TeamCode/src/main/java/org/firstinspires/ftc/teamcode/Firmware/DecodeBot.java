@@ -60,7 +60,7 @@ public abstract class DecodeBot extends Robot{
         this.isAuto = isAuto;
 
         //Creating the classes as objects for future use
-        odometry = new GobildaPinpointModuleFirmware(hardwareMap, telemetry,xOffset,yOffset,reset);
+        odometry = new GobildaPinpointModuleFirmware(hardwareMap, telemetry,xOffset,yOffset,resetOdemetry);
         trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
@@ -118,7 +118,7 @@ public abstract class DecodeBot extends Robot{
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         intake.updateIntake();
         odometry.updateOdometry();
-        lifter.update();
+//        lifter.update();
 //        operatorStateMachine.updateStateMachine();
         aprilTags.clearCache();
     }
