@@ -61,7 +61,7 @@ public class Spindexer {
         this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
         EJECTOR_SERVO = hardwareMap.get(Servo.class, "ejector");
-        COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor");
+        COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor1","colorSensor2");
         recalibrateSpindexerPosition();
 
         intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
