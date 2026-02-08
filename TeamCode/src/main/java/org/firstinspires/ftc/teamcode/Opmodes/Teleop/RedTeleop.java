@@ -15,13 +15,11 @@ public class RedTeleop extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        // initializes the robot without resetting the odometry
-        initialize(true, false);
+        initialize(true, false,false);
         robot.setAlliance("red");
         robot.driveTrain.fieldCentricDriving(true);
 
         waitForStart();
-        robot.odometry.resetIMU();
         robot.rotationControl.setTargetAngle(0);
         while(opModeIsActive()) {
 
@@ -116,11 +114,24 @@ public class RedTeleop extends BaseTeleOp {
 
                 robot.operatorStateMachine.updateStateMachine();
             }
+            // end of automated mode code
+
+            if (gamepad2.leftBumperWasPressed()){
+                robot.lifter.lift();
+            }
+            if (gamepad2.rightBumperWasPressed()){
+                robot.lifter.home();
+            }
+            if (gamepad2.left_trigger>0.6){
+                robot.lifter.lockLatches();
+            }
+
             if (gamepad1.left_bumper){
                 robot.updateOdometryOnTags(true);
             }else{
                 robot.updateOdometryOnTags(false);
             }
+
             if (gamepad1.left_trigger > 0.2){
                 robot.aimAtGoal();
                 robot.driveTrain.setTurnPriority((gamepad1.left_trigger/2)+0.8);
@@ -128,9 +139,14 @@ public class RedTeleop extends BaseTeleOp {
                 robot.rotationControl.changeTargetByJoystick(gamepad1.right_stick_x,robot.odometry.getRobotAngle());
                 robot.driveTrain.setTurnPriority(1.0);
             }
+            if (gamepad1.dpad_down){
+                robot.park();
+            }else{
+                //sets drive power and what gamepad does
+                robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
 
-            //sets drive power and what gamepad does
-            robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
+            }
+
             robot.updateRobot(false, false, false);
             telemetry.addData("current robot heading", robot.odometry.getRobotAngle());
 

@@ -16,7 +16,7 @@ public class ColorSensorTesting extends BaseTeleOp {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,false);
+        initialize(true, false,false);
         SpindexerColorSensor sensor = new SpindexerColorSensor(hardwareMap, "colorSensor");
         waitForStart();
         while (opModeIsActive()){

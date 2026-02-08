@@ -52,7 +52,7 @@ public abstract class DecodeBot extends Robot{
 //    public static double xOffset = -3.125;
 //    public static double yOffset = -7;
 
-    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance, Gamepad gamepad2){
+    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
         this.telemetry = telemetry;
@@ -66,7 +66,7 @@ public abstract class DecodeBot extends Robot{
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
         launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
+        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
         aprilTags = new AprilTag();
@@ -118,6 +118,7 @@ public abstract class DecodeBot extends Robot{
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         intake.updateIntake();
         odometry.updateOdometry();
+        lifter.update();
 //        operatorStateMachine.updateStateMachine();
         aprilTags.clearCache();
     }
@@ -156,6 +157,25 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.revFlywheel();
+    }
+    public static double parkPosX = 28;
+    public static double parkPosY = -40;
+    public void park(){
+        double angle = 90;
+        switch (alliance){
+            case "red":
+                parkPosY *= -1;
+                angle *= -1;
+                break;
+            case "blue":
+                parkPosY *= 1;
+                angle *= 1;
+                break;
+        }
+        pathFollowing.setTargetPosition(parkPosX,parkPosY);
+        rotationControl.setTargetAngle(angle);
+        pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
+        driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
     }
 
     public static double closeSpeed = 1200;

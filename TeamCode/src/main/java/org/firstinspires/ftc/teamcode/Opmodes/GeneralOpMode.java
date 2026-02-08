@@ -15,9 +15,9 @@ abstract public class GeneralOpMode extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
 
     // normal functions
-    public void initialize(boolean reset, boolean isAuto) {
+    public void initialize(boolean resetSpindexer, boolean resetOdemetry,boolean isAuto) {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        robot = new DecodeBot(hardwareMap, telemetry, 0, 0, 0, this, reset, isAuto, "red",gamepad2) {
+        robot = new DecodeBot(hardwareMap, telemetry, 0, 0, 0, this, resetSpindexer, resetOdemetry,isAuto, "red",gamepad2) {
         };
     }
 }

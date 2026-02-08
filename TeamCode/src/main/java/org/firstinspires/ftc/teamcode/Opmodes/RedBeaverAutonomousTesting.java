@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class RedBeaverAutonomousTesting extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true, true);
+        initialize(true, true,false);
         robot.odometry.recalibrateIMU();
 
         waitForStart();

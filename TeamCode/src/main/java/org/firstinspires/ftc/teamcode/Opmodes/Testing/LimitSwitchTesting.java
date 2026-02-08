@@ -9,13 +9,14 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
 @TeleOp
+
 public class LimitSwitchTesting extends BaseTeleOp {
 
     public static String configAddress = "intakeLimitSwitchOne";
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,false);
+        initialize(true, false,false);
         waitForStart();
         while (opModeIsActive()){
             telemetry.addData("spindexerSwitch", robot.spindexer.getIntakeSwitch());
