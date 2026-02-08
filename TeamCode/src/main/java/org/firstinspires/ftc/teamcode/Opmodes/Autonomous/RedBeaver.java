@@ -24,11 +24,7 @@ public class RedBeaver extends BaseAuto {
         }else{
             robot.autoMoveTo(-35, 18, 116, 4);
         }
-        if (!firstLaunch) {
-            robot.chill(true, 0.8);
-        }else{
-            robot.chill(true,0.3);
-        }
+
         robot.aimAtGoal();
         robot.setLauncherBasedOnTags();
 
@@ -50,6 +46,7 @@ public class RedBeaver extends BaseAuto {
         //This is the starting location of the robot
         robot.odometry.overridePosition(-49.82,54.5782,125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+        robot.launcher.revFlywheel();
         robot.chill(false,0.2);
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
@@ -82,9 +79,10 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-8,46,176,3);
+        detectMotifWhileMoveTo(-8,46,176,6);
 
-        detectMotifWhileMoveTo(15,46,177,4);
+        detectMotifWhileMoveTo(15,46,177,3);
+
 
 
         robot.chill(true, 0.2);
@@ -97,7 +95,7 @@ public class RedBeaver extends BaseAuto {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(18.5,44,175,4);
         robot.chill(true,0.2);
-        robot.autoMoveTo(29.3,44,175,4);
+        robot.autoMoveTo(32.3,44,175,4);
         robot.chill(true, 0.2);
 
 

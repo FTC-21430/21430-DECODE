@@ -115,6 +115,8 @@ public class SpindexerColorSensor {
         float[] hsvValues = new float[3];
         NormalizedRGBA colors = sensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);
+        // if Color sensor has an ESD event, it will start returning only 0.0. If this is the case, just say its purple!!!
+        if (hsvValues[0] == 0.0) hsvValues[0] = 240;
         return hsvValues;
     }
 

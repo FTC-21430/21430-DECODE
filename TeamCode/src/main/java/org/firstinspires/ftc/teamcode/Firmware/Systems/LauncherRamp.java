@@ -37,7 +37,7 @@ public class LauncherRamp {
 
     // The maximum angle of the ramp up from Horizontal used previous values
     private final double MAX_RAMP_ANGLE = minRampAngle + rampROM;
-    public static double timeout = 0.4;
+    public static double timeout = 0.2;
     private final double WIGGLE_TOLERANCE = 8;
     private ElapsedTime movementTimeout;
 

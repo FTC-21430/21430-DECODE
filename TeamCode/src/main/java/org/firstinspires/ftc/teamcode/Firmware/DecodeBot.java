@@ -47,6 +47,8 @@ public abstract class DecodeBot extends Robot{
     public static long cameraExposure = 10;
     private boolean isAuto;
 
+    public static double aprilTagUpdateSpeed = 2;
+
 //    public static double xOffset = -3.125;
 //    public static double yOffset = -7;
 
@@ -58,8 +60,8 @@ public abstract class DecodeBot extends Robot{
         this.isAuto = isAuto;
 
         //Creating the classes as objects for future use
-        odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
-        trajectoryKinematics = new TrajectoryKinematics(isAuto);
+        odometry = new GobildaPinpointModuleFirmware(hardwareMap, telemetry,xOffset,yOffset,reset);
+        trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
         launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
@@ -83,6 +85,7 @@ public abstract class DecodeBot extends Robot{
         rotationControl.setTargetAngle(robotAngle);
         driveTrain.fieldCentricDriving(false);
         while(!pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
+            launcher.revFlywheel();
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
             operatorStateMachine.updateStateMachine();
@@ -125,7 +128,16 @@ public abstract class DecodeBot extends Robot{
         driveTrain.setAlliance(alliance);
     }
 
+    public void updateTrajectories(){
+        trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()));
+    }
     public void updateOdometryOnTags(boolean hardUpdate){
+        odometry.updateOdometry();
+        double velocity = Math.hypot(odometry.getVelocityX(), odometry.getVelocityY());
+        if (velocity > aprilTagUpdateSpeed && !hardUpdate) {
+            return;
+        }
         if (aprilTags.updateAprilValues(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle(),hardUpdate,alliance)){
             odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
             rotationControl.setTargetAngle(aprilTags.getRobotAngle()-aprilTags.getRotationError());

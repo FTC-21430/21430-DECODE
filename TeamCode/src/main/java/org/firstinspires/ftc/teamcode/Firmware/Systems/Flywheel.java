@@ -4,6 +4,7 @@
 
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -23,7 +24,12 @@ import java.util.List;
  * Flywheel subsystem for controlling a shooter or similar mechanism.
  * Handles PIDF configuration and velocity control using a DcMotorEx.
  */
+@Config
 public class Flywheel {
+    public static double p = 70;
+    public static double i = 0;
+    public static double d = 30;
+    public static double f = 13.5;
 
     // Hardware map for accessing robot hardware
     private HardwareMap hardwareMap = null;
@@ -61,7 +67,7 @@ public class Flywheel {
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         // Set PIDF coefficients for velocity control
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P,I,D,10));
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(p,i,d,f));
     }
 
     /**
@@ -102,8 +108,11 @@ public class Flywheel {
      * Updates the flywheel's speed control and records the current speed.
      */
     public void updateSpeedControl(){
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(p,i,d,f));
+
         flywheel.setVelocity(targetSpeed);
         currentSpeed = flywheel.getVelocity();
+        telemetry.addData("FLYWHEELvelocity", currentSpeed);
     }
 
     /**

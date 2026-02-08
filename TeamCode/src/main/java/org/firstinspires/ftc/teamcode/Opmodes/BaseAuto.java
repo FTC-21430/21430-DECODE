@@ -25,6 +25,7 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
             robot.updateRobot(false, false, false);
             robot.operatorStateMachine.updateStateMachine();
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
+
             robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(), robot.pathFollowing.getPowerF(), robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             telemetry.update();
             robot.bulkSensorBucket.clearCache();

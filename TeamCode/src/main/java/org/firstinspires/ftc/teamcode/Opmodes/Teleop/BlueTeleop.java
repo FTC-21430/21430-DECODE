@@ -16,7 +16,7 @@ public class BlueTeleop extends BaseTeleOp {
     public void runOpMode() throws InterruptedException {
 
         // initializes the robot without resetting the odometry
-        initialize(false, false);
+        initialize(true, false);
         robot.setAlliance("blue");
         robot.driveTrain.fieldCentricDriving(true);
         robot.aprilTags.setExposure(10);
@@ -28,6 +28,7 @@ public class BlueTeleop extends BaseTeleOp {
             // get and update functions
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
+            robot.updateTrajectories();
 
             // resets Field Centric Driving
             if (gamepad1.shareWasPressed()) {

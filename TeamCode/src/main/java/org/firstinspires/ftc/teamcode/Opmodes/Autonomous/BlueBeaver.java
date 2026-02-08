@@ -24,14 +24,6 @@ public class BlueBeaver extends BaseAuto {
         }else{
             robot.autoMoveTo(-38, -18, -124, 4);
         }
-        if (!firstLaunch) {
-            robot.chill(true, 0.6);
-        }else{
-            robot.chill(true,0.3);
-        }
-        robot.aimAtGoal();
-        robot.setLauncherBasedOnTags();
-
         robot.chill(true,0.3);
         robot.aimAtGoal();
         autonomousLaunching(motifId);
@@ -50,6 +42,7 @@ public class BlueBeaver extends BaseAuto {
         //This is the starting location of the robot
         robot.odometry.overridePosition(-49.82,-54.5782,-125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+        robot.launcher.setSpeed(1400);
         robot.chill(false,0.2);
         robot.setAlliance("blue");
         //This is the position that the robot moves to to shoot the first three balls
@@ -74,6 +67,7 @@ public class BlueBeaver extends BaseAuto {
         detectMotifWhileMoveTo(-8,-44,-180,5);
 
         detectMotifWhileMoveTo(-8,-53.3,-180,3);
+        robot.launcher.revFlywheel();
         chillAndDetect(true,0.4);
 
 //
@@ -83,9 +77,10 @@ public class BlueBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-5,-43.7,-176,4);
+        detectMotifWhileMoveTo(-5,-46.7,-176,4);
 
-        detectMotifWhileMoveTo(16,-43.7,-177,4);
+        detectMotifWhileMoveTo(16,-46.7,-177,4);
+        robot.launcher.revFlywheel();
 
 
         robot.chill(true, 0.2);
@@ -99,6 +94,7 @@ public class BlueBeaver extends BaseAuto {
         robot.autoMoveTo(18.5,-43,-177,4);
         robot.chill(true,0.2);
         robot.autoMoveTo(31,-43.7,-177,4);
+        robot.launcher.revFlywheel();
         robot.chill(true, 0.2);
 
 

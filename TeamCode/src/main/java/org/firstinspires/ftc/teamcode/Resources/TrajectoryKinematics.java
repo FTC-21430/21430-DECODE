@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.mmPerInch;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.Gamepad;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
-import java.util.ArrayList;
 
 /**
  * TrajectoryKinematics
@@ -73,15 +67,22 @@ public class TrajectoryKinematics {
 
     // Corrections applied to the goal coordinates to compensate for robot motion.
     // These offsets are in the same units as goal coordinates (inches).
-    private double targetCorrectionX, targetCorrectionY;
+    private double targetCorrectionXMag, targetCorrectionYMag, targetCorrectionXAngle,targetCorrectionYAngle;
 
     // Scalars that convert robot velocity (units depend on caller) into a positional
     // correction for the target. Typical usage: updateVelocities() multiplies the
     // provided velocity by these scalars to compute a small offset to the aim point.
     // The units and meaning of velocityX/velocityY should be consistent with the
     // chosen scalars (for example inches per second * seconds-of-lag -> inches).
-    public static double velocityScalarX = 0.1;
-    public static double velocityScalarY = 0.1;
+    public static double velocityScalarXAngle = 0.62;
+    public static double velocityScalarYAngle = 0.62;
+    public static double velocityScalarXMag = 0.925;
+    public static double velocityScalarYMag = 0.7;
+
+    public static double goalX = -59.2;
+    public static double goalY = 63.0;
+
+    private Telemetry telemetry;
 
     /**
      * Create a TrajectoryKinematics instance.
@@ -89,10 +90,11 @@ public class TrajectoryKinematics {
      * @param isAuto true if the instance will be used in autonomous mode. Currently
      *               this parameter is accepted for API compatibility but not used.
      */
-    public TrajectoryKinematics(boolean isAuto){
+    public TrajectoryKinematics(boolean isAuto, Telemetry telemetry){
         // Intentionally left blank. Previously there was an autonomous adjustment
         // variable here; it was removed because it was not used. Keep the
         // constructor argument for compatibility with existing callers.
+        this.telemetry = telemetry;
     }
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
@@ -116,19 +118,19 @@ public class TrajectoryKinematics {
     @SuppressWarnings("unused")
     public double getBearingToTag(String mode, Boolean isAuto, double x, double y){
         double angle;
-        double goalX = 0;
-        double goalY = 0;
         // coordinate correction applied to the final output to align robot coordinate frame
         double coordinate_correction_offset = 90;
         // small angular offset to account for the flywheel being offset from the robot center
         double FLYWHEEL_OFFSET = 0;
+        double tempGoalX = goalX;
+        double tempGoalY = goalY;
 
 
         switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
-                goalX = -67.2;
-                goalY = 60;
+                tempGoalY = 60;
+                tempGoalX = -64.2;
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
                 // center. The numbers are empirical and should be documented in design notes.
@@ -136,18 +138,18 @@ public class TrajectoryKinematics {
                 break;
             case "blue":
                 // Empirically determined goal coordinates (inches) for the blue alliance
-                goalX = -60.2;
-                goalY = -60;
+                tempGoalY *= -1;
                 FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
                 break;
         }
 
         // Apply small corrections that compensate for robot motion or measurement bias.
-        goalX += targetCorrectionX;
-        goalY += targetCorrectionY;
+        tempGoalX += targetCorrectionXAngle;
+        tempGoalY += targetCorrectionYAngle;
 
-        double x_difference = x - goalX;
-        double y_difference = y - goalY;
+        double x_difference = x - tempGoalX;
+        double y_difference = y - tempGoalY;
+
 
         // atan2 arguments are (y, x) but here we want the bearing relative to robot axes.
         // Convert to degrees and offset to match the robot's heading convention.
@@ -159,23 +161,23 @@ public class TrajectoryKinematics {
         double distance = 0.0;
         double posX = x;
         double posY = y;
-        double goalX = 0;
-        double goalY = 0;
+        double tempGoalX = goalX;
+        double tempGoalY = goalY;
                 switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
-                goalX = -67.2;
-                goalY = 60;
+                tempGoalY = 58;
+                tempGoalX = -66.2;
                 break;
             case "blue":
                 // Empirically determined goal coordinates (inches) for the blue alliance
-                goalX = -60.2;
-                goalY = -60;
+
+                tempGoalY *= -1;
                 break;
         }
-        goalX += targetCorrectionX;
-        goalY += targetCorrectionY;
-        distance = Math.sqrt(Math.pow(goalX-posX,2)+Math.pow(goalY-posY,2));
+        tempGoalX += targetCorrectionXMag;
+        tempGoalY += targetCorrectionYMag;
+        distance = Math.sqrt(Math.pow(tempGoalX-posX,2)+Math.pow(tempGoalY-posY,2));
         return distance;
     }
 
@@ -190,6 +192,9 @@ public class TrajectoryKinematics {
    // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
         initialAngle = angleRegression(distanceInches);
         launchMagnitude = magnitudeRegression(distanceInches);
+        telemetry.addData("Distance", distanceInches);
+        telemetry.addData("Ramp angle", initialAngle);
+        telemetry.addData("Magnitude", launchMagnitude);
     }
 
     /**
@@ -210,7 +215,7 @@ public class TrajectoryKinematics {
 
     /**
      * Update the target corrections from measured robot velocity. The method uses
-     * small scalar factors (see {@link #velocityScalarX} and {@link #velocityScalarY})
+     * small scalar factors (see {@link #velocityScalarXMag} and {@link #velocityScalarYMag})
      * to convert velocity into a positional offset for the aim point.
      *
      * Example: if the robot is moving forward, the aim should lead the target in the
@@ -220,8 +225,10 @@ public class TrajectoryKinematics {
      * @param velocityY robot velocity along Y (units depend on caller; scalars convert to inches)
      */
     public void updateVelocities(double velocityX, double velocityY){
-        targetCorrectionX = -velocityX * velocityScalarX;
-        targetCorrectionY = -velocityY * velocityScalarY;
+        targetCorrectionXMag = -velocityX * velocityScalarXMag;
+        targetCorrectionYMag = -velocityY * velocityScalarYMag;
+        targetCorrectionXAngle = -velocityX * velocityScalarXAngle;
+        targetCorrectionYAngle = -velocityY * velocityScalarYAngle;
     }
 
     /**
