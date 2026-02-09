@@ -17,7 +17,7 @@ public class ColorSensorTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true, false,false);
-        SpindexerColorSensor sensor = new SpindexerColorSensor(hardwareMap, "colorSensor");
+        SpindexerColorSensor sensor = new SpindexerColorSensor(hardwareMap, "colorSensor1","colorSensor2");
         waitForStart();
         while (opModeIsActive()){
             telemetry.addData("RGB", sensor.getRawData()[0]);

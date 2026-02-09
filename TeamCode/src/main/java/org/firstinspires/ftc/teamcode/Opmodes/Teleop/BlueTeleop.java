@@ -26,6 +26,9 @@ public class BlueTeleop extends BaseTeleOp {
             // get and update functions
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
+            telemetry.addData("X",robot.odometry.getRobotX());
+            telemetry.addData("Y", robot.odometry.getRobotY());
+            telemetry.addLine("-----------------------------");
             robot.updateTrajectories();
 
             // resets Field Centric Driving
@@ -139,6 +142,7 @@ public class BlueTeleop extends BaseTeleOp {
             }
             if (gamepad1.dpad_down){
                 robot.park();
+
             }else {
                 //sets drive power and what gamepad does
                 robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
