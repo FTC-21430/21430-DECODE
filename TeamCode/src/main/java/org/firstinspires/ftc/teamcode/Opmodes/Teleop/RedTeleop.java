@@ -83,6 +83,9 @@ public class RedTeleop extends BaseTeleOp {
                 if (gamepad1.crossWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
+                if (gamepad1.circleWasPressed()){
+                    robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
+                }
                 if (gamepad2.circleWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
                 }

@@ -156,14 +156,21 @@ public class OperatorStateMachine {
             launchQueue.remove(0);
         }
     }
+    public void shootOneBall(){
+        launchQueue = new ArrayList<>();
+        addToQueue(COLORS.NONE);
+        moveToState(State.LAUNCH);
+    }
 
     /**
      * The idle state update method
      * retracts and slows down launcher, updates spindexer
      */
     private void idleState(){
-        if (!(gamepad2.left_trigger >= 0.4)){
+        if (!(gamepad2.left_trigger >= 0.4)&&!gamepad2.square){
             intake.setIntakePower(0.3);
+        } else if (gamepad2.square) {
+            intake.setIntakePower(0);
         }
         launcher.retractRamp();
         launcher.update();
@@ -181,8 +188,11 @@ public class OperatorStateMachine {
     public static int ballSamplingThreshold = 1;
     public static int switchSamplingThreshold = 6;
     private void intakeState (){
-        if (!(gamepad2.left_trigger >= 0.4)){
+        if (!(gamepad2.left_trigger >= 0.4) && !gamepad2.square){
             intake.setIntakePower(-1);
+        }else if(gamepad2.square){
+            intake.setIntakePower(0);
+            launcher.setSpeed(0);
         }
 
         if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= ballSamplingThreshold || switchSampling > switchSamplingThreshold){
@@ -222,8 +232,10 @@ public class OperatorStateMachine {
      * Handles the logic for shooting the balls in the right order
      */
     private void launchState(){
-        if (!(gamepad2.left_trigger >= 0.4)){
-            intake.setIntakePower(0.1);
+        if (!(gamepad2.left_trigger >= 0.4) && !gamepad2.square){
+            intake.setIntakePower(-0.1);
+        }else if(gamepad2.square){
+            intake.setIntakePower(0);
         }
         setLauncherBasedOnTags.run();
         launcher.revFlywheel();

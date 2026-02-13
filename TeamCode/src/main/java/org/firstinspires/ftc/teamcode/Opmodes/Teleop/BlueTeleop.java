@@ -36,7 +36,7 @@ public class BlueTeleop extends BaseTeleOp {
                 robot.odometry.resetIMU();
                 robot.rotationControl.setTargetAngle(0);
             }
-            if (gamepad2.squareWasPressed()){
+            if (gamepad2.shareWasPressed()){
                 if (manualMode){
                     manualMode = false;
                 }else{
@@ -88,6 +88,9 @@ public class BlueTeleop extends BaseTeleOp {
                 if (gamepad1.crossWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
+                if (gamepad1.circleWasPressed()){
+                    robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
+                }
                 if (gamepad2.circleWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
                 }
@@ -119,14 +122,14 @@ public class BlueTeleop extends BaseTeleOp {
 
                 robot.operatorStateMachine.updateStateMachine();
             }
-            if (gamepad2.leftBumperWasPressed()){
+            if (gamepad2.leftBumperWasPressed() && gamepad2.square){
                 robot.lifter.lift();
             }
-            if (gamepad2.rightBumperWasPressed()){
-                robot.lifter.home();
-            }
-            if (gamepad2.left_trigger>0.6){
+            if (gamepad2.rightBumperWasPressed() && gamepad2.square){
                 robot.lifter.lockLatches();
+            }
+            if (gamepad2.dpadDownWasPressed() && gamepad2.square){
+                robot.lifter.home();
             }
             if (gamepad1.left_bumper){
                 robot.updateOdometryOnTags(true);

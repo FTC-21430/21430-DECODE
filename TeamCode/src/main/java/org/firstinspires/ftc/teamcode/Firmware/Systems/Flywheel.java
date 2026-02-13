@@ -26,10 +26,10 @@ import java.util.List;
  */
 @Config
 public class Flywheel {
-    public static double p = 70;
+    public static double p = 120;
     public static double i = 0;
     public static double d = 30;
-    public static double f = 13.5;
+    public static double f = 16.5;
 
     // Hardware map for accessing robot hardware
     private HardwareMap hardwareMap = null;

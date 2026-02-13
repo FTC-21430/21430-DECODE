@@ -252,7 +252,7 @@ public class TrajectoryKinematics {
         double a = 0.0000439265;
         double b = 0.00855249;
         double c = 3.53418;
-        double d = 1029.23661;
+        double d = 1089.23661;
 
         // Math.pow is the exponent function, this is a second degree polynomial that is tuning based on real world testing
         return a * Math.pow(distance,3) + b * Math.pow(distance,2) + c * Math.pow(distance,1) + d;
