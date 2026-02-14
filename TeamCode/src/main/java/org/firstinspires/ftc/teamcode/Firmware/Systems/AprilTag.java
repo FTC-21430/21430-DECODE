@@ -51,7 +51,8 @@ public class AprilTag {
     public static double cameraZ = 350;
 
     private double x, y, angle = 0;
-    public static double filterScalar = 0.1;
+    // Filter scalar, the amount we rely on the april tags
+    public static double filterScalar = 0.001;
 
 
 
@@ -251,7 +252,8 @@ public class AprilTag {
         return true;
     }
 
-    public static double disallowedErrorThreshold = 20;
+    // how wrong the aprilTag filtered values are allowed to be in order to be used.
+    public static double disallowedErrorThreshold = 5;
     /**
      * Scales a value with a common filter algorithm
      * @param currentValue the current value of what we think it is

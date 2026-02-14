@@ -92,6 +92,9 @@ public class MecanumDriveTrain {
     public double getTurnPriority(){
         return turnPriority;
     }
+    public void setAlliance(String alliance){
+        this.alliance = alliance;
+    }
 
     /**
      * Calculates Field Centic Driving (code that allows the driver controls to
@@ -105,10 +108,10 @@ public class MecanumDriveTrain {
     private List<Double> calculateFieldCentricDriving(double forwardPower, double sidewaysPower,double robotHeading){
         switch (alliance){
             case "red":
-                robotHeading+=90;
+                robotHeading-=90;
                 break;
             case "blue":
-                robotHeading -= 90;
+                robotHeading += 90;
                 break;
         }
         double fwdPower = forwardPower * Math.cos(-AngleUnit.DEGREES.toRadians(robotHeading)) + sidewaysPower * Math.sin(-AngleUnit.DEGREES.toRadians(robotHeading));

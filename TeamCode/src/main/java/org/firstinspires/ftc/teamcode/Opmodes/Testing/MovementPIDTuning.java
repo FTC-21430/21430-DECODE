@@ -1,18 +1,20 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
 @Config
+@Disabled
 public class MovementPIDTuning extends BaseTeleOp {
 
     public static double P,I,D;
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,true);
+        initialize(true, false,false);
         waitForStart();
         robot.odometry.overridePosition(0,0,0);
         while (opModeIsActive()){

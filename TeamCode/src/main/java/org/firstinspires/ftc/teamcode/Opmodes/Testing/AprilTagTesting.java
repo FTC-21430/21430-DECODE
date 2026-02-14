@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @TeleOp
+@Disabled
 public class AprilTagTesting extends OpMode {
 
     AprilTag aprilTag = new AprilTag();
