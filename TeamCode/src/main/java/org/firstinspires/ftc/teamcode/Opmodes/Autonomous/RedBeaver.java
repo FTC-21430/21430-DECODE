@@ -19,6 +19,7 @@ public class RedBeaver extends BaseAuto {
                 robot.autoMoveTo(-15.5, 19, 132, 8);
             }else{
                 robot.autoMoveTo(-15.5, 19, 134, 8);
+                robot.chill(true,1);
             }
 
         }else{
@@ -28,7 +29,7 @@ public class RedBeaver extends BaseAuto {
         robot.aimAtGoal();
         robot.setLauncherBasedOnTags();
 
-        robot.chill(true,0.3);
+
         robot.aimAtGoal();
         autonomousLaunching(motifId);
 //
@@ -53,24 +54,26 @@ public class RedBeaver extends BaseAuto {
         robot.aimAtGoal();
         robot.chill(true,0.2);
         sortedLaunch(false, true);
-        detectMotifWhileMoveTo(-39,40,210,10);
+        detectMotifWhileMoveTo(-39,42,210,10);
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        robot.pathFollowing.setFollowSpeed(0.6);
 
 //        //The robot moves to the place to intake the balls
-        detectMotifWhileMoveTo(-34,44.5,180,14);
-        robot.chill(true,0.3);
+        detectMotifWhileMoveTo(-34,45.5,180,4);
+        robot.chill(true,1.4);
 
-        detectMotifWhileMoveTo(-27,44,180,3);
+        detectMotifWhileMoveTo(-27,45,180,5);
 
 
-        detectMotifWhileMoveTo(-8,44,180,4);
+        detectMotifWhileMoveTo(-10,45,180,4);
 
+        robot.pathFollowing.setFollowSpeed(1);
 //
 //        //The robot bumps the gate
-        detectMotifWhileMoveTo(-5,44,180,2.5);
+        detectMotifWhileMoveTo(-5,45,180,2.5);
 
-        detectMotifWhileMoveTo(-3,53.3,180,3);
-        chillAndDetect(true,0.4);
+        detectMotifWhileMoveTo(-5,53.3,180,3);
+        chillAndDetect(true,0.6);
 
 //
         sortedLaunch(false, false);
@@ -79,10 +82,13 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        detectMotifWhileMoveTo(-8,46,176,6);
+        detectMotifWhileMoveTo(-8,46,176,3);
+        robot.chill(true,0.5);
+        robot.pathFollowing.setFollowSpeed(0.7);
 
-        detectMotifWhileMoveTo(15,46,177,3);
+        detectMotifWhileMoveTo(17,46,177,3);
 
+        robot.pathFollowing.setFollowSpeed(1);
 
 
         robot.chill(true, 0.2);
@@ -95,7 +101,7 @@ public class RedBeaver extends BaseAuto {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(18.5,44,175,4);
         robot.chill(true,0.2);
-        robot.autoMoveTo(32.3,44,175,4);
+        robot.autoMoveTo(34.3,44,175,4);
         robot.chill(true, 0.2);
 
 

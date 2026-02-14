@@ -116,7 +116,7 @@ public class BlueTeleop extends BaseTeleOp {
                 }
                 if (gamepad2.triangle){
                     robot.launcher.revFlywheel();
-                } else {
+                } else if(robot.operatorStateMachine.getCurrentState() != OperatorStateMachine.State.LAUNCH){
                     robot.launcher.idleFlywheel();
                 }
 
