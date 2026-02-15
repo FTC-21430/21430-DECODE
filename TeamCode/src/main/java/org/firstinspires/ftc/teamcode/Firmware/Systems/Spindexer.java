@@ -68,9 +68,6 @@ public class Spindexer {
         intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
         intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
         intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
-        if (autonomous){
-            ejectionTimeout = 0.1;
-        }
     }
 
     private int stoppedSampling = 0;

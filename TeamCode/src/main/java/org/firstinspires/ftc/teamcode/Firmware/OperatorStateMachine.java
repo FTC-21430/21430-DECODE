@@ -50,7 +50,7 @@ public class OperatorStateMachine {
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
     private TrajectoryKinematics trajectoryKinematics = null;
-    public static double launcherTimeOut = 0.4;
+    public static double launcherTimeOut = 0.1;
     private boolean launchTimeOuting = false;
 
     // Will Trigger the transition from one state to the next
