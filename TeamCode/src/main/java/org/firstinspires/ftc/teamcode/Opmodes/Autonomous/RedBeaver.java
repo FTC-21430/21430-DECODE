@@ -8,32 +8,28 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 @Autonomous
 public class RedBeaver extends BaseAuto {
 
-    private void sortedLaunchClose(boolean finalLaunch, boolean firstLaunch) {
-        robot.setLauncherBasedOnTags();
-
+    private void sortedLaunch(boolean finalLaunch, boolean firstLaunch){
+        if (!firstLaunch) {
+            robot.autoMoveTo(-15.5, 30, 195, 25);
+        }
+//        robot.autoMoveTo(0, 40, 135, 2);
         //The robot moves to the launch zone and it launches the three balls
         if (!finalLaunch) {
             if (firstLaunch){
-                robot.autoMoveTo(-17.5, 25, 127, 20);
+                robot.autoMoveTo(-15.5, 19, 132, 8);
             }else{
-                robot.autoMoveTo(-17.5, 26, 127, 20);
+                robot.autoMoveTo(-15.5, 19, 134, 8);
             }
 
         }else{
-            robot.autoMoveTo(-35, 18, 116, 20);
+            robot.autoMoveTo(-35, 18, 116, 4);
         }
 
         robot.aimAtGoal();
         robot.setLauncherBasedOnTags();
-        robot.chill(true,0.35);
-        autonomousLaunching(motifId);
-    }
-    private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
-        robot.autoMoveTo(52.3, 16.9, 160.9, 20);
 
-
+        robot.chill(true,0.7);
         robot.aimAtGoal();
-        robot.chill(true,0.08);
         autonomousLaunching(motifId);
 //
     }
@@ -47,6 +43,7 @@ public class RedBeaver extends BaseAuto {
         robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
 
         waitForStart();
+        runtime.reset();
         //This is the starting location of the robot
         robot.odometry.overridePosition(-49.82,54.5782,125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
@@ -56,62 +53,70 @@ public class RedBeaver extends BaseAuto {
         motifId = 0;
         robot.aimAtGoal();
         robot.chill(true,0.2);
-        sortedLaunchClose(false, true);
-        detectMotifWhileMoveTo(-39,21,210,4);
-        robot.pathFollowing.setFollowSpeed(1);
+        sortedLaunch(false, true);
 
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(-12,23,272,3);
-        robot.chill(true,0.3);
-        robot.pathFollowing.setFollowSpeed(0.6);
-        robot.autoMoveTo(-12.5,50.8,270,4);
-        robot.chill(true,0.9);
-
-        robot.pathFollowing.setFollowSpeed(1);
-        //The robot bumps the gate
-        robot.autoMoveTo(-15.1,42.2,270,3);
-
-        robot.autoMoveTo(-6,44,180,2.5);
-        robot.setLauncherBasedOnTags();
-        robot.autoMoveTo(-4.5,53.3,180,3);
-        chillAndDetect(true,0.7);
-        sortedLaunchClose(false, false);
-
-        //The robot moves to the place to intake the balls
-        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(13,22,270,8);
-
-        robot.pathFollowing.setFollowSpeed(0.6);
-        robot.setLauncherBasedOnTags();
-        robot.autoMoveTo(13,58.8,270,4);
-        robot.launcher.setSpeed(1400);
-        robot.launcher.setLaunchAngle(40);
-        robot.pathFollowing.setFollowSpeed(1);
-        robot.chill(true,0.4);
-        robot.autoMoveTo(13,31,210,14);
-        robot.setLauncherBasedOnTags();
-
-        sortedLaunchClose(false, false);
-//
-//        // sorted cycle 2
 
 //        //The robot moves to the place to intake the balls
+        robot.autoMoveTo(-34,43.5,180,14);
+        robot.chill(true,0.6);
         robot.pathFollowing.setFollowSpeed(0.6);
-        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(38,28,270,6);
-        robot.setLauncherBasedOnTags();
-        robot.autoMoveTo(38,58.1,270,3);
+        robot.chill(true,0.3);
+
+        robot.autoMoveTo(-27,44,180,3);
+
+
+        robot.autoMoveTo(-8,44,180,4);
         robot.pathFollowing.setFollowSpeed(1);
-        robot.launcher.setSpeed(1400);
-        robot.chill(true,0.4);
-
 
 //
-        sortedLaunchClose(true,false);
+//        //The robot bumps the gate
+        robot.autoMoveTo(-6,44,180,2.5);
+
+        robot.autoMoveTo(-6,53.3,180,3);
+        robot.chill(true,0.6);
+        robot.autoMoveTo(-6,23,180,10);
+        chillAndDetect(true,1.2);
+
 //
+        sortedLaunch(false, false);
+//
+//        // sorted cycle 1
+//
+//        //The robot moves to the place to intake the balls
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        robot.autoMoveTo(-9,43,176,6);
+        robot.pathFollowing.setFollowSpeed(0.4);
+
+        robot.autoMoveTo(15,44.5,177,3);
+        robot.pathFollowing.setFollowSpeed(1);
+
+
+
+        robot.chill(true, 0.2);
+//
+        sortedLaunch(false, false);
+//
+//        // sorted cycle 2
+//
+//        //The robot moves to the place to intake the balls
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        robot.autoMoveTo(18.5,43,175,4);
+        robot.pathFollowing.setFollowSpeed(0.9);
+        robot.chill(true,0.2);
+        robot.autoMoveTo(34.3,43,175,4);
+        robot.chill(true, 0.2);
+
+        robot.pathFollowing.setFollowSpeed(1);
+//
+        sortedLaunch(true,false);
+//
+//        // sorted cycle 3
+//
+////      park off of launch line and close to the gate to clear the classifier at teleop start
         robot.autoMoveTo(-50, 18, 90, 4);
         robot.chill(true,0.2);
 
 
-   }
     }
+}

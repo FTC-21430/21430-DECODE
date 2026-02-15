@@ -79,8 +79,9 @@ public class TrajectoryKinematics {
     public static double velocityScalarXMag = 0.925;
     public static double velocityScalarYMag = 0.7;
 
-    public static double goalX = -56.2;
-    public static double goalY = 65.0;
+    public static double goalX = -55.2;
+    public static double goalY = 62.0;
+
 
     private Telemetry telemetry;
 
@@ -129,12 +130,8 @@ public class TrajectoryKinematics {
         switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
-                tempGoalY = 52;
-                tempGoalX = -64.2;
-                if (isAuto){
-                    tempGoalY = 50;
-                    tempGoalX = -60.2;
-                }
+                tempGoalY = 55;
+                tempGoalX = -59.2;
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
                 // center. The numbers are empirical and should be documented in design notes.
@@ -167,11 +164,11 @@ public class TrajectoryKinematics {
         double posY = y;
         double tempGoalX = goalX;
         double tempGoalY = goalY;
-                switch (mode) {
+        switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
                 tempGoalY = 54;
-                tempGoalX = -62.2;
+                tempGoalX = -55.2;
 
                 break;
             case "blue":
@@ -194,7 +191,7 @@ public class TrajectoryKinematics {
      * @param distanceInches distance from front of robot to april tag (inches)
      */
     public void calculateTrajectory(double distanceInches) {
-   // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
+        // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
         initialAngle = angleRegression(distanceInches);
         launchMagnitude = magnitudeRegression(distanceInches);
         telemetry.addData("Distance", distanceInches);
@@ -213,9 +210,9 @@ public class TrajectoryKinematics {
      */
     private double angleRegression(double distance){
         // values a-e represent the tuning values of this 1st-degree polynomial
-       double a = -0.18684;
-       double b = 67.55822;
-       return a * distance + b;
+        double a = -0.18684;
+        double b = 67.55822;
+        return a * distance + b;
     }
 
     /**

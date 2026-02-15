@@ -14,13 +14,15 @@ public class BlueFar6And9 extends BaseAuto {
         //The robot moves to the launch zone and it launches the three balls
         if (!finalLaunch) {
             if (firstLaunch){
-                robot.autoMoveTo(-17.5, -25, -127, 20);
+
+                robot.autoMoveTo(-17.5, -25, -170, 20);
+                robot.chill(true,0.1);
             }else{
-                robot.autoMoveTo(-17.5, -26, -127, 20);
+                robot.autoMoveTo(-17.5, -26, -170, 20);
             }
 
         }else{
-            robot.autoMoveTo(-35, -18, -116, 20);
+            robot.autoMoveTo(-35, -18, -170, 20);
         }
 
         robot.aimAtGoal();
@@ -29,9 +31,11 @@ public class BlueFar6And9 extends BaseAuto {
         autonomousLaunching(motifId);
     }
     private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
-        robot.autoMoveTo(52.3, -16.9, -160.9, 20);
+        robot.autoMoveTo(52.3, -16.9, -175, 20);
 
-
+        if (finalLaunch){
+            robot.chill(true,0.7);
+        }
         robot.aimAtGoal();
         robot.chill(true,0.08);
         autonomousLaunching(motifId);
@@ -61,7 +65,7 @@ public class BlueFar6And9 extends BaseAuto {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(59,-51,-270,6);
         robot.autoMoveTo(63,-57.5,-270,3);
-        robot.chill(true,0.3);
+        robot.chill(true,0.39);
 
         //Moves to the mid zone and launches the second set
         detectMotifWhileMoveTo(51.3,-27.2,-265,14);
@@ -86,8 +90,9 @@ public class BlueFar6And9 extends BaseAuto {
 
         robot.autoMoveTo(-6,-44,-180,2.5);
         robot.setLauncherBasedOnTags();
-        robot.autoMoveTo(-4.5,-53.3,-180,3);
-        chillAndDetect(true,0.64);
+        robot.autoMoveTo(-4.5,-54.3,-180,3);
+        chillAndDetect(true,0.65);
+        motifId = 0;
         sortedLaunchClose(false, false);
 
         //The robot moves to the place to intake the balls
@@ -100,7 +105,7 @@ public class BlueFar6And9 extends BaseAuto {
         robot.launcher.setLaunchAngle(32);
         robot.autoMoveTo(13,-31,-210,14);
         robot.setLauncherBasedOnTags();
-        robot.chill(true,0.25);
+        robot.chill(true,0.34);
         sortedLaunchFar(false, false);
 //
 //        // sorted cycle 2
@@ -109,9 +114,9 @@ public class BlueFar6And9 extends BaseAuto {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(38,-28,-270,6);
         robot.setLauncherBasedOnTags();
-        robot.autoMoveTo(38,-60.1,-270,3);
+        robot.autoMoveTo(38,-59.8,-270,3);
         robot.launcher.setSpeed(1700);
-        robot.chill(true,0.25);
+        robot.chill(true,0.28);
 
 
 //
