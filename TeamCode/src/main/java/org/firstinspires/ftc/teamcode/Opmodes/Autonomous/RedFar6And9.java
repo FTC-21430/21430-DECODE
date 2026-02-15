@@ -14,18 +14,18 @@ public class RedFar6And9 extends BaseAuto {
         //The robot moves to the launch zone and it launches the three balls
         if (!finalLaunch) {
             if (firstLaunch){
-                robot.autoMoveTo(-17.5, 25, 132, 8);
+                robot.autoMoveTo(-17.5, 25, 127, 20);
             }else{
-                robot.autoMoveTo(-17.5, 26, 134, 20);
+                robot.autoMoveTo(-17.5, 26, 127, 20);
             }
 
         }else{
-            robot.autoMoveTo(-35, 18, 116, 4);
+            robot.autoMoveTo(-35, 18, 116, 20);
         }
 
         robot.aimAtGoal();
         robot.setLauncherBasedOnTags();
-        robot.chill(true,0.15);
+        robot.chill(true,0.1);
         autonomousLaunching(motifId);
     }
     private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
@@ -61,7 +61,7 @@ public class RedFar6And9 extends BaseAuto {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(59,51,270,6);
         robot.autoMoveTo(63,57.5,270,3);
-        robot.chill(true,0.27);
+        robot.chill(true,0.3);
 
         //Moves to the mid zone and launches the second set
         detectMotifWhileMoveTo(51.3,27.2,265,14);
@@ -95,12 +95,12 @@ public class RedFar6And9 extends BaseAuto {
         robot.autoMoveTo(13,22,270,8);
 
         robot.setLauncherBasedOnTags();
-        robot.autoMoveTo(13,60.1,270,4);
+        robot.autoMoveTo(13,60.8,270,4);
         robot.launcher.setSpeed(1650);
         robot.launcher.setLaunchAngle(32);
         robot.autoMoveTo(13,31,210,14);
         robot.setLauncherBasedOnTags();
-        robot.chill(true,0.22);
+        robot.chill(true,0.25);
         sortedLaunchFar(false, false);
 //
 //        // sorted cycle 2
@@ -111,7 +111,7 @@ public class RedFar6And9 extends BaseAuto {
         robot.setLauncherBasedOnTags();
         robot.autoMoveTo(38,60.1,270,3);
         robot.launcher.setSpeed(1700);
-        robot.chill(true,0.2);
+        robot.chill(true,0.25);
 
 
 //

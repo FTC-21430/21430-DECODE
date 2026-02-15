@@ -80,7 +80,7 @@ public class TrajectoryKinematics {
     public static double velocityScalarYMag = 0.7;
 
     public static double goalX = -59.2;
-    public static double goalY = 67.0;
+    public static double goalY = 63.0;
 
     private Telemetry telemetry;
 
