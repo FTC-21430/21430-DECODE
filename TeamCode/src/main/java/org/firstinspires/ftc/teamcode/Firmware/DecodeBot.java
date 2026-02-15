@@ -39,9 +39,9 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.14;
     public static final double I_CONSTANT = 0.11;
     public static final double D_CONSTANT = 0.031;
-    public static double P_ANGLE = 0.035;
+    public static double P_ANGLE = 0.025;
     public static double I_ANGLE = 0.0005;
-    public static double D_ANGLE = 0.0001;
+    public static double D_ANGLE = 0.0002;
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
