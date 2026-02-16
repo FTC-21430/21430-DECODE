@@ -63,16 +63,18 @@ public class BlueBeaver extends BaseAuto {
         robot.pathFollowing.setFollowSpeed(0.6);
 
         robot.autoMoveTo(-7.4,-44.8,-180,4);
-        robot.pathFollowing.setFollowSpeed(1);
+
 
 //
 //        //The robot bumps the gate
         robot.autoMoveTo(-6,-44,-180,2.5);
 
         robot.autoMoveTo(-6,-53.3,-180,3);
-        robot.chill(true,0.6);
+        robot.pathFollowing.setFollowSpeed(1);
+        robot.chill(true,0.5);
         robot.autoMoveTo(-6,-23,-180,10);
-        chillAndDetect(true,1.2);
+
+        chillAndDetect(true,0.8);
 
 //
         sortedLaunch(false, false);

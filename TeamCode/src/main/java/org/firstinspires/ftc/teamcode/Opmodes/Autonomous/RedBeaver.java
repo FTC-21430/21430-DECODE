@@ -52,6 +52,7 @@ public class RedBeaver extends BaseAuto {
         //This is the position that the robot moves to to shoot the first three balls
         motifId = 0;
         robot.aimAtGoal();
+        robot.launcher.revFlywheel();
         robot.chill(true,0.2);
         sortedLaunch(false, true);
 
@@ -59,24 +60,26 @@ public class RedBeaver extends BaseAuto {
 
 //        //The robot moves to the place to intake the balls
         robot.autoMoveTo(-34,43.5,180,14);
-        robot.chill(true,0.6);
-        robot.pathFollowing.setFollowSpeed(0.6);
+        robot.chill(true,0.3);
+        robot.pathFollowing.setFollowSpeed(0.5);
         robot.chill(true,0.3);
 
         robot.autoMoveTo(-27,44,180,3);
 
 
         robot.autoMoveTo(-8,44,180,4);
-        robot.pathFollowing.setFollowSpeed(1);
 
+        robot.pathFollowing.setFollowSpeed(0.4);
 //
 //        //The robot bumps the gate
-        robot.autoMoveTo(-6,44,180,2.5);
+        robot.autoMoveTo(-7,44,180,2.5);
+        robot.pathFollowing.setFollowSpeed(1);
 
-        robot.autoMoveTo(-6,53.3,180,3);
+        robot.autoMoveTo(-7,53.3,180,3);
         robot.chill(true,0.6);
-        robot.autoMoveTo(-6,23,180,10);
-        chillAndDetect(true,1.2);
+        robot.autoMoveTo(-10,23,180,10);
+        robot.launcher.revFlywheel();
+        chillAndDetect(true,0.5);
 
 //
         sortedLaunch(false, false);
@@ -86,14 +89,15 @@ public class RedBeaver extends BaseAuto {
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
         robot.autoMoveTo(-9,43,176,6);
-        robot.pathFollowing.setFollowSpeed(0.4);
+        robot.pathFollowing.setFollowSpeed(0.6);
 
-        robot.autoMoveTo(15,44.5,177,3);
+        robot.launcher.revFlywheel();
+        robot.autoMoveTo(15,43.5,177,3);
         robot.pathFollowing.setFollowSpeed(1);
 
 
 
-        robot.chill(true, 0.2);
+        robot.chill(true, 0.28);
 //
         sortedLaunch(false, false);
 //
@@ -101,10 +105,11 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        robot.autoMoveTo(18.5,43,175,4);
-        robot.pathFollowing.setFollowSpeed(0.9);
+        robot.autoMoveTo(18.5,40,175,4);
+        robot.pathFollowing.setFollowSpeed(0.7);
         robot.chill(true,0.2);
-        robot.autoMoveTo(34.3,43,175,4);
+        robot.launcher.revFlywheel();
+        robot.autoMoveTo(34.3,38.5,175,4);
         robot.chill(true, 0.2);
 
         robot.pathFollowing.setFollowSpeed(1);

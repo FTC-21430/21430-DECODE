@@ -225,7 +225,7 @@ public class OperatorStateMachine {
     }
 
     private double currentLaunchTimeout = 0;
-    public static double preppingTimeout = 0.01;
+    public static double preppingTimeout = 0.02;
 
     /**
      * The launch state update method

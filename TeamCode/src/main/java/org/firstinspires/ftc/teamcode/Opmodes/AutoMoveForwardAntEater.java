@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous
-@Disabled
+//@Disabled
 public class AutoMoveForwardAntEater extends BaseAuto{
     @Override
     public void runOpMode() throws InterruptedException {
