@@ -30,8 +30,8 @@ public class Spindexer {
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
     private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.145; // Timeout duration for ejection in seconds.
-    public static double ejectionTimein = 0.08;
+    public static double ejectionTimeout = 0.1; // Timeout duration for ejection in seconds.
+    public static double ejectionTimein = 0.12;
     private final int SLOT_INCREMENT = 120; // Degrees between slots.
     private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
     private double ejectorOutPos = 0.8; // Position of the ejector when pushed out.
@@ -41,8 +41,8 @@ public class Spindexer {
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     private boolean ejectorOut = false;
 
-    public static double intakeOffSet = 0;
-    public static double launchOffSet = 9.2;
+    public static double intakeOffSet = 11;
+    public static double launchOffSet = 13.2;
     public static double idleOffSet = 20.0;
 
     public enum INDEX_TYPE{
@@ -61,16 +61,13 @@ public class Spindexer {
         this.telemetry = telemetry;
         // Range of motion for the ServoPlus class is in inches for linear movement.
         EJECTOR_SERVO = hardwareMap.get(Servo.class, "ejector");
-        COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor");
+        COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor1","colorSensor2");
         recalibrateSpindexerPosition();
 
         intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
         intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
         intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
         intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
-        if (autonomous){
-            ejectionTimeout = 0.18;
-        }
     }
 
     private int stoppedSampling = 0;
@@ -227,7 +224,7 @@ public class Spindexer {
         RUNTIME.reset(); // Resets the timer for calibration timeout.
     }
 
-    public static int stoppedSamplingThreshold = 4;
+    public static int stoppedSamplingThreshold = 2;
     /**
      * Checks if the spindexer is at rest (not moving).
      * @return True if at rest, false otherwise.

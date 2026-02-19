@@ -39,18 +39,20 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.14;
     public static final double I_CONSTANT = 0.11;
     public static final double D_CONSTANT = 0.031;
-    public static double P_ANGLE = 0.035;
+    public static double P_ANGLE = 0.025;
     public static double I_ANGLE = 0.0005;
-    public static double D_ANGLE = 0.0001;
+    public static double D_ANGLE = 0.0002;
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
     private boolean isAuto;
 
+    public static double aprilTagUpdateSpeed = 2;
+
 //    public static double xOffset = -3.125;
 //    public static double yOffset = -7;
 
-    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean reset, boolean isAuto, String alliance, Gamepad gamepad2){
+    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
         this.telemetry = telemetry;
@@ -58,14 +60,14 @@ public abstract class DecodeBot extends Robot{
         this.isAuto = isAuto;
 
         //Creating the classes as objects for future use
-        odometry = new GobildaPinpointModuleFirmware(hardwareMap, xOffset,yOffset,reset);
-        trajectoryKinematics = new TrajectoryKinematics(isAuto);
+        odometry = new GobildaPinpointModuleFirmware(hardwareMap, telemetry,xOffset,yOffset,resetOdemetry);
+        trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
-        launcher = new Launcher(hardwareMap,telemetry);
+        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,reset,isAuto);
-//        lifter = new Lifter(hardwareMap, telemetry);
+        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
+        lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
         aprilTags = new AprilTag();
 
@@ -83,6 +85,7 @@ public abstract class DecodeBot extends Robot{
         rotationControl.setTargetAngle(robotAngle);
         driveTrain.fieldCentricDriving(false);
         while(!pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
+            launcher.revFlywheel();
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
             operatorStateMachine.updateStateMachine();
@@ -115,6 +118,7 @@ public abstract class DecodeBot extends Robot{
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         intake.updateIntake();
         odometry.updateOdometry();
+        lifter.update();
 //        operatorStateMachine.updateStateMachine();
         aprilTags.clearCache();
     }
@@ -122,35 +126,61 @@ public abstract class DecodeBot extends Robot{
     // red or blue
     public void setAlliance(String alliance){
         this.alliance = alliance;
+        driveTrain.setAlliance(alliance);
     }
 
+    public void updateTrajectories(){
+        trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()));
+    }
     public void updateOdometryOnTags(boolean hardUpdate){
+        odometry.updateOdometry();
+        double velocity = Math.hypot(odometry.getVelocityX(), odometry.getVelocityY());
+        if (velocity > aprilTagUpdateSpeed && !hardUpdate) {
+            return;
+        }
         if (aprilTags.updateAprilValues(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle(),hardUpdate,alliance)){
             odometry.overridePosition(aprilTags.getRobotX(), aprilTags.getRobotY(), aprilTags.getRobotAngle());
             rotationControl.setTargetAngle(aprilTags.getRobotAngle()-aprilTags.getRotationError());
         }
     }
     public void aimAtGoal(){
+        trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
         double bearingToGoal = trajectoryKinematics.getBearingToTag(alliance, isAuto, odometry.getRobotX(),odometry.getRobotY());
         rotationControl.setTargetAngle(bearingToGoal);
     }
     public void setLauncherBasedOnTags(){
-        double distanceToGoal = aprilTags.getDistance(alliance,odometry.getRobotX(), odometry.getRobotY());
+        trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
+        double distanceToGoal = trajectoryKinematics.getDistance(alliance,odometry.getRobotX(),odometry.getRobotY());
         telemetry.addData("alliance", alliance);
         telemetry.addData("distance", distanceToGoal);
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        launcher.revFlywheel();
     }
-
-    // this allows the operator rev flywheel before launching, decreasing wait time
-    public void revFlywheel(){
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
-    }
-
-    //this sets the flywheel to the base speed it's at while driving around
-    public void idleFlywheel(){
-        launcher.setSpeed(launcher.getIdleSpeed());
+    public static double parkPosX = 36.475;
+    public static double parkPosY = 40.5;
+    public void park(){
+        pathFollowing.setAutoConstants(P_CONSTANT+0.3,I_CONSTANT,D_CONSTANT);
+        double angle = 90;
+        double tempParkPosX = parkPosX;
+        double tempParkPosY = parkPosY;
+        switch (alliance){
+            case "red":
+                tempParkPosY *= -1;
+                angle *= -1;
+                break;
+            case "blue":
+                tempParkPosY *= 1;
+                angle *= 1;
+                break;
+        }
+        driveTrain.fieldCentricDriving(false);
+        pathFollowing.setTargetPosition(tempParkPosX,tempParkPosY);
+        rotationControl.setTargetAngle(angle);
+        pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
+        driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+        driveTrain.fieldCentricDriving(true);
     }
 
     public static double closeSpeed = 1200;

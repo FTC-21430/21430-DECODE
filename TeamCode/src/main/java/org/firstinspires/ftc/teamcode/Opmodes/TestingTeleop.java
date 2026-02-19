@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.Opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
+@Disabled
 public class TestingTeleop extends BaseTeleOp{
 
     // The main code that runs during init
@@ -10,7 +12,7 @@ public class TestingTeleop extends BaseTeleOp{
     public void runOpMode() throws InterruptedException {
 
         // initializes the robot without resetting the odometry
-        initialize(true, false);
+        initialize(true, true,false);
         robot.driveTrain.fieldCentricDriving(true);
 
         waitForStart();
