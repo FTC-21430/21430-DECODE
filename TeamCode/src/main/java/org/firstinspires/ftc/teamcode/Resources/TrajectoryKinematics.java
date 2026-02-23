@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
 import com.acmerobotics.dashboard.config.Config;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Flywheel;
 
 /**
  * TrajectoryKinematics
@@ -42,7 +42,6 @@ public class TrajectoryKinematics {
             81,
             94,
             120,
-
     };
 
     @SuppressWarnings("unused")
@@ -81,8 +80,10 @@ public class TrajectoryKinematics {
 
     public static double goalX = -59.2;
     public static double goalY = 63.0;
+    public static double flywheelErrorToAngle = 0;
 
     private Telemetry telemetry;
+    private Flywheel flywheel;
 
     /**
      * Create a TrajectoryKinematics instance.
@@ -90,11 +91,12 @@ public class TrajectoryKinematics {
      * @param isAuto true if the instance will be used in autonomous mode. Currently
      *               this parameter is accepted for API compatibility but not used.
      */
-    public TrajectoryKinematics(boolean isAuto, Telemetry telemetry){
+    public TrajectoryKinematics(boolean isAuto, Telemetry telemetry, Flywheel flywheel){
         // Intentionally left blank. Previously there was an autonomous adjustment
         // variable here; it was removed because it was not used. Keep the
         // constructor argument for compatibility with existing callers.
         this.telemetry = telemetry;
+        this.flywheel = flywheel;
     }
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
@@ -116,7 +118,7 @@ public class TrajectoryKinematics {
      * @return heading in degrees the robot should face to aim at the goal
      */
     @SuppressWarnings("unused")
-    public double getBearingToTag(String mode, Boolean isAuto, double x, double y){
+    public double getBearingToTag(String mode, Boolean isAuto, double x, double y) {
         double angle;
         // coordinate correction applied to the final output to align robot coordinate frame
         double coordinate_correction_offset = 90;
@@ -131,19 +133,19 @@ public class TrajectoryKinematics {
                 // These are empirically set goal coordinates (inches) for the red alliance
                 tempGoalY = 52;
                 tempGoalX = -64.2;
-                if (isAuto){
+                if (isAuto) {
                     tempGoalY = 50;
                     tempGoalX = -60.2;
                 }
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
                 // center. The numbers are empirical and should be documented in design notes.
-                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
+                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
                 break;
             case "blue":
                 // Empirically determined goal coordinates (inches) for the blue alliance
                 tempGoalY *= -1;
-                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5/123.5));
+                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
                 break;
         }
 
@@ -157,10 +159,10 @@ public class TrajectoryKinematics {
 
         // atan2 arguments are (y, x) but here we want the bearing relative to robot axes.
         // Convert to degrees and offset to match the robot's heading convention.
-        angle = 90+Math.toDegrees(Math.atan2(y_difference,x_difference));
+        angle = 90 + Math.toDegrees(Math.atan2(y_difference, x_difference));
         return angle - FLYWHEEL_OFFSET + coordinate_correction_offset;
-
     }
+
     public double getDistance(String mode, double x, double y){
         double distance = 0.0;
         double posX = x;
@@ -195,7 +197,7 @@ public class TrajectoryKinematics {
      */
     public void calculateTrajectory(double distanceInches) {
    // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
-        initialAngle = angleRegression(distanceInches);
+        initialAngle = angleRegression(distanceInches) - (flywheel.getFlywheelError()*flywheelErrorToAngle);
         launchMagnitude = magnitudeRegression(distanceInches);
         telemetry.addData("Distance", distanceInches);
         telemetry.addData("Ramp angle", initialAngle);

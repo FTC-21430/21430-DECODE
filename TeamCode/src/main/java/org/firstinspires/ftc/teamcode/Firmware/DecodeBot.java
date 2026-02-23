@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Flywheel;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
@@ -26,6 +27,7 @@ public abstract class DecodeBot extends Robot{
     public Launcher launcher = null;
     public Spindexer spindexer = null;
     public Intake intake = null;
+    public Flywheel flywheel = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
     public Lifter lifter = null;
@@ -52,16 +54,17 @@ public abstract class DecodeBot extends Robot{
 //    public static double xOffset = -3.125;
 //    public static double yOffset = -7;
 
-    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){
+    public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2, Flywheel flywheel){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
         this.opMode = opMode;
         this.telemetry = telemetry;
         this.alliance = alliance;
         this.isAuto = isAuto;
+        this.flywheel = flywheel;
 
         //Creating the classes as objects for future use
         odometry = new GobildaPinpointModuleFirmware(hardwareMap, telemetry,xOffset,yOffset,resetOdemetry);
-        trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry);
+        trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry, flywheel);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
         launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
