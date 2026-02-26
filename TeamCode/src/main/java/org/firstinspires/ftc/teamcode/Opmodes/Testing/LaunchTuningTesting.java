@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
-@Disabled
+//@Disabled
 @TeleOp
 public class LaunchTuningTesting extends BaseTeleOp {
     public static double angle = 0;
@@ -53,7 +53,8 @@ public class LaunchTuningTesting extends BaseTeleOp {
             if (gamepad1.crossWasPressed()){
                 robot.spindexer.eject();
             }
-            robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
+            robot.intake.openGate();
+//            robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.bulkSensorBucket.clearCache();
             robot.spindexer.updateSpindexer();
             robot.aprilTags.clearCache();
