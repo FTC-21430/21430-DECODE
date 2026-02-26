@@ -95,7 +95,6 @@ public class TrajectoryKinematics {
         // variable here; it was removed because it was not used. Keep the
         // constructor argument for compatibility with existing callers.
         this.telemetry = telemetry;
-        this.flywheelError = flywheelError;
     }
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
