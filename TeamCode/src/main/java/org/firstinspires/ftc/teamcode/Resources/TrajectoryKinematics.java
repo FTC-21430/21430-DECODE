@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Resources;
 
 import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.Flywheel;
 
 /**
  * TrajectoryKinematics
@@ -80,10 +79,10 @@ public class TrajectoryKinematics {
 
     public static double goalX = -59.2;
     public static double goalY = 63.0;
-    public static double flywheelErrorToAngle = 0;
+    private static double flywheelErrorToAngle = 0;
+    private double flywheelError;
 
     private Telemetry telemetry;
-    private Flywheel flywheel;
 
     /**
      * Create a TrajectoryKinematics instance.
@@ -91,12 +90,12 @@ public class TrajectoryKinematics {
      * @param isAuto true if the instance will be used in autonomous mode. Currently
      *               this parameter is accepted for API compatibility but not used.
      */
-    public TrajectoryKinematics(boolean isAuto, Telemetry telemetry, Flywheel flywheel){
+    public TrajectoryKinematics(boolean isAuto, Telemetry telemetry, double flywheelError){
         // Intentionally left blank. Previously there was an autonomous adjustment
         // variable here; it was removed because it was not used. Keep the
         // constructor argument for compatibility with existing callers.
         this.telemetry = telemetry;
-        this.flywheel = flywheel;
+        this.flywheelError = flywheelError;
     }
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
@@ -197,7 +196,7 @@ public class TrajectoryKinematics {
      */
     public void calculateTrajectory(double distanceInches) {
    // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
-        initialAngle = angleRegression(distanceInches) - (flywheel.getFlywheelError()*flywheelErrorToAngle);
+        initialAngle = angleRegression(distanceInches) - necessaryRampOffset();
         launchMagnitude = magnitudeRegression(distanceInches);
         telemetry.addData("Distance", distanceInches);
         telemetry.addData("Ramp angle", initialAngle);
@@ -276,4 +275,13 @@ public class TrajectoryKinematics {
      */
     public double getLaunchMagnitude(){
         return launchMagnitude;
-    }}
+    }
+
+    /**
+     * This cleans up the calculate trajectories to help it calculate the necessary ramp offset due to flywheel error
+     * @return
+     */
+    private double necessaryRampOffset(){
+        return flywheelError*flywheelErrorToAngle;
+    }
+}
