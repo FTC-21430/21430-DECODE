@@ -39,7 +39,6 @@ public class BlueFar6And9 extends BaseAuto {
         robot.aimAtGoal();
         robot.chill(true,0.08);
         autonomousLaunching(motifId);
-//
     }
 
     @Override
