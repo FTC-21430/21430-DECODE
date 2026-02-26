@@ -26,11 +26,13 @@ public class DemoTeleop extends BaseTeleOp {
             robot.odometry.updateOdometry();
             robot.updateTrajectories();
 
+            //Speed control for driver
             if (gamepad1.right_bumper){
                 robot.driveTrain.setSpeedMultiplier(0.5);
             } else if (robot.driveTrain.getSpeedMultiplier() != 1){
                 robot.driveTrain.setSpeedMultiplier(1);
             }
+            //State machine for handling artifacts control on driver pad
             if (gamepad1.crossWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
             }
@@ -40,11 +42,12 @@ public class DemoTeleop extends BaseTeleOp {
             if (gamepad2.circleWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
             }
+            //Idle state for operator
             if (gamepad2.crossWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
             }
             if (gamepad2.dpadUpWasPressed()){
-                // launch all of the balls without sort
+                //Launch all of the balls without sort
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);
@@ -52,6 +55,7 @@ public class DemoTeleop extends BaseTeleOp {
             if (gamepad2.dpadLeftWasPressed()){
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
             }
+            //Robot color sorting for operator
             if (gamepad2.dpadRightWasPressed()){
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
             }
@@ -60,7 +64,7 @@ public class DemoTeleop extends BaseTeleOp {
                     robot.spindexer.clearColor(i);
                 }
             }
-
+            //Different launch places that driver calls
             if (gamepad1.dpad_left){
                 robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.MID);
             }
@@ -70,7 +74,7 @@ public class DemoTeleop extends BaseTeleOp {
             if (gamepad1.dpad_up){
                 robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.FAR);
             }
-
+            //Ramping up flywheel
             if (gamepad2.triangle){
                 robot.launcher.revFlywheel();
             } else if(robot.operatorStateMachine.getCurrentState() != OperatorStateMachine.State.LAUNCH){
