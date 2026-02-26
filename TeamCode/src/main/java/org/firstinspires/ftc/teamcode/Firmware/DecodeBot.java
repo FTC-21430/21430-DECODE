@@ -46,6 +46,12 @@ public abstract class DecodeBot extends Robot{
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
     private boolean isAuto;
+    public static double closeSpeed = 1200;
+    public static double midSpeed = 1400;
+    public static double farSpeed = 1750;
+    public static double closeRamp = 56;
+    public static double midRamp = 55;
+    public static double farRamp = 52;
 
     public static double aprilTagUpdateSpeed = 2;
 
@@ -183,12 +189,7 @@ public abstract class DecodeBot extends Robot{
         driveTrain.fieldCentricDriving(true);
     }
 
-    public static double closeSpeed = 1200;
-    public static double midSpeed = 1400;
-    public static double farSpeed = 1750;
-    public static double closeRamp = 56;
-    public static double midRamp = 55;
-    public static double farRamp = 52;
+
 
     /**
      * @param distance - String input can be "close", "mid", or "far"
