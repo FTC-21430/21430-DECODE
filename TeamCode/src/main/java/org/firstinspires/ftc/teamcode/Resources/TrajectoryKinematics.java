@@ -79,7 +79,7 @@ public class TrajectoryKinematics {
 
     public static double goalX = -59.2;
     public static double goalY = 63.0;
-    private static double flywheelErrorToAngle = 0;
+    public static double flywheelErrorToAngle = 0;
     private double flywheelError;
 
     private Telemetry telemetry;
