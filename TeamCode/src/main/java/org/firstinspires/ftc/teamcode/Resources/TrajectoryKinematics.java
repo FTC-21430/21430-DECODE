@@ -90,7 +90,7 @@ public class TrajectoryKinematics {
      * @param isAuto true if the instance will be used in autonomous mode. Currently
      *               this parameter is accepted for API compatibility but not used.
      */
-    public TrajectoryKinematics(boolean isAuto, Telemetry telemetry, double flywheelError){
+    public TrajectoryKinematics(boolean isAuto, Telemetry telemetry){
         // Intentionally left blank. Previously there was an autonomous adjustment
         // variable here; it was removed because it was not used. Keep the
         // constructor argument for compatibility with existing callers.
@@ -194,9 +194,9 @@ public class TrajectoryKinematics {
      *
      * @param distanceInches distance from front of robot to april tag (inches)
      */
-    public void calculateTrajectory(double distanceInches) {
+    public void calculateTrajectory(double distanceInches, double flywheelError) {
    // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
-        initialAngle = angleRegression(distanceInches) - necessaryRampOffset();
+        initialAngle = angleRegression(distanceInches) - necessaryRampOffset(flywheelError);
         launchMagnitude = magnitudeRegression(distanceInches);
         telemetry.addData("Distance", distanceInches);
         telemetry.addData("Ramp angle", initialAngle);
@@ -281,7 +281,7 @@ public class TrajectoryKinematics {
      * This cleans up the calculate trajectories to help it calculate the necessary ramp offset due to flywheel error
      * @return
      */
-    private double necessaryRampOffset(){
+    private double necessaryRampOffset(double flywheelError){
         return flywheelError*flywheelErrorToAngle;
     }
 }

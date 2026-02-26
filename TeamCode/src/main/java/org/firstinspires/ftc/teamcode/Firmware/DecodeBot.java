@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.Flywheel;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
@@ -132,7 +131,7 @@ public abstract class DecodeBot extends Robot{
 
     public void updateTrajectories(){
         trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()));
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()), launcher.getFlywheelError());
     }
     public void updateOdometryOnTags(boolean hardUpdate){
         odometry.updateOdometry();
@@ -155,7 +154,7 @@ public abstract class DecodeBot extends Robot{
         double distanceToGoal = trajectoryKinematics.getDistance(alliance,odometry.getRobotX(),odometry.getRobotY());
         telemetry.addData("alliance", alliance);
         telemetry.addData("distance", distanceToGoal);
-        trajectoryKinematics.calculateTrajectory(distanceToGoal);
+        trajectoryKinematics.calculateTrajectory(distanceToGoal, launcher.getFlywheelError());
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.revFlywheel();
     }
