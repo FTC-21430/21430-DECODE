@@ -132,5 +132,7 @@ public class GobildaPinpointModuleFirmware {
     public void recalibrateIMU(){
         pinpoint.recalibrateIMU();
     }
+
+    // TODO: add support for OdometryPackets, cause that would be cool  ¯\_(ツ)_/¯ - Tobin - SplineFollowing Update
 }
 
