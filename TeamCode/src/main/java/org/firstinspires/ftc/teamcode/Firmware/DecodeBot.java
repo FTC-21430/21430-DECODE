@@ -131,7 +131,7 @@ public abstract class DecodeBot extends Robot{
 
     public void updateTrajectories(){
         trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()));
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()), launcher.getFlywheelError());
     }
     public void updateOdometryOnTags(boolean hardUpdate){
         odometry.updateOdometry();
@@ -154,7 +154,7 @@ public abstract class DecodeBot extends Robot{
         double distanceToGoal = trajectoryKinematics.getDistance(alliance,odometry.getRobotX(),odometry.getRobotY());
         telemetry.addData("alliance", alliance);
         telemetry.addData("distance", distanceToGoal);
-        trajectoryKinematics.calculateTrajectory(distanceToGoal);
+        trajectoryKinematics.calculateTrajectory(distanceToGoal, launcher.getFlywheelError());
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.revFlywheel();
     }
