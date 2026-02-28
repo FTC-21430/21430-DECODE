@@ -50,12 +50,12 @@ public class Launcher {
      */
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry, TrajectoryKinematics TRAJECTORY_KINEMATICS){
         // PID constants for flywheel speed control (values can be overridden with a different function) used only for flywheel initialization
-        final double FLYWHELLSPEEDCONTROLP = 300;
-        final double FLYWHELLSPEEDCONTROLI = 1;
-        final double FLYWHELLSPEEDCONTROLD = 10;
+        final double FLYWHEEL_SPEED_CONTROL_P = 300;
+        final double FLYWHEEL_SPEED_CONTROL_I = 1;
+        final double FLYWHEEL_SPEED_CONTROL_D = 10;
 
         // Initialize the flywheel with PID constants
-        FLYWHEEL = new Flywheel(hardwareMap, telemetry, new ElapsedTime(), FLYWHELLSPEEDCONTROLP, FLYWHELLSPEEDCONTROLI, FLYWHELLSPEEDCONTROLD);
+        FLYWHEEL = new Flywheel(hardwareMap, telemetry, new ElapsedTime(), FLYWHEEL_SPEED_CONTROL_P, FLYWHEEL_SPEED_CONTROL_I, FLYWHEEL_SPEED_CONTROL_D);
         // Set the accuracy threshold for speed control (in degrees per second)
         FLYWHEEL.setAccuracyThreshold(accuracyThreshold);
 
@@ -205,5 +205,13 @@ public class Launcher {
      */
     public boolean gateMoving(){
         return !GATE.isStopped();
+    }
+
+    /**
+     *Gets the error of the flywheel of where it should be and where it is
+     * @return Error in degrees per second
+     */
+    public double getFlywheelError(){
+        return FLYWHEEL.getTargetSpeed()-FLYWHEEL.getCurrentSpeed();
     }
 }

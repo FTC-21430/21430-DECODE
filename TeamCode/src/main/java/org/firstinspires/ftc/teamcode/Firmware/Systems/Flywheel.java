@@ -41,6 +41,8 @@ public class Flywheel {
     private double targetSpeed = 0.0;
     // Current speed of the flywheel (degrees per second)
     private double currentSpeed = 0.0;
+    //Diff between target and current speed
+    private double flywheelError;
     // The flywheel motor (DcMotorEx)
     private DcMotorEx flywheel = null;
     // Acceptable error threshold for speed (degrees per second)
@@ -90,9 +92,16 @@ public class Flywheel {
      * Gets the target speed of the flywheel.
      * @return Target speed in degrees per second
      */
-    public double getTargetSpeed()
-    {
+    public double getTargetSpeed(){
         return targetSpeed;
+    }
+
+    /**
+     *Gets the error of the flywheel of where it should be and where it is
+     * @return Error in degrees per second
+     */
+    public double getFlywheelError(){
+        return targetSpeed-currentSpeed;
     }
 
     /**
