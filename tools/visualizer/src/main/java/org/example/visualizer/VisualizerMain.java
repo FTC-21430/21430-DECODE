@@ -5,6 +5,7 @@ import org.example.visualizer.spline.Waypoint;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
@@ -18,35 +19,47 @@ import java.util.Random;
  */
 public class VisualizerMain {
     public static void main(String[] args) {
+        // Determine seed: if a numeric argument is provided, use it; otherwise use a simple time-based seed that changes between runs
+        final long seed;
+        if (args != null && args.length > 0) {
+            long parsed;
+            try {
+                parsed = Long.parseLong(args[0]);
+            } catch (NumberFormatException ignored) {
+                // If not a number, fall back to a nanosecond time-based seed to ensure variability between runs
+                parsed = System.nanoTime();
+            }
+            seed = parsed;
+        } else {
+            // Use nanoTime so consecutive runs (even within the same millisecond) get different seeds
+            seed = System.nanoTime();
+        }
+
+        final long chosenSeed = seed;
+        // Print the chosen seed to stdout so runs are reproducible when needed
+        System.out.println("Visualizer seed: " + chosenSeed);
+
         SwingUtilities.invokeLater(() -> {
             try {
-                new VisualizerMain().start();
+                new VisualizerMain().start(chosenSeed);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
 
-    private void start() {
+    private void start(long randomSeed) {
         // Config
         final int waypointCount = 6; // number of meaningful waypoints (not counting duplicated ends)
-        final long randomSeed = 16835L;
         final double coordRange = 48.0; // 48 units (e.g., inches or cm) square
         final double robotTopSpeed = 12.0; // arbitrary units per second
 
         List<Waypoint> waypoints = generateRandomWaypoints(waypointCount, coordRange, randomSeed);
-
-        // Build spline segments from waypoints. CubicSplineSegment expects for each segment four points: last, start, end, next.
         List<SegmentInfo> segments = buildSegmentsFromWaypoints(waypoints, robotTopSpeed);
-
-        // Sample points along all segments
         List<Point2D.Double> samples = sampleSegments(segments, 200);
-
-        // Compute half-second interval markers across the whole trajectory
         List<Marker> markers = computeMarkers(segments, 0.5);
 
-        // Show UI
-        JFrame frame = new JFrame("Random Spline Visualizer");
+        JFrame frame = new JFrame("Random Spline Visualizer (seed=" + randomSeed + ")");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         SplinePanel panel = new SplinePanel(samples, waypoints, markers);
         frame.setContentPane(panel);
@@ -54,7 +67,30 @@ public class VisualizerMain {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // Close on window close
+        // Add key binding: press SPACE to re-randomize the spline
+        Runnable regenerate = () -> {
+            long newSeed = System.nanoTime();
+            List<Waypoint> newWaypoints = generateRandomWaypoints(waypointCount, coordRange, newSeed);
+            List<SegmentInfo> newSegments = buildSegmentsFromWaypoints(newWaypoints, robotTopSpeed);
+            List<Point2D.Double> newSamples = sampleSegments(newSegments, 200);
+            List<Marker> newMarkers = computeMarkers(newSegments, 0.5);
+            SwingUtilities.invokeLater(() -> {
+                panel.updateData(newSamples, newWaypoints, newMarkers);
+                frame.setTitle("Random Spline Visualizer (seed=" + newSeed + ")");
+                System.out.println("Visualizer seed: " + newSeed);
+            });
+        };
+
+        InputMap im = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = panel.getActionMap();
+        im.put(KeyStroke.getKeyStroke("SPACE"), "reRandomize");
+        am.put("reRandomize", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regenerate.run();
+            }
+        });
+
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -181,21 +217,29 @@ public class VisualizerMain {
     }
 
     private static class SplinePanel extends JPanel {
-        private final List<Point2D.Double> samples;
-        private final List<Waypoint> waypoints;
-        private final List<Marker> markers;
+        private List<Point2D.Double> samples;
+        private List<Waypoint> waypoints;
+        private List<Marker> markers;
 
         SplinePanel(List<Point2D.Double> samples, List<Waypoint> waypoints, List<Marker> markers) {
             this.samples = samples;
             this.waypoints = waypoints;
             this.markers = markers;
             setBackground(Color.WHITE);
+            setFocusable(true);
+        }
+
+        void updateData(List<Point2D.Double> samples, List<Waypoint> waypoints, List<Marker> markers) {
+            this.samples = samples;
+            this.waypoints = waypoints;
+            this.markers = markers;
+            repaint();
         }
 
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            if (samples.isEmpty()) return;
+            if (samples == null || samples.isEmpty()) return;
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
