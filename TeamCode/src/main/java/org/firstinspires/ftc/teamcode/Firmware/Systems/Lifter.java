@@ -26,12 +26,15 @@ public class Lifter {
     public static double DEFENCE_HEIGHT = 0.1;
     public static double PARKING_HEIGHT = 20;
     public static double HOMING_HEIGHT = 0.08;
-    public static double FLOOR_CONTACT_HEIGHT = 0.8;
+    public static double FLOOR_CONTACT_HEIGHT = 1.2;
     public static double MAX_ENCODER = 6049; // ticks, formula from Gobilda motor spec sheet. The full stroke length in revolutions is 4.5 = (21.26 stroke length) / (4.725 belt circumference)
     public static double pCon = 0.5;
     public static double iCon = 0;
     public static double dCon = 0;
     public static double fCon = 0.45;
+    public static double lCon = 0.01;
+    public static double imbalanceDistance = 0.5;
+    public static double correctedDistance = 0.2;
     public static double powerLimit = 0.0;
 
     private boolean latched = false;
@@ -48,7 +51,7 @@ public class Lifter {
     private DcMotor[] lifts;
     private DigitalChannel LiftLimitSwitch1;
     private DigitalChannel LiftLimitSwitch2;
-    public static double loweringSpeed = -0.03;
+    public static double loweringSpeed = -0.22;
 
 
 
@@ -99,6 +102,9 @@ public class Lifter {
         rightLiftController.setTarget(0);
     }
 
+    private boolean imbalanceCorrection = false;
+    private boolean imbalanceOnLeft = false;
+
     public void update(){
 
         if (homing){
@@ -141,8 +147,11 @@ public class Lifter {
                 rightLiftController.updatePIDFConstants(pCon,iCon,dCon,fCon);
             }
 
-            leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
-            rightLiftController.update(ticksToInches(liftRight.getCurrentPosition()));
+            int leftHeight = liftLeft.getCurrentPosition();
+            int rightHeight = liftRight.getCurrentPosition();
+
+            leftLiftController.update(ticksToInches(leftHeight));
+            rightLiftController.update(ticksToInches(rightHeight));
 
             double powerL = leftLiftController.getPower();
             double powerR = leftLiftController.getPower();
@@ -150,6 +159,15 @@ public class Lifter {
               powerL = powerL<0? 0 : powerL;
               powerR = powerR<0? 0 : powerR;
             }
+
+            // leveling control
+
+            double averageHeight = (leftHeight + rightHeight) / 2.0;
+            double leftError = leftHeight-averageHeight;
+            double rightError = rightHeight-averageHeight;
+            powerL += leftError * -lCon;
+            powerR += rightError * -lCon;
+
             telemetry.addData("liftSwitch", leftHomingSwitchesPressed());
             telemetry.addData("powerL", powerL);
             telemetry.addData("powerR",powerR);
@@ -158,6 +176,7 @@ public class Lifter {
             liftRight.setPower(powerR);
 
         }
+        testDropping = false;
     }
     public void tuningUpdate(double joyPower){
         liftLeft.setPower(joyPower);
@@ -183,9 +202,11 @@ public class Lifter {
         liftRightLatch.setPosition(rightLockPos);
         latched = true;
 }
+private boolean testDropping = false;
     public void testDrop(){
         liftLeft.setPower(0);
         liftRight.setPower(0);
+        testDropping = true;
     }
     public void unlockLatches(){
         if (!latched) {

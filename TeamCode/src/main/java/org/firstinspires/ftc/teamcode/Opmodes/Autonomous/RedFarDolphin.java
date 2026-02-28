@@ -1,0 +1,72 @@
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
+import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
+@Autonomous
+public class RedFarDolphin extends BaseAuto {
+    private void sortedLaunchClose(boolean finalLaunch, boolean firstLaunch) {
+        if (!firstLaunch) {
+            robot.autoMoveTo(-15.5, 30, 195, 25);
+        }
+//        robot.autoMoveTo(0, 40, 135, 2);
+        //The robot moves to the launch zone and it launches the three balls
+        if (!finalLaunch) {
+            if (firstLaunch){
+                robot.autoMoveTo(-15.5, 19, 132, 8);
+            }else{
+                robot.autoMoveTo(-15.5, 19, 134, 8);
+            }
+
+        }else{
+            robot.autoMoveTo(-35, 18, 116, 4);
+        }
+
+        robot.aimAtGoal();
+        robot.setLauncherBasedOnTags();
+
+        robot.chill(true,0.3);
+        robot.aimAtGoal();
+        autonomousLaunching(motifId);
+    }
+    private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
+        robot.autoMoveTo(52.3, 18.9, 162.9, 8);
+        robot.chill(true, 0.3);
+
+        robot.aimAtGoal();
+        robot.setLauncherBasedOnTags();
+
+        robot.chill(true, 0.3);
+        robot.aimAtGoal();
+        autonomousLaunching(motifId);
+//
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initialize(true, true,false);
+        robot.setAlliance("red");
+        robot.odometry.recalibrateIMU();
+        robot.spindexer.setColorIndexing(SpindexerColorSensor.COLORS.GREEN, SpindexerColorSensor.COLORS.PURPLE, SpindexerColorSensor.COLORS.PURPLE);
+
+        waitForStart();
+        //This is the starting location of the robot
+        robot.odometry.overridePosition(62.7,31.2,90);
+        robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+        robot.chill(false,0.2);
+        //This is the position that the robot moves to to shoot the first three balls
+        motifId = 0;
+        robot.launcher.revFlywheel();
+        robot.aimAtGoal();
+        robot.chill(true,0.0);
+        sortedLaunchFar(false, true);
+        //Move to corner set
+
+////      park off of launch line and close to the gate to clear the classifier at teleop start
+        robot.autoMoveTo(30,14,170,2);
+        robot.chill(true,0.4);
+
+    }
+}

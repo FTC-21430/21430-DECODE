@@ -167,11 +167,11 @@ public class TrajectoryKinematics {
         double posY = y;
         double tempGoalX = goalX;
         double tempGoalY = goalY;
-                switch (mode) {
+        switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
                 tempGoalY = 54;
-                tempGoalX = -62.2;
+                tempGoalX = -55.2;
 
                 break;
             case "blue":
@@ -213,9 +213,9 @@ public class TrajectoryKinematics {
      */
     private double angleRegression(double distance){
         // values a-e represent the tuning values of this 1st-degree polynomial
-       double a = -0.18684;
-       double b = 67.55822;
-       return a * distance + b;
+        double a = -0.18684;
+        double b = 67.55822;
+        return a * distance + b;
     }
 
     /**
@@ -252,7 +252,7 @@ public class TrajectoryKinematics {
         double a = 0.0000439265;
         double b = 0.00855249;
         double c = 3.53418;
-        double d = 1029.23661;
+        double d = 1039.23661;
 
         // Math.pow is the exponent function, this is a second degree polynomial that is tuning based on real world testing
         return a * Math.pow(distance,3) + b * Math.pow(distance,2) + c * Math.pow(distance,1) + d;
