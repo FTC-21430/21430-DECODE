@@ -37,6 +37,17 @@ public class SplineFollower {
         pathPlanner = new PathPlanning();
     }
 
+    public double getXForTime(double time){
+        return 0;
+        // TODO: make this work
+    }
+    public double getYForTime(double time){
+        return 0;
+    }
+    public double getYawForTime(double time){
+        return 0;
+    }
+
     /**
      * Once all waypoints are defined by opMode, compile all splines together and save path.
      * MUST RUN before first update

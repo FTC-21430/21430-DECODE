@@ -61,7 +61,7 @@ public class AccelerationControl {
         followTolerance = tolerance;
         }
 
-    public void update(OdometryPacket odometryPacket, CubicPolynomial currentSpline, double currentTime){
+    public void update(OdometryPacket odometryPacket, SplineFollower splineFollower, double currentTime){
         // TODO: do this
     }
 
