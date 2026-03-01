@@ -44,9 +44,8 @@ public class PathFollowing {
         pYConstant = pY;
         dXConstant = dX;
         dYConstant = dY;
-        xPID = new PIDController(pXConstant, 0.2, dXConstant, runtime);
-        yPID = new PIDController(pYConstant, 0.2, dYConstant, runtime);
-
+        xPID = new PIDController(pXConstant, iX, dXConstant, runtime);
+        yPID = new PIDController(pYConstant, iY, dYConstant, runtime);
     }
 
   /**

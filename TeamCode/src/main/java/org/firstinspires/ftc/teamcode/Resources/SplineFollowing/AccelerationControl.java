@@ -1,18 +1,38 @@
 package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
+import org.firstinspires.ftc.teamcode.Resources.PIDFController;
 
 /**
  * Gets the current spline we are following and the time, infers the target point and outputs how to move the drivetrain to get there
  */
 public class AccelerationControl {
+    //Connected classes
+    private PIDFController pidfController = null;
+    private ElapsedTime runtime;
     // private constants - ie - robot data like acceleration and stuff needed to translate points, needed acceleration to drivetrain powers
+    private double xP;
+    private double xI;
+    private double xD;
+    private double yP;
+    private double yI;
+    private double yD;
     //private attributes
+    private double followSpeed = 1;
+    private double followTolerance = 1;
     private double fwdPower, sidePower, rotPower;
 
-    public AccelerationControl() {
-        // TODO: figure out what robot attributes this class needs
-        //PIDF
+    public AccelerationControl(PIDFController pidfController, ElapsedTime runtime, double xP, double xI, double xD, double yP, double yI, double yD) {
+        this.pidfController = pidfController;
+        this.runtime = runtime;
+        this.xP = xP;
+        this.xI = xI;
+        this.xD = xD;
+        this.yP = yP;
+        this.yI = yI;
+        this.yD = yD;
     }
 
     // computation methods here
@@ -27,24 +47,22 @@ public class AccelerationControl {
      *The necessary methods will include:
         *setFollowSpeed, isWithinTargetTolerance, setFollowTolerance, along with some PIDF help for error control.
      *The old code is as follows:
-     *
-        *public void setFollowSpeed(double speed){
-        *followSpeed = speed;
-        *}
-        *
-        *public boolean isWithinTargetTolerance(double robotX, double robotY){
-        *double distance = Math.sqrt(Math.pow(xPID.getTarget() - robotX, 2 ) + Math.pow(yPID.getTarget() - robotY,2));
-        *return distance <= followTolerance;
-        *}
-        *
-        *public void setFollowTolerance(double tolerance){
-        * followTolerance = tolerance;
-        *}
-     *
      */
+        public void setFollowSpeed(double speed){
+        followSpeed = speed;
+        }
+
+        public boolean isWithinTargetTolerance(double robotX, double robotY){
+        double distance = Math.sqrt(Math.pow(xPID.getTarget() - robotX, 2 ) + Math.pow(yPID.getTarget() - robotY,2));
+        return distance <= followTolerance;
+        }
+
+        public void setFollowTolerance(double tolerance){
+        followTolerance = tolerance;
+        }
+
     public void update(OdometryPacket odometryPacket, CubicPolynomial currentSpline, double currentTime){
         // TODO: do this
-
     }
 
     //These functions will get the overall power of the robot in each of their respective directions
