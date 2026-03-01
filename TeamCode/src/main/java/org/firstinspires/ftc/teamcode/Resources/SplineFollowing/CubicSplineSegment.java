@@ -139,6 +139,11 @@ public class CubicSplineSegment {
         }
         return length;
     }
+    private double putTimeInRange(double time){
+        // ensure that the inputted time is within the range of the polynomial
+        return Math.max(Math.min(time, endTime), startTime);
+
+    }
 
    /**
      * Returns the x-coordinate value of this spline segment at the given time.
@@ -147,7 +152,7 @@ public class CubicSplineSegment {
      * @return the x-coordinate value at the specified time
      */
     public double getX(double time){
-        return xPolynomial.compute(time - startTime);
+        return xPolynomial.compute(putTimeInRange(time) - startTime);
     }
 
     /**
@@ -157,7 +162,7 @@ public class CubicSplineSegment {
      * @return the y-coordinate value at the specified time
      */
     public double getY(double time){
-        return yPolynomial.compute(time - startTime);
+        return yPolynomial.compute(putTimeInRange(time) - startTime);
     }
 
     /**
@@ -167,7 +172,7 @@ public class CubicSplineSegment {
      * @return the rotation value at the specified time
      */
     public double getRotation(double time){
-        return rotPolynomial.compute(time - startTime);
+        return rotPolynomial.compute(putTimeInRange(time) - startTime);
     }
     public double endTime(){
         return this.endTime;
