@@ -89,7 +89,9 @@ public class PathFollowing {
   }
   
   // returns followSpeed just in case you need it somewhere.
-  public double getFollowSpeed(){ return followSpeed; }
+  public double getFollowSpeed(){
+      return followSpeed;
+  }
 
   public void setAutoConstants(double p, double i, double d){
     xPID.updatePIDConstants(p,i,d);
