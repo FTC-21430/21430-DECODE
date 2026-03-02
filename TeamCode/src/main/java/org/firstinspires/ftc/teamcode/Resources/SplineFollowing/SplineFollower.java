@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
+import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PIDFController;
 
 //TODO: Explain the entire purpose and structure of the spine following project
@@ -27,13 +28,13 @@ public class SplineFollower {
     /**
      * Constructor for the entire spline following library.
      */
-    public SplineFollower(DecodeBot robot, PIDFController pidfController, ElapsedTime runtime, double xP, double xI, double xD, double yP, double yI, double yD){
+    public SplineFollower(DecodeBot robot, PIDController pidController, ElapsedTime runtime){
         // TODO: get to Robot Actions
         this.robot = robot;
 
         //TODO: figure out what parameters this class needs - ie, robot specific tuning details. - want to make this modular and reusable without changing the library here
         // init
-        accelerationControl = new AccelerationControl(pidfController, runtime, xP, xI, xD, yP, yI, yD);
+        accelerationControl = new AccelerationControl(pidController, runtime);
         pathPlanner = new PathPlanning();
     }
 

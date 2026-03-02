@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
+import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PIDFController;
 
 /**
@@ -10,29 +11,20 @@ import org.firstinspires.ftc.teamcode.Resources.PIDFController;
  */
 public class AccelerationControl {
     //Connected classes
-    private PIDFController pidfController = null;
+    private PIDController pidController = null;
     private ElapsedTime runtime;
     // private constants - ie - robot data like acceleration and stuff needed to translate points, needed acceleration to drivetrain powers
-    private double xP;
-    private double xI;
-    private double xD;
-    private double yP;
-    private double yI;
-    private double yD;
+    private double p;
+    private double i;
+    private double d;
     //private attributes
     private double followSpeed = 1;
     private double followTolerance = 1;
     private double fwdPower, sidePower, rotPower;
 
-    public AccelerationControl(PIDFController pidfController, ElapsedTime runtime, double xP, double xI, double xD, double yP, double yI, double yD) {
-        this.pidfController = pidfController;
+    public AccelerationControl(PIDController pidController, ElapsedTime runtime) {
+        this.pidController = pidController;
         this.runtime = runtime;
-        this.xP = xP;
-        this.xI = xI;
-        this.xD = xD;
-        this.yP = yP;
-        this.yI = yI;
-        this.yD = yD;
     }
 
     // computation methods here
