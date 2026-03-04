@@ -1,11 +1,34 @@
+/// Copyright (c) 2026 Tobin Rumsey, all rights reserved
+/// Comment assist by ChatGPT, OpenAI - Github Copilot
+/// Prototype for class and python implementation made in Google Colab, Formatting Help by Google Gemini.
+/// Theory behind concept from Catmull-Rom splines and general cubic spline interpolation, as well as time-based path following algorithms commonly used in robotics.
+/// Permitted use of class for FIRST Tech Challenge team 21430, BroomBots until the end of the 2029 season,
+/// with the expectation that the next generation of students will have to learn how to do this themselves by then.
+/// All other FTC teams and non-FTC users are permitted to use this code for educational and or competition purposes, but are encouraged to learn how to implement cubic spline interpolation and path following algorithms themselves for a deeper understanding of the underlying mathematics and robotics concepts.
+/// This code is provided as-is for educational purposes, and is not guaranteed to be bug-free or suitable for all use cases. It is the responsibility of the user to test and validate the code for their specific application,
+///  and to understand the underlying mathematics and algorithms involved in cubic spline interpolation and path following.
+/// Thank you for respecting the intellectual property and educational intent of this code! <3 - Tobin Rumsey, BroomBots 21430
 package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
 
 import org.ejml.simple.SimpleMatrix;
 
-@SuppressWarnings("unused")
+/**
+ * CubicSplineSegment represents a single segment of a cubic spline path, defined by cubic polynomials for x, y, and rotation (angle) as functions of time along the segment.
+ * Each segment is constructed using Catmull-Rom interpolation based on 4 control points (
+ * the previous waypoint, the start waypoint, the end waypoint, and the next waypoint) to ensure smooth transitions between segments.
+ * The segment also calculates its duration based on the distance between the start and end points and the desired speed defined in the end waypoint, allowing for time-based evaluation of the spline.
+ * The compute() method allows for evaluating the position and rotation at any given absolute time along the segment, making it compatible with path following algorithms that operate in real time and need to know the target position and orientation at any given time.
+ * This class is designed to be used as part of a larger path following system, where multiple CubicSplineSegments are chained together to form a complete path for the robot to follow.
+ * The class also includes an alternate constructor for creating "hold" segments, which keep the robot at a fixed position and orientation for a specified duration, allowing for easy implementation of wait times at waypoints without needing special handling in the path following logic.
+ * Overall, CubicSplineSegment encapsulates the mathematical representation of a segment of a cubic spline path, including the geometry defined by the control points and the timing based on the desired speed, providing a convenient interface for evaluating the target position and orientation at any given time along the segment.
+ * Note: This class is designed to be used in a real-time path following context, where the compute() method will be called repeatedly with the current time to get the target position and orientation for the robot to follow. The internal use of cubic polynomials allows for smooth interpolation between waypoints, while the time-based evaluation ensures that the robot can follow the path at the desired speed.
+ */
+
 public class CubicSplineSegment {
-    private final CubicPolynomial xPolynomial, yPolynomial, rotPolynomial;
-    private final double startTime, endTime;
+    private final CubicPolynomial xPolynomial, yPolynomial, rotPolynomial; // Cubic polynomials for x, y, and rotation (angle) as functions of time along the segment, using custom class to optimize code complexity
+    // CubicPolynomial is exclusive to this class, learn about it at the bottom of this file
+
+    private final double startTime, endTime; // Absolute time at which this segment starts and ends; used to determine which segment to evaluate at a given time and to convert absolute time to the 0-1 range for polynomial evaluation
 
     /**
      * One pathing segment, contains three cubic polynomials. Input four waypoints that define the path in terms of time.

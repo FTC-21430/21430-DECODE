@@ -10,6 +10,10 @@
 /// Thank you for respecting the intellectual property and educational intent of this code! <3 - Tobin Rumsey, BroomBots 21430
 package org.example.visualizer.spline;
 
+
+// NOTE THAT THIS CLASS IS USED EXCLUSIVELY FOR THE VISUALIZER, AND IS NOT USED IN THE ACTUAL ROBOT CODE. IT IS DESIGNED TO BE AS SIMILAR AS POSSIBLE TO THE ACTUAL CubicSplineSegment CLASS USED IN THE ROBOT CODE, BUT MAY HAVE SOME DIFFERENCES DUE TO THE DIFFERENT CONTEXT OF USE (E.G. NOT REAL-TIME, NO NEED FOR OPTIMIZATION, ETC.). THIS CLASS IS MEANT TO HELP VISUALIZE AND DEBUG THE SPLINE PATHS THAT THE ROBOT WILL FOLLOW,
+
+
 /**
  * CubicSplineSegment represents a single segment of a cubic spline path, defined by cubic polynomials for x, y, and rotation (angle) as functions of time along the segment.
  * Each segment is constructed using Catmull-Rom interpolation based on 4 control points (
