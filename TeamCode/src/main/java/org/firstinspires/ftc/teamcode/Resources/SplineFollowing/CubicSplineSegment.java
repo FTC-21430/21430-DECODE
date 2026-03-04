@@ -1,8 +1,8 @@
 /// Copyright (c) 2026 Tobin Rumsey, all rights reserved
 /// Comment assist by ChatGPT, OpenAI - Github Copilot
-/// Prototype for class and python implementation made in Google Colab, Formatting Help by Google Gemini.
+/// Prototype for class and python implementation made in Google Colab, Formatting Help by Google Gemini. EJML Matrix library used because I needed Matrix's :)
 /// Theory behind concept from Catmull-Rom splines and general cubic spline interpolation, as well as time-based path following algorithms commonly used in robotics.
-/// Permitted use of class for FIRST Tech Challenge team 21430, BroomBots until the end of the 2029 season,
+/// Permitted use of class for FIRST Tech Challenge team 21430, BroomBots until the end of the 2029-2030 season,
 /// with the expectation that the next generation of students will have to learn how to do this themselves by then.
 /// All other FTC teams and non-FTC users are permitted to use this code for educational and or competition purposes, but are encouraged to learn how to implement cubic spline interpolation and path following algorithms themselves for a deeper understanding of the underlying mathematics and robotics concepts.
 /// This code is provided as-is for educational purposes, and is not guaranteed to be bug-free or suitable for all use cases. It is the responsibility of the user to test and validate the code for their specific application,
@@ -197,7 +197,20 @@ public class CubicSplineSegment {
     public double getRotation(double time){
         return rotPolynomial.compute(putTimeInRange(time) - startTime);
     }
-    public double endTime(){
+
+    /**
+     * Returns the absolute start time of this spline segment.
+     * @return
+     */
+    public double getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Returns the absolute end time of this spline segment.
+     * @return
+     */
+    public double getEndTime(){
         return this.endTime;
     }
 }
