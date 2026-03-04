@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
-import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 
 import java.util.ArrayList;
 
@@ -26,77 +25,22 @@ public class RobotActions {
     private ArrayList<Action> actions;
     private DecodeBot bot;
     public RobotActions(DecodeBot decodeBot){
-
+        // store the bot reference and initialize the actions list
+        this.bot = decodeBot;
+        this.actions = new ArrayList<>();
     }
+    // trigger time implementation, constructor with the double as the trigger is used
     public void addAction(Actions actionType, double triggerTime){
         Action newAction = new Action(actionType, bot, triggerTime);
         actions.add(newAction);
     }
-    public void addAction(actionType, int )
+    // spline order implementation, constructor with the int as the trigger is used
+    public void addAction(Actions actionType, int splineOrder){
+        Action newAction = new Action(actionType, bot, splineOrder);
+        actions.add(newAction);
+    }
     Action[] compileActions(){
-        return actions
+        // make the actions array list sync to a final array as the actions to be used.
+        return actions.toArray(new Action[0]);
     }
 }
-
-/**
- * assist class for one action that robot is commanded to do
- */
-class Action {
-    private final RobotActions.Actions actionType;
-    private final triggerConditions triggerMode;
-    private double triggerTime = 0.0;
-    private int triggerSplineOrder = 0;
-    private final DecodeBot robot;
-    private enum triggerConditions {
-        SPLINE_ORDER,
-        TIMING
-    }
-    public Action(RobotActions.Actions actionType, DecodeBot robot, int splineOrder){
-        this.actionType = actionType;
-        triggerMode = triggerConditions.SPLINE_ORDER;
-        triggerSplineOrder = splineOrder;
-        this.robot = robot;
-    }
-    public Action(RobotActions.Actions actionType, DecodeBot robot, double triggerTime){
-        this.actionType = actionType;
-        triggerMode = triggerConditions.TIMING;
-        this.triggerTime = triggerTime;
-        this.robot = robot;
-    }
-
-    public boolean checkAction(int splineID, double Time){
-        switch (triggerMode){
-            case SPLINE_ORDER:
-                if (splineID >= triggerSplineOrder){
-                    actionIntake();
-                    return true;
-                }
-                break;
-            case TIMING:
-                // about the same as above
-                break;
-        }
-        // return true if the action was triggered, false if it was not
-        return false;
-    }
-    public void triggerAction(){
-        switch (actionType){
-            // all the types, have a function for each of these
-            case INTAKE:
-                actionIntake();
-        }
-    }
-
-
-    // action run methods
-
-    // action run methods should look like this!
-    //TODO: made an action run method for EVERY action the robot needs to be able to do.
-    private void actionIntake(){
-        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-    }
-
-
-}
-
-

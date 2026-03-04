@@ -9,7 +9,8 @@ public class SplineFollower {
 
     // custom classes
     private final AccelerationControl accelerationControl;
-    private final PathPlanning pathPlanner;
+    //TODO: make it so this can be private and the class compiles it and then passes it into SplineFollower
+    public PathPlanning pathPlanner;
     private final SplinePathInterpreter splinePathInterpreter;
     private final DecodeBot robot;
 
@@ -19,6 +20,7 @@ public class SplineFollower {
 
     // private variables
     private CubicSplineSegment[] splines;
+    private Action[] actions;
 
 
     /**
@@ -32,7 +34,7 @@ public class SplineFollower {
         // init
         splinePathInterpreter = new SplinePathInterpreter();
         accelerationControl = new AccelerationControl(splinePathInterpreter);
-        pathPlanner = new PathPlanning();
+        pathPlanner = new PathPlanning(robot);
 
     }
 
@@ -42,8 +44,17 @@ public class SplineFollower {
      */
     public void computeSplines(){
         this.splines = pathPlanner.generatePath();
+        this.actions = pathPlanner.compileActions();
     }
-
+    public void startPath(){
+        splinePathInterpreter.startPath(splines, actions);
+    }
+    public void startPath(double startTime){
+        splinePathInterpreter.startPath(splines, actions, startTime);
+    }
+    public void setInterpreterSpeed(double speedRatio){
+        splinePathInterpreter.setProgramSpeed(speedRatio);
+    }
     public void update(OdometryPacket odometryPacket){
         // TODO: fill out this method to handle switching between splines
         //  and following them with the accelerationController, then update local
