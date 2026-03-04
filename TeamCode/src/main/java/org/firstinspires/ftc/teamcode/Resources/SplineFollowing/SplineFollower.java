@@ -10,6 +10,7 @@ public class SplineFollower {
     // custom classes
     private final AccelerationControl accelerationControl;
     private final PathPlanning pathPlanner;
+    private final SplinePathInterpreter splinePathInterpreter;
     private final DecodeBot robot;
 
     // FTC Dashboard Variables
@@ -29,22 +30,27 @@ public class SplineFollower {
 
         //TODO: figure out what parameters this class needs - ie, robot specific tuning details. - want to make this modular and reusable without changing the library here
         // init
-        accelerationControl = new AccelerationControl();
+        splinePathInterpreter = new SplinePathInterpreter();
+        accelerationControl = new AccelerationControl(splinePathInterpreter);
         pathPlanner = new PathPlanning();
+
     }
 
     /**
      * Once all waypoints are defined by opMode, compile all splines together and save path.
      * MUST RUN before first update
      */
-    public void computerSplines(){
-        splines = pathPlanner.generatePath();
+    public void computeSplines(){
+        this.splines = pathPlanner.generatePath();
     }
 
     public void update(OdometryPacket odometryPacket){
         // TODO: fill out this method to handle switching between splines
         //  and following them with the accelerationController, then update local
         //  variables to allow for the power getters to work
+
+        accelerationControl.update(new OdometryPacket(0,0,0,0,0));
+        splinePathInterpreter.executeActions();
     }
     public void setFollowingCoefficients(){
         //TODO: Figure out the needed coefficients, pass these to the Spline Follower
@@ -65,5 +71,8 @@ public class SplineFollower {
         // TODO: return the rotation power computed by accelerationControl
         // e.g. return accelerationControl.getRotationPower();
         return 0;
+    }
+    public boolean isPathComplete(){
+        return splinePathInterpreter.isPathFinished();
     }
 }

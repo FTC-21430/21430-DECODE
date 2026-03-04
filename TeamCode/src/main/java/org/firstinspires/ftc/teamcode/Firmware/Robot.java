@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirm
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
+import org.firstinspires.ftc.teamcode.Resources.SplineFollowing.SplineFollower;
 
 //TODO - Refactor this class to be season non-specific and move all specific details to the DecodeBot class and override information in this class.
 
@@ -44,6 +45,7 @@ public abstract class Robot {
     public Telemetry telemetry;
     public LinearOpMode opMode;
     public PathFollowing pathFollowing;
+    public SplineFollower SWEEP; // Spline-based Waypoint Execution Engine for Path-following XD
     public ElapsedTime runtime = new ElapsedTime();
     public BulkSensorBucket bulkSensorBucket = null;
 

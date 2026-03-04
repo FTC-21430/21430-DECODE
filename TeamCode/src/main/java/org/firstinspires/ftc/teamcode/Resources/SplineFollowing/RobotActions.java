@@ -3,13 +3,15 @@ package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 
+import java.util.ArrayList;
+
 /**
  * Don't have a super solid plan for this yet, but it needs to be involved with the PathPlanning class to add to an action cue alongside a spline movement
  *
  * The actions contained within this class are robot specific, but lets try to make it easy to change and reuse for future seasons! if someone has a better idea, LMK! - Tobin
+ *
  */
 public class RobotActions {
-
     public enum Actions {
         INTAKE,
         LAUNCH_ONE,
@@ -20,8 +22,19 @@ public class RobotActions {
         READY_RAMP
         //TODO: add extra possible actions the robot's mechanisms could do during autonomous to this list
     }
+
+    private ArrayList<Action> actions;
+    private DecodeBot bot;
     public RobotActions(DecodeBot decodeBot){
 
+    }
+    public void addAction(Actions actionType, double triggerTime){
+        Action newAction = new Action(actionType, bot, triggerTime);
+        actions.add(newAction);
+    }
+    public void addAction(actionType, int )
+    Action[] compileActions(){
+        return actions
     }
 }
 

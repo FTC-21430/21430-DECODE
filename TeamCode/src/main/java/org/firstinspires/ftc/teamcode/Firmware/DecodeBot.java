@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
+import org.firstinspires.ftc.teamcode.Resources.SplineFollowing.SplineFollower;
 import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 @Config
@@ -73,6 +74,7 @@ public abstract class DecodeBot extends Robot{
 
         aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
+        this.SWEEP = new SplineFollower(this);
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
         operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics);
