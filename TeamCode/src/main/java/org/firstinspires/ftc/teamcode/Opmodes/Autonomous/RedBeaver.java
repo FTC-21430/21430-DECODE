@@ -105,6 +105,10 @@ public class RedBeaver extends BaseAuto {
 //
 //        //The robot moves to the place to intake the balls
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
+        robot.autoMoveTo(18.5,43,175,4);
+        robot.pathFollowing.setFollowSpeed(0.9);
+        robot.chill(true,0.2);
+        robot.autoMoveTo(34.3,43,175,4);
         robot.autoMoveTo(18.5,40,175,4);
         robot.pathFollowing.setFollowSpeed(0.7);
         robot.chill(true,0.2);

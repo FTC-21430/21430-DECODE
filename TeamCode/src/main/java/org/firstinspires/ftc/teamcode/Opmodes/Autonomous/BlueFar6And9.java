@@ -31,6 +31,15 @@ public class BlueFar6And9 extends BaseAuto {
         autonomousLaunching(motifId);
     }
     private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
+        robot.autoMoveTo(52.3, -18.9, -162.9, 8);
+        robot.chill(true, 0.3);
+
+        robot.aimAtGoal();
+        robot.setLauncherBasedOnTags();
+        robot.chill(true,0.1);
+        autonomousLaunching(motifId);
+    }
+    private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
         robot.autoMoveTo(52.3, -16.9, -175, 20);
 
         if (finalLaunch){
