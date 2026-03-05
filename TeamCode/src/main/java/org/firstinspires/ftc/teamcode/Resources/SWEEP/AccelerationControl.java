@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PIDFController;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.SplinePathInterpreter;
 
 /**
  * Gets the current spline we are following and the time, infers the target point and outputs how to move the drivetrain to get there
@@ -13,18 +14,20 @@ public class AccelerationControl {
     //Connected classes
     private PIDController pidController = null;
     private ElapsedTime runtime;
+    private SplinePathInterpreter splinePathInterpreter;
     // private constants - ie - robot data like acceleration and stuff needed to translate points, needed acceleration to drivetrain powers
     //private attributes
     private double followSpeed = 1;
     private double followTolerance = 1;
     private double fwdPower, sidePower, rotPower;
 
-    public AccelerationControl(PIDController pidController, ElapsedTime runtime) {
+    // computation methods here
+    public AccelerationControl(SplinePathInterpreter splinePathInterpreter) {
         this.pidController = pidController;
         this.runtime = runtime;
+        this.splinePathInterpreter = splinePathInterpreter;
     }
 
-    // computation methods here
     /*
      *There a few main functions that path following uses:
         *followPath, setTargetPosition, setFollowSpeed, setAutoConstants, isWithinTargetTolerance,
@@ -37,7 +40,7 @@ public class AccelerationControl {
         *setFollowSpeed, isWithinTargetTolerance, setFollowTolerance, along with some PIDF help for error control.
      *The old code is as follows:
      */
-        public void setFollowSpeed(double speed){
+    public void setFollowSpeed(double speed){
         followSpeed = speed;
         }
 
