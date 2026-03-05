@@ -36,6 +36,7 @@ public class DemoTeleop extends BaseTeleOp {
             if (gamepad1.crossWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
             }
+            //Robot goes to Idle
             if (gamepad1.circleWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
             }
@@ -47,7 +48,7 @@ public class DemoTeleop extends BaseTeleOp {
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
             }
             if (gamepad2.dpadUpWasPressed()){
-                //Launch all of the balls without sort
+                //Launch all the balls in a random order
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);
@@ -68,9 +69,11 @@ public class DemoTeleop extends BaseTeleOp {
             if (gamepad1.dpad_left){
                 robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.MID);
             }
+            //Launch ball from the close zone
             if (gamepad1.dpad_down){
                 robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.CLOSE);
             }
+            //launch ball from the far side
             if (gamepad1.dpad_up){
                 robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.FAR);
             }
