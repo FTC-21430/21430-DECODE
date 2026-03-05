@@ -14,9 +14,6 @@ public class AccelerationControl {
     private PIDController pidController = null;
     private ElapsedTime runtime;
     // private constants - ie - robot data like acceleration and stuff needed to translate points, needed acceleration to drivetrain powers
-    private double p;
-    private double i;
-    private double d;
     //private attributes
     private double followSpeed = 1;
     private double followTolerance = 1;
@@ -45,7 +42,7 @@ public class AccelerationControl {
         }
 
         public boolean isWithinTargetTolerance(double robotX, double robotY){
-        double distance = Math.sqrt(Math.pow(xPID.getTarget() - robotX, 2 ) + Math.pow(yPID.getTarget() - robotY,2));
+        double distance = Math.sqrt(Math.pow(pidController.getTarget() - robotX, 2 ) + Math.pow(pidController.getTarget() - robotY,2));
         return distance <= followTolerance;
         }
 
@@ -53,8 +50,14 @@ public class AccelerationControl {
         followTolerance = tolerance;
         }
 
-    public void update(OdometryPacket odometryPacket, SplineFollower splineFollower, double currentTime){
+        public void update(OdometryPacket odometryPacket, SplineFollower splineFollower, double currentTime){
         // TODO: do this
+    }
+
+    public void setMotorPwrs(){
+        fwdPower=0;
+        sidePower=0;
+        rotPower=0;
     }
 
     //These functions will get the overall power of the robot in each of their respective directions
