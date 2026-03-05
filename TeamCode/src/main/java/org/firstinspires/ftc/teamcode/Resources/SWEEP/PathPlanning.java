@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
-import org.ejml.equation.Variable;
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
-import org.firstinspires.ftc.teamcode.Resources.SplineFollowing.Waypoint;
 
 import java.util.ArrayList;
 

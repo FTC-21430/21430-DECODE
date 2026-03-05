@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 
 //TODO: Explain the entire purpose and structure of the spine following project
-public class SplineFollower {
+public class SWEEP {
     //TODO create the needed objects in all corresponding definition categories with comments
 
     // custom classes
@@ -26,7 +26,7 @@ public class SplineFollower {
     /**
      * Constructor for the entire spline following library.
      */
-    public SplineFollower(DecodeBot robot){
+    public SWEEP(DecodeBot robot){
         // TODO: get to Robot Actions
         this.robot = robot;
 

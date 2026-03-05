@@ -8,7 +8,7 @@
 /// This code is provided as-is for educational purposes, and is not guaranteed to be bug-free or suitable for all use cases. It is the responsibility of the user to test and validate the code for their specific application,
 ///  and to understand the underlying mathematics and algorithms involved in cubic spline interpolation and path following.
 /// Thank you for respecting the intellectual property and educational intent of this code! <3 - Tobin Rumsey, BroomBots 21430
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.ejml.simple.SimpleMatrix;
 

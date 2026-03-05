@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 
