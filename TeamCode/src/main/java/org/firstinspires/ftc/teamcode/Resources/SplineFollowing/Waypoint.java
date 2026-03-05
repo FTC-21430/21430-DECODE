@@ -10,5 +10,20 @@ public class Waypoint {
         this.velocity = velocity;
         this.shouldHoldAngle = shouldHoldAngle;
     }
-    //TODO: make getters
+
+    public double getX(){
+        return x;
+    }
+    public double getY(){
+        return y;
+    }
+    public double getAngle(){
+        return angle;
+    }
+    public double getSpeed(){
+        return velocity;
+    }
+    public boolean shouldHoldAngle(){
+        return shouldHoldAngle;
+    }
 }
