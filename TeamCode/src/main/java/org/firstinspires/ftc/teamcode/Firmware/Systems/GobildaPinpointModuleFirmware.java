@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
+import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 
 public class GobildaPinpointModuleFirmware {
 
@@ -133,6 +134,8 @@ public class GobildaPinpointModuleFirmware {
         pinpoint.recalibrateIMU();
     }
 
-    // TODO: add support for OdometryPackets, cause that would be cool  ¯\_(ツ)_/¯ - Tobin - SplineFollowing Update
+    public OdometryPacket getOdometryPacket(){
+        return new OdometryPacket(getRobotX(),getRobotY(),getRobotAngle(),getVelocityX(),getVelocityY());
+    }
 }
 

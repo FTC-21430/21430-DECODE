@@ -8,7 +8,7 @@
 /// This code is provided as-is for educational purposes, and is not guaranteed to be bug-free or suitable for all use cases. It is the responsibility of the user to test and validate the code for their specific application,
 ///  and to understand the underlying mathematics and algorithms involved in cubic spline interpolation and path following.
 /// Thank you for respecting the intellectual property and educational intent of this code! <3 - Tobin Rumsey, BroomBots 21430
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -72,6 +72,29 @@ public class CubicSplineSegment {
         this.rotPolynomial = polynomials[2];
 
         this.endTime = startTime + segmentTime;
+    }
+    /**
+     * Alternate constructor for a "hold" segment that keeps the robot at a fixed position and orientation for a specified duration.
+     * compatible with the same path following algorithms since it just uses constant polynomials, but allows for easy implementation of wait times at waypoints.
+     * @param holdPoint the point to hold at for the duration of this segment (Waypoint Object with x, y, and angle)
+     * @param startTime the absolute time at which this hold segment should start (seconds)
+     * @param duration the duration to hold at the point (seconds)
+     */
+    public CubicSplineSegment(Waypoint holdPoint, double startTime, double duration){
+        // Save start time and end time
+        this.startTime = startTime;
+        this.endTime = startTime + duration;
+
+        // set polynomials to be in form of constants so that the target x position return is the hold point,
+        // works well because the same interpreter and algorithms for following paths can also be used in the same way for waits!
+        this.xPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0,0,0,holdPoint.getX()}));
+        this.yPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0,0,0,holdPoint.getY()}));
+        this.rotPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0,0,0,holdPoint.getAngle()}));
+
+        // Currently the polynomials range from 0.0 - 1.0, time scalar allows the full duration of the segment to be mapped to this range, so that compute() can take absolute time and internally convert to 0-1 for the polynomial evaluation
+        this.xPolynomial.setTimeScalar(duration);
+        this.yPolynomial.setTimeScalar(duration);
+        this.rotPolynomial.setTimeScalar(duration);
     }
     private CubicPolynomial[] createCubicSplineSegment(SimpleMatrix segmentControlPoints, double splineAlpha){
         SimpleMatrix P0 = segmentControlPoints.getRow(0);

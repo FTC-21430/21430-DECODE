@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 public class Waypoint {
     private final double x,y,angle,velocity;
