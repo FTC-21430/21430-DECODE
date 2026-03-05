@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
+import org.firstinspires.ftc.teamcode.Firmware.Robot;
 
 import java.util.ArrayList;
 
@@ -26,10 +27,12 @@ public class PathPlanning {
      * @param velocity - the top velocity ratio of the robot, 0 = no movement, 1 = full speed
      */
     public void splineTo(double x, double y, double velocity){
-        // TODO: make this
+        Waypoint waypoint = new Waypoint(x,y,0,velocity, false);
+        waypoints.add(waypoint);
     }
     public void splineToConstantAngle(double x, double y, double angle, double velocity){
-        // TODO: make this
+        Waypoint waypoint = new Waypoint(x,y,angle,velocity,true);
+        waypoints.add(waypoint);
     }
     public void resetGeneration(){
         waypoints = new ArrayList<Waypoint>();
@@ -41,7 +44,8 @@ public class PathPlanning {
      * @param time
      */
     public void chill(double x, double y, double angle, double time){
-        //TODO:
+        Waypoint waypoint = new Waypoint(x,y,angle,0,true);
+        waypoints.add(waypoint);
     }
     public void addAction(RobotActions.Actions actionType, double triggerTime){
         robotActions.addAction(actionType, triggerTime);
@@ -49,12 +53,14 @@ public class PathPlanning {
     public void addAction(RobotActions.Actions actionType){
         robotActions.addAction(actionType, splineCount);
     }
-    // TODO, move Action outside of 'RobotActions.java' into it's own file
     public Action[] compileActions(){
         return robotActions.compileActions();
     }
     public CubicSplineSegment[] generatePath(){
-        //TODO - make this return a fully generated set of splines
+        for(int=0;
+        int<waypoints.size();
+        int+1;)
+            if (int=0);
         return new CubicSplineSegment[0];
     }
 }
