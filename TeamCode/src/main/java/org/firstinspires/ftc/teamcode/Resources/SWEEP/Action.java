@@ -36,14 +36,13 @@ public class Action {
         switch (triggerMode) {
             case SPLINE_ORDER:
                 if (splineID >= triggerSplineOrder) {
-                    actionIntake();
+                    
                     return true;
                 }
                 break;
             case TIMING:
                 // timing-based trigger: fire when runtime time >= triggerTime
                 if (time >= triggerTime) {
-                    actionIntake();
                     return true;
                 }
                 break;
