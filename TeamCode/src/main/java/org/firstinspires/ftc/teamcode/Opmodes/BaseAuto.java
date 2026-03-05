@@ -76,7 +76,7 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
                 break;
         }
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
-        while((robot.operatorStateMachine.getCurrentState() == OperatorStateMachine.State.LAUNCH && runtime.seconds() <= 29.75) && opModeIsActive() ) {
+        while((robot.operatorStateMachine.getCurrentState() == OperatorStateMachine.State.LAUNCH) && opModeIsActive() ) {
             robot.updateRobot(false, false, false);
             robot.aimAtGoal();
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
