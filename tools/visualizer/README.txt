@@ -1,0 +1,2 @@
+This is a simple java problem that was written by Co-pilot to ensure that the spline generation algorithm works.
+ Please do not judge, this is just a simple vibe-coded tool that ensures the real code work :P

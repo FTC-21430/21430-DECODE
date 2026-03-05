@@ -1,21 +1,18 @@
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
-
-import com.qualcomm.robotcore.util.ElapsedTime;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
-import org.firstinspires.ftc.teamcode.Resources.PIDController;
-import org.firstinspires.ftc.teamcode.Resources.PIDFController;
 
 //TODO: Explain the entire purpose and structure of the spine following project
-public class SplineFollower {
+public class SWEEP {
     //TODO create the needed objects in all corresponding definition categories with comments
 
     // custom classes
     private final AccelerationControl accelerationControl;
-    private final PathPlanning pathPlanner;
+    //TODO: make it so this can be private and the class compiles it and then passes it into SplineFollower
+    public PathPlanning pathPlanner;
+    private final SplinePathInterpreter splinePathInterpreter;
     private final DecodeBot robot;
-    private ElapsedTime runtime;
 
     // FTC Dashboard Variables
 
@@ -23,44 +20,48 @@ public class SplineFollower {
 
     // private variables
     private CubicSplineSegment[] splines;
+    private Action[] actions;
 
 
     /**
      * Constructor for the entire spline following library.
      */
-    public SplineFollower(DecodeBot robot, PIDController pidController, ElapsedTime runtime){
+    public SWEEP(DecodeBot robot){
         // TODO: get to Robot Actions
         this.robot = robot;
 
         //TODO: figure out what parameters this class needs - ie, robot specific tuning details. - want to make this modular and reusable without changing the library here
         // init
-        accelerationControl = new AccelerationControl(pidController, runtime);
-        pathPlanner = new PathPlanning();
-    }
+        splinePathInterpreter = new SplinePathInterpreter();
+        accelerationControl = new AccelerationControl(splinePathInterpreter);
+        pathPlanner = new PathPlanning(robot);
 
-    public double getXForTime(double time){
-        return 0;
-        // TODO: make this work
-    }
-    public double getYForTime(double time){
-        return 0;
-    }
-    public double getYawForTime(double time){
-        return 0;
     }
 
     /**
      * Once all waypoints are defined by opMode, compile all splines together and save path.
      * MUST RUN before first update
      */
-    public void computerSplines(){
-        splines = pathPlanner.generatePath();
+    public void computeSplines(){
+        this.splines = pathPlanner.generatePath();
+        this.actions = pathPlanner.compileActions();
     }
-
+    public void startPath(){
+        splinePathInterpreter.startPath(splines, actions);
+    }
+    public void startPath(double startTime){
+        splinePathInterpreter.startPath(splines, actions, startTime);
+    }
+    public void setInterpreterSpeed(double speedRatio){
+        splinePathInterpreter.setProgramSpeed(speedRatio);
+    }
     public void update(OdometryPacket odometryPacket){
         // TODO: fill out this method to handle switching between splines
         //  and following them with the accelerationController, then update local
         //  variables to allow for the power getters to work
+
+        accelerationControl.update(new OdometryPacket(0,0,0,0,0));
+        splinePathInterpreter.executeActions();
     }
     public void setFollowingCoefficients(){
         //TODO: Figure out the needed coefficients, pass these to the Spline Follower
@@ -81,5 +82,8 @@ public class SplineFollower {
         // TODO: return the rotation power computed by accelerationControl
         // e.g. return accelerationControl.getRotationPower();
         return 0;
+    }
+    public boolean isPathComplete(){
+        return splinePathInterpreter.isPathFinished();
     }
 }
