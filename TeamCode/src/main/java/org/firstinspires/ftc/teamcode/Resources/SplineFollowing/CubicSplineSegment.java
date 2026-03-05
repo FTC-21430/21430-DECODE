@@ -93,8 +93,9 @@ public class CubicSplineSegment {
         // Tangent segments:
 
         // prevent divide by zero errors
-        if (t2 - t0 == 0) t2 += Math.pow(1,-7);
-        if (t3 - t1 == 0) t3 += Math.pow(1,-7);
+        final double EPS = 1e-9;
+        if (Math.abs(t2 - t0) < EPS) t2 += EPS;
+        if (Math.abs(t3 - t1) < EPS) t3 += EPS;
 
         // first for the X polynomial
         double Mx1 = ((P2.get(0) - P0.get(0)) / (t2 - t0)) * scaleFactor;
