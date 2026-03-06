@@ -16,6 +16,7 @@ public class PathPlanning {
 
     // spline count goes up with every new spline that is going to exist. One waypoint is not enough. splines = waypoints - 1. 0 indexed
     private int splineCount = -1;
+    private double robotSpeed = 0;
     public PathPlanning(DecodeBot bot){
         this.robotActions = new RobotActions(bot);
     }
@@ -56,11 +57,41 @@ public class PathPlanning {
     public Action[] compileActions(){
         return robotActions.compileActions();
     }
-    public CubicSplineSegment[] generatePath(){
-        for(int=0;
-        int<waypoints.size();
-        int+1;)
-            if (int=0);
-        return new CubicSplineSegment[0];
+    public CubicSplineSegment[] generatePath() {
+        //A if statement that just returns 0 if it can't identify more than
+        if (waypoints.size()<2){
+            return new CubicSplineSegment[0];
+        }
+         double time = 0;
+        CubicSplineSegment[] path = new CubicSplineSegment[waypoints.size()-1];
+        //The first part of this for loop is for having the previous, start, end and next point
+        for (int i = 0; i <  waypoints.size() ; i++) {
+            if(waypoints.get(i).isWaitPoint()){
+                CubicSplineSegment spline = new CubicSplineSegment(waypoints.get(i),time,waypoints.get(i).getDuration());
+                path[i] = spline;
+                time = spline.getEndTime();
+                continue;
+            }
+            if (i + 1 >= waypoints.size()){
+                continue;
+            }
+                //Add comment
+                int prevIdx = (i - 1 >= 0) ? i - 1 : 0;
+                int startIdx = i;
+                int endIdx = i + 1;
+                int nextIdx = (i + 2 < waypoints.size()) ? i + 2 : endIdx;
+
+                //This is when it actually applies the logic in order to get the points it needs
+                Waypoint prev = waypoints.get(prevIdx);
+                Waypoint start = waypoints.get(startIdx);
+                Waypoint end = waypoints.get(endIdx);
+                Waypoint next = waypoints.get(nextIdx);
+                CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed);
+                time = spline.getEndTime();
+                path[i] = spline;
+            }
+        return path;
+
     }
+
 }

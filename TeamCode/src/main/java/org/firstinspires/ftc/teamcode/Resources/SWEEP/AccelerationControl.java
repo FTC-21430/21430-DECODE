@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.PIDFController;
+
 
 /**
  * Gets the current spline we are following and the time, infers the target point and outputs how to move the drivetrain to get there
@@ -19,7 +20,7 @@ public class AccelerationControl {
     private double followTolerance = 1;
     private double fwdPower, sidePower, rotPower;
 
-    public AccelerationControl(PIDController pidController, ElapsedTime runtime) {
+    public AccelerationControl(SplinePathInterpreter SI) {
         this.pidController = pidController;
         this.runtime = runtime;
     }
@@ -50,7 +51,7 @@ public class AccelerationControl {
         followTolerance = tolerance;
         }
 
-        public void update(OdometryPacket odometryPacket, SplineFollower splineFollower, double currentTime){
+        public void update(){
         // TODO: do this
     }
 
