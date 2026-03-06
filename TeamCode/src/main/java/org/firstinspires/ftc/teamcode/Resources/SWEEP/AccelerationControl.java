@@ -32,7 +32,7 @@ public class AccelerationControl {
 
     public static double lookAheadTime1 = 0.5;
     public static double lookAheadTime2 = 0.6;
-    private double accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
+    private double accelRatio = 1e-7;
 
     SimpleMatrix robotPosNow;
     SimpleMatrix robotPosNext;
