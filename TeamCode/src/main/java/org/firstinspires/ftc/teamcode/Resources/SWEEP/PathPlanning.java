@@ -30,10 +30,17 @@ public class PathPlanning {
     public void splineTo(double x, double y, double velocity){
         Waypoint waypoint = new Waypoint(x,y,0,velocity, false);
         waypoints.add(waypoint);
+        splineCount ++;
+    }
+    public void splineStart(double x, double y, double angle){
+        Waypoint waypoint = new Waypoint(x,y,0,0,false);
+        waypoints.add(waypoint);
+        splineCount++;
     }
     public void splineToConstantAngle(double x, double y, double angle, double velocity){
         Waypoint waypoint = new Waypoint(x,y,angle,velocity,true);
         waypoints.add(waypoint);
+        splineCount ++;
     }
     public void resetGeneration(){
         waypoints = new ArrayList<Waypoint>();
@@ -47,6 +54,7 @@ public class PathPlanning {
     public void chill(double x, double y, double angle, double time){
         Waypoint waypoint = new Waypoint(x,y,angle,0,true);
         waypoints.add(waypoint);
+        splineCount ++;
     }
     public void addAction(RobotActions.Actions actionType, double triggerTime){
         robotActions.addAction(actionType, triggerTime);
@@ -75,20 +83,20 @@ public class PathPlanning {
             if (i + 1 >= waypoints.size()){
                 continue;
             }
-                //Add comment
-                int prevIdx = (i - 1 >= 0) ? i - 1 : 0;
-                int startIdx = i;
-                int endIdx = i + 1;
-                int nextIdx = (i + 2 < waypoints.size()) ? i + 2 : endIdx;
+            //For the previous and the new idx the ? is basically like a else statment
+            int prevIdx = (i - 1 >= 0) ? i - 1 : 0;
+            int startIdx = i;
+            int endIdx = i + 1;
+            int nextIdx = (i + 2 < waypoints.size()) ? i + 2 : endIdx;
 
-                //This is when it actually applies the logic in order to get the points it needs
-                Waypoint prev = waypoints.get(prevIdx);
-                Waypoint start = waypoints.get(startIdx);
-                Waypoint end = waypoints.get(endIdx);
-                Waypoint next = waypoints.get(nextIdx);
-                CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed);
-                time = spline.getEndTime();
-                path[i] = spline;
+            //This is when it actually applies the logic in order to get the points it needs
+            Waypoint prev = waypoints.get(prevIdx);
+            Waypoint start = waypoints.get(startIdx);
+            Waypoint end = waypoints.get(endIdx);
+            Waypoint next = waypoints.get(nextIdx);
+            CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed);
+            time = spline.getEndTime();
+            path[i] = spline;
             }
         return path;
 
