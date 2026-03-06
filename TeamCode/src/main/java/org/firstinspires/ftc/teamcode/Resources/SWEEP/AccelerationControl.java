@@ -47,17 +47,25 @@ public class AccelerationControl {
     public void update(OdometryPacket odometryPacket){
         velX = odometryPacket.getVelX();
         velY = odometryPacket.getVelY();
-        robotPosNow = splinePathInterpreter.getRobotPosition(0);
+        robotPosNow = splinePathInterpreter.getRobotPosition(0); //TODO: make these times able to be an FTC dashboard constant
         robotPosNext = splinePathInterpreter.getRobotPosition(0.5);
         robotPosNextNext = splinePathInterpreter.getRobotPosition(1);
-        velNeededX = robotPosNow.get(0) - robotPosNext.get(0);
+        velNeededX = robotPosNow.get(0) - robotPosNext.get(0); // TODO: velocity here needs to be in term of (posF-posI)/time This is just posF-posI right now
         velNeededY = robotPosNow.get(1) - robotPosNext.get(1);
         velNextX = robotPosNext.get(0) - robotPosNextNext.get(0);
-        velNextY = robotPosNext.get(1) - robotPosNextNext.get(1);
-        nextNeededAccelerationX = velNextX-velNeededX;
+        velNextY = robotPosNext.get(1) - robotPosNextNext.get(1); // TODO: velocity change in the above comment ends here
+        nextNeededAccelerationX = velNextX-velNeededX; //TODO: Acceleration is also change in velocity divided by time. So divide by time! the change in time is just the change in lookahead time. Another reason to make it a variable!
         nextNeededAccelerationY = velNextY-velNeededY;
         nextNeededAccelerationX = velNextX-velNeededX;
         nextNeededAccelerationY = velNextY-velNeededY;
+
+        //TODO: these four are duplicates, neededAcceleration
+
+        //TODO: have a ratio of the two different accelerations
+
+        //TODO: Acceleration = majar ratio of first accel + minor ratio of second accel. such as 0.9 ratio: 0.9 first accel + 0.1 second accel
+
+        //TODO: set the motors Powers should be called now
     }
 
     /**
@@ -75,8 +83,6 @@ public class AccelerationControl {
      * @param robotAngle - it's the robots angle, and is used to help the wheels figure out where they are, and how to move accordingly
      */
     private void setMotorPwrs(double accelerationX, double accelerationY, double robotAngle){
-        //TODO: MAKE THE CODE ALREADY!
-        //I'm working on it, chill!
         xPID.update(accelerationX);
         yPID.update(accelerationY);
         fwdPower=(xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * followSpeed * -1;;
