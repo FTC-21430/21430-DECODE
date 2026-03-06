@@ -33,9 +33,8 @@ public class SWEEP {
         //TODO: figure out what parameters this class needs - ie, robot specific tuning details. - want to make this modular and reusable without changing the library here
         // init
         splinePathInterpreter = new SplinePathInterpreter();
-        accelerationControl = new AccelerationControl(splinePathInterpreter);
+        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl);
         pathPlanner = new PathPlanning(robot);
-
     }
 
     /**

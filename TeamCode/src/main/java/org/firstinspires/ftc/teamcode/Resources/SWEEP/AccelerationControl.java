@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode.Resources.SplineFollowing;
-
-import com.qualcomm.robotcore.util.ElapsedTime;
+package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
-import org.firstinspires.ftc.teamcode.Resources.PIDFController;
+import org.firstinspires.ftc.teamcode.Resources.RotationControl;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.SplinePathInterpreter;
 
 /**
@@ -12,55 +10,38 @@ import org.firstinspires.ftc.teamcode.Resources.SWEEP.SplinePathInterpreter;
  */
 public class AccelerationControl {
     //Connected classes
-    private PIDController pidController = null;
-    private ElapsedTime runtime;
     private SplinePathInterpreter splinePathInterpreter;
+    private RotationControl rotationControl;
+    private PIDController xPID;
+    private PIDController yPID;
     // private constants - ie - robot data like acceleration and stuff needed to translate points, needed acceleration to drivetrain powers
     //private attributes
-    private double followSpeed = 1;
-    private double followTolerance = 1;
     private double fwdPower, sidePower, rotPower;
+    double followSpeed = 1;
 
     // computation methods here
-    public AccelerationControl(SplinePathInterpreter splinePathInterpreter) {
-        this.pidController = pidController;
-        this.runtime = runtime;
+    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl) {
         this.splinePathInterpreter = splinePathInterpreter;
+        this.rotationControl = rotationControl;
     }
 
-    /*
-     *There a few main functions that path following uses:
-        *followPath, setTargetPosition, setFollowSpeed, setAutoConstants, isWithinTargetTolerance,
-        *setFollowTolerance, and the getters for speed.
-     *In these, only a few are relevant, such as:
-        *setFollowSpeed, isWithinTargetTolerance, setFollowTolerance, and minor adjustments to followPath
-     *As an error fixing class, the others arent relevant, and will be in other classes.
-     *followPath will go into SplineFollower, but will need some error management from AccelerationControl.
-     *The necessary methods will include:
-        *setFollowSpeed, isWithinTargetTolerance, setFollowTolerance, along with some PIDF help for error control.
-     *The old code is as follows:
-     */
-    public void setFollowSpeed(double speed){
-        followSpeed = speed;
-        }
-
-        public boolean isWithinTargetTolerance(double robotX, double robotY){
-        double distance = Math.sqrt(Math.pow(pidController.getTarget() - robotX, 2 ) + Math.pow(pidController.getTarget() - robotY,2));
-        return distance <= followTolerance;
-        }
-
-        public void setFollowTolerance(double tolerance){
-        followTolerance = tolerance;
-        }
-
-        public void update(OdometryPacket odometryPacket, SplineFollower splineFollower, double currentTime){
-        // TODO: do this
+    public void update(OdometryPacket odometryPacket){
+        //Things to get:
+        /*
+        Current Pos, lookAheadPost1, lookAheadPost2, currentVelocity, neededVelocity, currentVelocity, nextNeededVelocity,
+        neededAcceleration, scale and frictionConstant
+        */
+    }
+    public void setFollowSpeed(double followSpeed){
+        this.followSpeed = followSpeed;
     }
 
-    public void setMotorPwrs(){
-        fwdPower=0;
-        sidePower=0;
-        rotPower=0;
+    private void setMotorPwrs(double accelerationX, double accelerationY, double robotAngle){
+        //TODO: MAKE THE CODE ALREADY!
+        //I'm working on it, chill!
+        fwdPower=(xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * followSpeed * -1;;
+        sidePower=(xPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - yPID.getPower() * Math.sin(Math.toRadians(-robotAngle))) * followSpeed * 1;;
+        rotPower=rotationControl.getOutputPower(robotAngle);
     }
 
     //These functions will get the overall power of the robot in each of their respective directions
