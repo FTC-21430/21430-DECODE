@@ -49,14 +49,15 @@ public class AccelerationControl {
         velX = odometryPacket.getVelX();
         velY = odometryPacket.getVelY();
         robotPosNow = splinePathInterpreter.getRobotPosition(0);
-        robotPosNext = splinePathInterpreter.getRobotPosition(wayPointTime);
-        robotPosNextNext = splinePathInterpreter.getRobotPosition(wayPointTime);
-        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/wayPointTime * velRatioMajor;
+        robotPosNext = splinePathInterpreter.getRobotPosition(wayPointTime); //TODO name this look ahead time 1
+        robotPosNextNext = splinePathInterpreter.getRobotPosition(wayPointTime); // TODO name this look ahead time 2
+        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/wayPointTime * velRatioMajor; //TODO: name this accelRatio
         velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/wayPointTime * velRatioMajor;
-        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(2*wayPointTime) * velRatioMinor;
-        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(2*wayPointTime) * velRatioMinor;
-        neededAccelerationX = (velNextX - velNeededX)/0.5;
-        neededAccelerationY = (velNextY - velNeededY)/0.5;
+        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(2*wayPointTime) * velRatioMinor; //TODO velRatioMinor = 1 - velRatioMajor, no need for a second public tuning constant.
+        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(2*wayPointTime) * velRatioMinor; // TODO then instead of wayPointTime * 2, you can use the second time here
+        neededAccelerationX = (velNextX - velNeededX)/0.5; //TODO: use accelRatio ONLY on these two lines 58 and 59
+        neededAccelerationY = (velNextY - velNeededY)/0.5; // TODO: the change in time is the first look ahead time
+
         setMotorPwrs(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
     }
 
