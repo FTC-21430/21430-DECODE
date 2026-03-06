@@ -29,10 +29,10 @@ public class AccelerationControl {
     private double velNextY;
     private double neededAccelerationX;
     private double neededAccelerationY;
-    public static double accelRatio = 1;
-    private double velRatioMinor = 1-accelRatio; // just calculate this in update
+
     public static double lookAheadTime1 = 0.5;
     public static double lookAheadTime2 = 0.6;
+    private double accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
 
     SimpleMatrix robotPosNow;
     SimpleMatrix robotPosNext;
@@ -47,21 +47,21 @@ public class AccelerationControl {
      * @param odometryPacket gives the ingo needed to fully update Acceleration control
      */
 
-    public void update(OdometryPacket odometryPacket) {
-        // velRatioMinor would be calculated here - Add a divide by zero check and protection. like double velRationMinor = (1-accelRatio) ? 1-accelRatio : 1e-7 (which means 10^-7, a really small number)
+    public void update(OdometryPacket odometryPacket, double accelRatio){
+        this.accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
         velX = odometryPacket.getVelX();
         velY = odometryPacket.getVelY();
         robotPosNow = splinePathInterpreter.getRobotPosition(0);
         robotPosNext = splinePathInterpreter.getRobotPosition(lookAheadTime1);
         robotPosNextNext = splinePathInterpreter.getRobotPosition(lookAheadTime2);
-        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/ lookAheadTime1 * accelRatio;
-        velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/ lookAheadTime1 * accelRatio;
-        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(lookAheadTime2) * velRatioMinor; //TODO: calculate this on the fly instead of during init so we can change the ratio at any time
-        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(lookAheadTime2) * velRatioMinor;
-        neededAccelerationX = (velNextX - velNeededX)/lookAheadTime1;
-        neededAccelerationY = (velNextY - velNeededY)/lookAheadTime1;
+        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/ lookAheadTime1;
+        velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/ lookAheadTime1;
+        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(lookAheadTime2);
+        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(lookAheadTime2);
+        neededAccelerationX = (velNextX - velNeededX)/lookAheadTime1 * this.accelRatio;
+        neededAccelerationY = (velNextY - velNeededY)/lookAheadTime1 * this.accelRatio;
         
-        setMotorPwrs(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
+        setMotorPowers(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
     }
 
     /**
@@ -78,7 +78,7 @@ public class AccelerationControl {
      * @param accelerationY - helps with the Y axis velocity
      * @param robotAngle - it's the robots angle, and is used to help the wheels figure out where they are, and how to move accordingly
      */
-    private void setMotorPwrs(double accelerationX, double accelerationY, double robotAngle){
+    private void setMotorPowers(double accelerationX, double accelerationY, double robotAngle){
         xPID.update(accelerationX);
         yPID.update(accelerationY);
         fwdPower=(xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * followSpeed * -1;;
