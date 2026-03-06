@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.ejml.simple.SimpleMatrix;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
@@ -9,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Resources.SWEEP.SplinePathInterpreter;
 /**
  * Gets the current spline we are following and the time, infers the target point and outputs how to move the drivetrain to get there
  */
+@Config
 public class AccelerationControl {
     //Connected classes
     private SplinePathInterpreter splinePathInterpreter;
@@ -27,9 +30,8 @@ public class AccelerationControl {
     private double velNextY;
     private double neededAccelerationX;
     private double neededAccelerationY;
-    private double nextNeededAccelerationX;
-
-    private double nextNeededAccelerationY;
+    public static double velXRatio = 1;
+    public static double velYRatio = 1;
 
     SimpleMatrix robotPosNow;
     SimpleMatrix robotPosNext;
@@ -44,28 +46,19 @@ public class AccelerationControl {
      * @param odometryPacket gives the ingo needed to fully update Acceleration control
      */
 
-    public void update(OdometryPacket odometryPacket){
+    public void update(OdometryPacket odometryPacket) {
         velX = odometryPacket.getVelX();
         velY = odometryPacket.getVelY();
         robotPosNow = splinePathInterpreter.getRobotPosition(0); //TODO: make these times able to be an FTC dashboard constant
         robotPosNext = splinePathInterpreter.getRobotPosition(0.5);
         robotPosNextNext = splinePathInterpreter.getRobotPosition(1);
-        velNeededX = robotPosNow.get(0) - robotPosNext.get(0); // TODO: velocity here needs to be in term of (posF-posI)/time This is just posF-posI right now
-        velNeededY = robotPosNow.get(1) - robotPosNext.get(1);
-        velNextX = robotPosNext.get(0) - robotPosNextNext.get(0);
-        velNextY = robotPosNext.get(1) - robotPosNextNext.get(1); // TODO: velocity change in the above comment ends here
-        nextNeededAccelerationX = velNextX-velNeededX; //TODO: Acceleration is also change in velocity divided by time. So divide by time! the change in time is just the change in lookahead time. Another reason to make it a variable!
-        nextNeededAccelerationY = velNextY-velNeededY;
-        nextNeededAccelerationX = velNextX-velNeededX;
-        nextNeededAccelerationY = velNextY-velNeededY;
-
-        //TODO: these four are duplicates, neededAcceleration
-
-        //TODO: have a ratio of the two different accelerations
-
-        //TODO: Acceleration = majar ratio of first accel + minor ratio of second accel. such as 0.9 ratio: 0.9 first accel + 0.1 second accel
-
-        //TODO: set the motors Powers should be called now
+        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/0.5 * velXRatio;
+        velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/0.5 * velYRatio;
+        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/1 * velXRatio;
+        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/1 * velYRatio;
+        neededAccelerationX = (velNextX - velNeededX)/0.5;
+        neededAccelerationY = (velNextY - velNeededY)/0.5;
+        setMotorPwrs(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
     }
 
     /**
