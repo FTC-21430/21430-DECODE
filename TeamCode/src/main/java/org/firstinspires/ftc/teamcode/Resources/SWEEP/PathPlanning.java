@@ -19,6 +19,7 @@ public class PathPlanning {
     private double robotSpeed = 0;
     public PathPlanning(DecodeBot bot){
         this.robotActions = new RobotActions(bot);
+        this.waypoints = new ArrayList<Waypoint>();
     }
 
     /**
@@ -33,7 +34,7 @@ public class PathPlanning {
         splineCount ++;
     }
     public void splineStart(double x, double y, double angle){
-        Waypoint waypoint = new Waypoint(x,y,0,0,false);
+        Waypoint waypoint = new Waypoint(x,y,angle,0,false);
         waypoints.add(waypoint);
         splineCount++;
     }
@@ -44,7 +45,7 @@ public class PathPlanning {
     }
     public void resetGeneration(){
         waypoints = new ArrayList<Waypoint>();
-        splineCount = 0;
+        splineCount = -1;
 
     }
     /**
@@ -52,7 +53,7 @@ public class PathPlanning {
      * @param time
      */
     public void chill(double x, double y, double angle, double time){
-        Waypoint waypoint = new Waypoint(x,y,angle,0,true);
+        Waypoint waypoint = new Waypoint(x,y,angle,time);
         waypoints.add(waypoint);
         splineCount ++;
     }
@@ -80,7 +81,7 @@ public class PathPlanning {
                 time = spline.getEndTime();
                 continue;
             }
-            if (i + 1 >= waypoints.size()){
+            if (i  >= waypoints.size()){
                 continue;
             }
             //For the previous and the new idx the ? is basically like a else statment
