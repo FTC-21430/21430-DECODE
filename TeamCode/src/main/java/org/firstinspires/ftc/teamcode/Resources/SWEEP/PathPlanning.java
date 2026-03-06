@@ -26,10 +26,10 @@ public class PathPlanning {
      * Main waypoint generation function, makes robot spine to a point while matching the front of the robot toward the spline.
      * @param x end x - inches
      * @param y end y - inches
-     * @param velocity - the top velocity ratio of the robot, 0 = no movement, 1 = full speed
+     * @param speedRatio - the top velocity ratio of the robot, 0 = no movement, 1 = full speed
      */
-    public void splineTo(double x, double y, double velocity){
-        Waypoint waypoint = new Waypoint(x,y,0,velocity, false);
+    public void splineTo(double x, double y, double speedRatio){
+        Waypoint waypoint = new Waypoint(x,y,0,speedRatio, false);
         waypoints.add(waypoint);
         splineCount ++;
     }
@@ -38,8 +38,8 @@ public class PathPlanning {
         waypoints.add(waypoint);
         splineCount++;
     }
-    public void splineToConstantAngle(double x, double y, double angle, double velocity){
-        Waypoint waypoint = new Waypoint(x,y,angle,velocity,true);
+    public void splineToConstantAngle(double x, double y, double angle, double speedRatio){
+        Waypoint waypoint = new Waypoint(x,y,angle,speedRatio,true);
         waypoints.add(waypoint);
         splineCount ++;
     }
@@ -74,14 +74,14 @@ public class PathPlanning {
          double time = 0;
         CubicSplineSegment[] path = new CubicSplineSegment[waypoints.size()-1];
         //The first part of this for loop is for having the previous, start, end and next point
-        for (int i = 0; i <  waypoints.size() ; i++) {
+        for (int i = 0; i <  waypoints.size(); i++) {
             if(waypoints.get(i).isWaitPoint()){
                 CubicSplineSegment spline = new CubicSplineSegment(waypoints.get(i),time,waypoints.get(i).getDuration());
                 path[i] = spline;
                 time = spline.getEndTime();
                 continue;
             }
-            if (i  >= waypoints.size()){
+            if (i  >= waypoints.size()-1){
                 continue;
             }
             //For the previous and the new idx the ? is basically like a else statment
