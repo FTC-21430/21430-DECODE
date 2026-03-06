@@ -30,9 +30,9 @@ public class AccelerationControl {
     private double neededAccelerationX;
     private double neededAccelerationY;
     public static double accelRatio = 1;
-    private double velRatioMinor = 1-accelRatio;
+    private double velRatioMinor = 1-accelRatio; // just calculate this in update
     public static double lookAheadTime1 = 0.5;
-    public static double lookAheadTime2 = 0.5;
+    public static double lookAheadTime2 = 0.6;
 
     SimpleMatrix robotPosNow;
     SimpleMatrix robotPosNext;
@@ -48,6 +48,7 @@ public class AccelerationControl {
      */
 
     public void update(OdometryPacket odometryPacket) {
+        // velRatioMinor would be calculated here - Add a divide by zero check and protection. like double velRationMinor = (1-accelRatio) ? 1-accelRatio : 1e-7 (which means 10^-7, a really small number)
         velX = odometryPacket.getVelX();
         velY = odometryPacket.getVelY();
         robotPosNow = splinePathInterpreter.getRobotPosition(0);
@@ -55,7 +56,7 @@ public class AccelerationControl {
         robotPosNextNext = splinePathInterpreter.getRobotPosition(lookAheadTime2);
         velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/ lookAheadTime1 * accelRatio;
         velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/ lookAheadTime1 * accelRatio;
-        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(lookAheadTime2) * velRatioMinor;
+        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(lookAheadTime2) * velRatioMinor; //TODO: calculate this on the fly instead of during init so we can change the ratio at any time
         velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(lookAheadTime2) * velRatioMinor;
         neededAccelerationX = (velNextX - velNeededX)/lookAheadTime1;
         neededAccelerationY = (velNextY - velNeededY)/lookAheadTime1;
