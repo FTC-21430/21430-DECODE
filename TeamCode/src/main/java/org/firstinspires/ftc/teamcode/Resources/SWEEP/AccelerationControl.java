@@ -48,7 +48,7 @@ public class AccelerationControl {
      */
 
     public void update(OdometryPacket odometryPacket, double accelRatio){
-        this.accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
+        double minorRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
         velX = odometryPacket.getVelX();
         velY = odometryPacket.getVelY();
         robotPosNow = splinePathInterpreter.getRobotPosition(0);
@@ -58,8 +58,8 @@ public class AccelerationControl {
         velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/ lookAheadTime1;
         velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(lookAheadTime2);
         velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(lookAheadTime2);
-        neededAccelerationX = (velNextX - velNeededX)/lookAheadTime1 * this.accelRatio;
-        neededAccelerationY = (velNextY - velNeededY)/lookAheadTime1 * this.accelRatio;
+        neededAccelerationX = (velNextX*this.accelRatio - velNeededX*minorRatio)/lookAheadTime1;
+        neededAccelerationY = (velNextY*this.accelRatio - velNeededY*minorRatio)/lookAheadTime1;
         
         setMotorPowers(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
     }
