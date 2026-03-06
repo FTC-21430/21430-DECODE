@@ -135,13 +135,4 @@ public class PIDController {
   public double getPower() {
     return power;
   }
-  public double getPConstant(){
-      return pConstant;
-  }
-  public double getIConstant(){
-      return iConstant;
-  }
-    public double getDConstant(){
-        return dConstant;
-    }
 }
