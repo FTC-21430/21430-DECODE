@@ -6,7 +6,6 @@ import org.ejml.simple.SimpleMatrix;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
-import org.firstinspires.ftc.teamcode.Resources.SWEEP.SplinePathInterpreter;
 
 /**
  * Gets the current spline we are following and the time, infers the target point and outputs how to move the drivetrain to get there
@@ -30,9 +29,9 @@ public class AccelerationControl {
     private double velNextY;
     private double neededAccelerationX;
     private double neededAccelerationY;
-    public static double velXRatio = 1;
-    public static double velYRatio = 1;
-
+    private static double velRatioMajor = 1;
+    private static double velRatioMinor = 1;
+    private double wayPointTime = 0.5;
     SimpleMatrix robotPosNow;
     SimpleMatrix robotPosNext;
     SimpleMatrix robotPosNextNext;
@@ -49,13 +48,13 @@ public class AccelerationControl {
     public void update(OdometryPacket odometryPacket) {
         velX = odometryPacket.getVelX();
         velY = odometryPacket.getVelY();
-        robotPosNow = splinePathInterpreter.getRobotPosition(0); //TODO: make these times able to be an FTC dashboard constant
-        robotPosNext = splinePathInterpreter.getRobotPosition(0.5);
-        robotPosNextNext = splinePathInterpreter.getRobotPosition(1);
-        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/0.5 * velXRatio;
-        velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/0.5 * velYRatio;
-        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/1 * velXRatio;
-        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/1 * velYRatio;
+        robotPosNow = splinePathInterpreter.getRobotPosition(0);
+        robotPosNext = splinePathInterpreter.getRobotPosition(wayPointTime);
+        robotPosNextNext = splinePathInterpreter.getRobotPosition(wayPointTime);
+        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/wayPointTime * velRatioMajor;
+        velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/wayPointTime * velRatioMajor;
+        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(2*wayPointTime) * velRatioMinor;
+        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(2*wayPointTime) * velRatioMinor;
         neededAccelerationX = (velNextX - velNeededX)/0.5;
         neededAccelerationY = (velNextY - velNeededY)/0.5;
         setMotorPwrs(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
