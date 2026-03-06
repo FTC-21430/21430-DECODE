@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
+import org.ejml.simple.SimpleMatrix;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 import org.firstinspires.ftc.teamcode.Resources.PIDController;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
@@ -17,28 +18,67 @@ public class AccelerationControl {
     // private constants - ie - robot data like acceleration and stuff needed to translate points, needed acceleration to drivetrain powers
     //private attributes
     private double fwdPower, sidePower, rotPower;
-    double followSpeed = 1;
+    private double followSpeed = 1;
+    private double velX;
+    private double velY;
+    private double velNeededX;
+    private double velNeededY;
+    private double velNextX;
+    private double velNextY;
+    private double neededAccelerationX;
+    private double neededAccelerationY;
+    private double nextNeededAccelerationX;
 
-    // computation methods here
+    private double nextNeededAccelerationY;
+
+    SimpleMatrix robotPosNow;
+    SimpleMatrix robotPosNext;
+    SimpleMatrix robotPosNextNext;
     public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl) {
         this.splinePathInterpreter = splinePathInterpreter;
         this.rotationControl = rotationControl;
     }
 
+    /**
+     * This updates acceleration control by giving it all the correct values to stay current
+     * @param odometryPacket gives the ingo needed to fully update Acceleration control
+     */
+
     public void update(OdometryPacket odometryPacket){
-        //Things to get:
-        /*
-        Current Pos, lookAheadPost1, lookAheadPost2, currentVelocity, neededVelocity, currentVelocity, nextNeededVelocity,
-        neededAcceleration, scale and frictionConstant
-        */
+        velX = odometryPacket.getVelX();
+        velY = odometryPacket.getVelY();
+        robotPosNow = splinePathInterpreter.getRobotPosition(0);
+        robotPosNext = splinePathInterpreter.getRobotPosition(0.5);
+        robotPosNextNext = splinePathInterpreter.getRobotPosition(1);
+        velNeededX = robotPosNow.get(0) - robotPosNext.get(0);
+        velNeededY = robotPosNow.get(1) - robotPosNext.get(1);
+        velNextX = robotPosNext.get(0) - robotPosNextNext.get(0);
+        velNextY = robotPosNext.get(1) - robotPosNextNext.get(1);
+        nextNeededAccelerationX = velNextX-velNeededX;
+        nextNeededAccelerationY = velNextY-velNeededY;
+        nextNeededAccelerationX = velNextX-velNeededX;
+        nextNeededAccelerationY = velNextY-velNeededY;
     }
+
+    /**
+     * Updates the followSpeed to stay as accurate as possible
+     * @param followSpeed - the rate at which the robot is expected to move
+     */
     public void setFollowSpeed(double followSpeed){
         this.followSpeed = followSpeed;
     }
 
+    /**
+     * Finds the motor powers required, then sets them with a lot of math
+     * @param accelerationX - helps with correcting with the X velocity
+     * @param accelerationY - helps with the Y axis velocity
+     * @param robotAngle - it's the robots angle, and is used to help the wheels figure out where they are, and how to move accordingly
+     */
     private void setMotorPwrs(double accelerationX, double accelerationY, double robotAngle){
         //TODO: MAKE THE CODE ALREADY!
         //I'm working on it, chill!
+        xPID.update(accelerationX);
+        yPID.update(accelerationY);
         fwdPower=(xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * followSpeed * -1;;
         sidePower=(xPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - yPID.getPower() * Math.sin(Math.toRadians(-robotAngle))) * followSpeed * 1;;
         rotPower=rotationControl.getOutputPower(robotAngle);
@@ -46,14 +86,27 @@ public class AccelerationControl {
 
     //These functions will get the overall power of the robot in each of their respective directions
     //gets the overall forward power of the robot
+
+    /**
+     * It gives classes what motor power to use when driving in auto
+     * @return - the forward motor power
+     */
     public double getForwardPower(){
         return fwdPower;
     }
-    //gets the overall side power of the robot
+
+    /**
+     * It gives classes what motor power to use when driving in auto
+     * @return - the side power required
+     */
     public double getSidePower(){
         return sidePower;
     }
-    //gets the overall rotational power of the robot
+
+    /**
+     * It gives classes what motor power to use when driving in auto
+     * @return - the rotational power required
+     */
     public double getRotationPower(){
         return rotPower;
     }
