@@ -27,6 +27,7 @@ import org.ejml.simple.SimpleMatrix;
 public class CubicSplineSegment {
     private final CubicPolynomial xPolynomial, yPolynomial, rotPolynomial; // Cubic polynomials for x, y, and rotation (angle) as functions of time along the segment, using custom class to optimize code complexity
     // CubicPolynomial is exclusive to this class, learn about it at the bottom of this file
+    private final boolean constantAngle;
 
     private final double startTime, endTime; // Absolute time at which this segment starts and ends; used to determine which segment to evaluate at a given time and to convert absolute time to the 0-1 range for polynomial evaluation
 
@@ -41,7 +42,9 @@ public class CubicSplineSegment {
      * @param endPoint   where this spline ends
      * @param nextPoint  where the next spline ends
      */
-    public CubicSplineSegment(Waypoint lastPoint, Waypoint startPoint, Waypoint endPoint, Waypoint nextPoint, double startTime, double robotTopSpeed) {
+    public CubicSplineSegment(Waypoint lastPoint, Waypoint startPoint, Waypoint endPoint, Waypoint nextPoint, double startTime, double robotTopSpeed, boolean constantAngle) {
+        this.constantAngle = constantAngle;
+
         // ensure that negative numbers -- which we should not get but nice to not crash -- is supported (yes I used an em-dash. I am not an AI, but I like them. - Tobin)
         this.startTime = Math.abs(startTime);
         robotTopSpeed = Math.abs(robotTopSpeed);
@@ -81,6 +84,7 @@ public class CubicSplineSegment {
      * @param duration the duration to hold at the point (seconds)
      */
     public CubicSplineSegment(Waypoint holdPoint, double startTime, double duration){
+        this.constantAngle = true;
         // Save start time and end time
         this.startTime = startTime;
         this.endTime = startTime + duration;
@@ -214,12 +218,27 @@ public class CubicSplineSegment {
 
     /**
      * Returns the rotation value of this spline segment at the given time.
+     * Depends of whether or not the robot should be following a constant angle or the
      *
      * @param time the parameter (time) at which to evaluate the cubic polynomial
      * @return the rotation value at the specified time
      */
     public double getRotation(double time){
-        return rotPolynomial.compute(putTimeInRange(time) - startTime);
+        if (this.constantAngle){
+            // return the constant angle from the original polynomial calculation
+            return rotPolynomial.compute(putTimeInRange(time) - startTime);
+        }else{
+            time = putTimeInRange(time);
+            double lookAheadTime = time + 0.1 <= endTime? time + 1 : endTime;
+            // Get the current direction we are headed
+            double xDifference = getX(time+lookAheadTime)-getX(time);
+            double yDifference = getY(time+lookAheadTime)-getY(time);
+            xDifference = Math.abs(xDifference) > 0 ? xDifference:1e-7;
+            yDifference = Math.abs(yDifference) > 0 ? yDifference:1e-7;
+            return Math.toDegrees(Math.atan2(yDifference, xDifference));
+        }
+
+
     }
 
     /**
