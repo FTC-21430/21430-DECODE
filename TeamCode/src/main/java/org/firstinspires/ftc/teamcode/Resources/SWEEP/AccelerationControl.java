@@ -26,7 +26,7 @@ public class AccelerationControl {
     public static double lookAheadTime1 = 0.5;
     public static double lookAheadTime2 = 1;
     public static double accelRatio;
-    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatio) {
+    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatioTemp) {
         this.splinePathInterpreter = splinePathInterpreter;
         this.rotationControl = rotationControl;
         yPID= new PIDController(pCon, iCon, dCon, runtime);
@@ -54,7 +54,10 @@ public class AccelerationControl {
         
         setMotorPowers(targetVelX, targetVelY, odometryPacket);
     }
-
+    public void setPIDCoeffs(double p, double i, double d){
+        xPID.updatePIDConstants(p,i,d);
+        yPID.updatePIDConstants(p,i,d);
+    }
     /**
      * Finds the motor powers required, then sets them with a lot of math
      * @param targetVelocityX - helps with correcting with the X velocity
