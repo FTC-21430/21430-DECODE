@@ -60,7 +60,7 @@ public class SWEEP {
         //  and following them with the accelerationController, then update local
         //  variables to allow for the power getters to work
 
-        accelerationControl.update(new OdometryPacket(0,0,0,0,0));
+        accelerationControl.update();
         splinePathInterpreter.executeActions();
     }
     public void setFollowingCoefficients(){
