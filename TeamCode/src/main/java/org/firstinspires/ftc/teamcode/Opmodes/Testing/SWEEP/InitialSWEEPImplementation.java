@@ -25,9 +25,10 @@ public class InitialSWEEPImplementation extends BaseAuto {
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());
-            robot.intake.updateIntake();
-            robot.operatorStateMachine.updateStateMachine();
+//            robot.intake.updateIntake();
+//            robot.operatorStateMachine.updateStateMachine();
             robot.driveTrain.setDrivePower(robot.SWEEP.getForwardPower(),robot.SWEEP.getSidePower(),robot.SWEEP.getRotationPower(),robot.odometry.getRobotAngle());
+
             telemetry.update();
             robot.bulkSensorBucket.clearCache();
         }

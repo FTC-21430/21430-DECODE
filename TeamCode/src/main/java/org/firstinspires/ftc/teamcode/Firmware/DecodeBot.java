@@ -43,15 +43,17 @@ public abstract class DecodeBot extends Robot{
     public static double P_ANGLE = 0.035;
     public static double I_ANGLE = 0.0005;
     public static double D_ANGLE = 0.0001;
-    public static double yOffset = 2.78;
-    public static double xOffset = 4.9574;
+    //TODO: uncomment when switching over to main robot
+//    public static double yOffset = 2.78;
+//    public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
     private boolean isAuto;
 
     public static double aprilTagUpdateSpeed = 2;
 
-//    public static double xOffset = -3.125;
-//    public static double yOffset = -7;
+    // These odometry pod position value are just for the software testing bot
+    public static double xOffset = -3.125;
+    public static double yOffset = -7;
 
     public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
@@ -67,17 +69,17 @@ public abstract class DecodeBot extends Robot{
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
         launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
-        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
+//        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
-        aprilTags = new AprilTag();
+//        aprilTags = new AprilTag();
 
-        aprilTags.init(hardwareMap,telemetry,cameraExposure);
+//        aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
         this.SWEEP = new SWEEP(this);
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
-        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics);
+//        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics);
     }
 
     //the function used to move to a spot on the field during auto
