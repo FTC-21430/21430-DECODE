@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 
@@ -26,16 +28,11 @@ public class SWEEP {
     /**
      * Constructor for the entire spline following library.
      */
-    public SWEEP(DecodeBot robot){
-        // TODO: get to Robot Actions
+    public SWEEP(DecodeBot robot, ElapsedTime runtime, double accelRatio, double pCon, double iCon, double dCon){
         this.robot = robot;
-
-        //TODO: figure out what parameters this class needs - ie, robot specific tuning details. - want to make this modular and reusable without changing the library here
-        // init
         splinePathInterpreter = new SplinePathInterpreter();
-        accelerationControl = new AccelerationControl(splinePathInterpreter);
+        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl, pCon, iCon, dCon, runtime, accelRatio);
         pathPlanner = new PathPlanning(robot);
-
     }
 
     /**
@@ -56,32 +53,22 @@ public class SWEEP {
         splinePathInterpreter.setProgramSpeed(speedRatio);
     }
     public void update(OdometryPacket odometryPacket){
-        // TODO: fill out this method to handle switching between splines
-        //  and following them with the accelerationController, then update local
-        //  variables to allow for the power getters to work
-
-        accelerationControl.update();
+        accelerationControl.update(odometryPacket);
         splinePathInterpreter.executeActions();
     }
-    public void setFollowingCoefficients(){
-        //TODO: Figure out the needed coefficients, pass these to the Spline Follower
+    public void setFollowingCoefficients(double p, double i, double d){
+       accelerationControl.setPIDCoeffs(p,i,d);
     }
 
   //TODO: Comment the need for these getters, how that should happen
     public double getSidePower(){
-        // TODO: return the side power computed by accelerationControl
-        // e.g. return accelerationControl.getSidePower();
-        return 0;
+        return accelerationControl.getSidePower();
     }
     public double getForwardPower(){
-        // TODO: return the forward power computed by accelerationControl
-        // e.g. return accelerationControl.getForwardPower();
-        return 0;
+        return accelerationControl.getForwardPower();
     }
     public double getRotationPower(){
-        // TODO: return the rotation power computed by accelerationControl
-        // e.g. return accelerationControl.getRotationPower();
-        return 0;
+        return accelerationControl.getRotationPower();
     }
     public boolean isPathComplete(){
         return splinePathInterpreter.isPathFinished();
