@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
-import org.firstinspires.ftc.teamcode.Firmware.Robot;
 
 import java.util.ArrayList;
 
@@ -16,7 +15,7 @@ public class PathPlanning {
 
     // spline count goes up with every new spline that is going to exist. One waypoint is not enough. splines = waypoints - 1. 0 indexed
     private int splineCount = -1;
-    private double robotSpeed = 0;
+    private double robotSpeed = 20; // my guess of 20 inches / s
     public PathPlanning(DecodeBot bot){
         this.robotActions = new RobotActions(bot);
         this.waypoints = new ArrayList<Waypoint>();
@@ -80,12 +79,13 @@ public class PathPlanning {
             return new CubicSplineSegment[0];
         }
          double time = 0;
-        CubicSplineSegment[] path = new CubicSplineSegment[waypoints.size()-1];
+        int pathSize = waypoints.get(waypoints.size()-1).isWaitPoint()? waypoints.size()-2 : waypoints.size()-1;
+        ArrayList<CubicSplineSegment> path = new ArrayList<CubicSplineSegment>();
         //The first part of this for loop is for having the previous, start, end and next point
-        for (int i = 0; i <  waypoints.size(); i++) {
+        for (int i = 0; i < pathSize; i++) {
             if(waypoints.get(i).isWaitPoint()){
                 CubicSplineSegment spline = new CubicSplineSegment(waypoints.get(i),time,waypoints.get(i).getDuration());
-                path[i] = spline;
+                path.add(spline);
                 time = spline.getEndTime();
                 continue;
             }
@@ -106,9 +106,9 @@ public class PathPlanning {
             Waypoint next = waypoints.get(nextIdx);
             CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed);
             time = spline.getEndTime();
-            path[i] = spline;
+            path.add(spline);
             }
-        return path;
+        return path.toArray(new CubicSplineSegment[0]);
 
     }
 
