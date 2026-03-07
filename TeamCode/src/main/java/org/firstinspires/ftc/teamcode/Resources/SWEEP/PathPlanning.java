@@ -28,21 +28,25 @@ public class PathPlanning {
      * @param y end y - inches
      * @param speedRatio - the top velocity ratio of the robot, 0 = no movement, 1 = full speed
      */
+    //This function 
     public void splineTo(double x, double y, double speedRatio){
         Waypoint waypoint = new Waypoint(x,y,0,speedRatio, false);
         waypoints.add(waypoint);
         splineCount ++;
     }
+    //The spline start function is the start point for spline curve
     public void splineStart(double x, double y, double angle){
         Waypoint waypoint = new Waypoint(x,y,angle,0,false);
         waypoints.add(waypoint);
         splineCount++;
     }
+    //This function gets the spline to the constant angle
     public void splineToConstantAngle(double x, double y, double angle, double speedRatio){
         Waypoint waypoint = new Waypoint(x,y,angle,speedRatio,true);
         waypoints.add(waypoint);
         splineCount ++;
     }
+    //This function resets it
     public void resetGeneration(){
         waypoints = new ArrayList<Waypoint>();
         splineCount = -1;
@@ -52,22 +56,26 @@ public class PathPlanning {
      * Add a wait to the route so that the robot paused in it's path
      * @param time
      */
+    //This chill function is basically the wait time
     public void chill(double x, double y, double angle, double time){
         Waypoint waypoint = new Waypoint(x,y,angle,time);
         waypoints.add(waypoint);
         splineCount ++;
     }
+    //This adds the robot action and the trigger time
     public void addAction(RobotActions.Actions actionType, double triggerTime){
         robotActions.addAction(actionType, triggerTime);
     }
+    //This adds the action spefically the action type
     public void addAction(RobotActions.Actions actionType){
         robotActions.addAction(actionType, splineCount);
     }
     public Action[] compileActions(){
         return robotActions.compileActions();
     }
+    //This is the function where it these everything
     public CubicSplineSegment[] generatePath() {
-        //A if statement that just returns 0 if it can't identify more than
+        //A if statement that just returns 0 if it can't identify more than 1 spline point
         if (waypoints.size()<2){
             return new CubicSplineSegment[0];
         }
@@ -85,6 +93,7 @@ public class PathPlanning {
                 continue;
             }
             //For the previous and the new idx the ? is basically like a else statment
+            // So in this situation if there is no previous or next point then it just doesn't use it
             int prevIdx = (i - 1 >= 0) ? i - 1 : 0;
             int startIdx = i;
             int endIdx = i + 1;
