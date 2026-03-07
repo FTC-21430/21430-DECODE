@@ -104,7 +104,7 @@ public class PathPlanning {
             Waypoint start = waypoints.get(startIdx);
             Waypoint end = waypoints.get(endIdx);
             Waypoint next = waypoints.get(nextIdx);
-            CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed);
+            CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed, end.shouldHoldAngle());
             time = spline.getEndTime();
             path.add(spline);
             }
