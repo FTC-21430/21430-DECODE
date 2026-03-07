@@ -25,16 +25,17 @@ public class AccelerationControl {
 
     public static double lookAheadTime1 = 0.5;
     public static double lookAheadTime2 = 1;
-    public static double accelRatio = 1e-7;
+    public static double accelRatio;
 
     private SimpleMatrix robotPosNow;
     private SimpleMatrix robotPosNext;
     private SimpleMatrix robotPosNextNext;
-    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, PIDController pidController, double pCon, double iCon, double dCon, ElapsedTime runtime) {
+    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatio) {
         this.splinePathInterpreter = splinePathInterpreter;
         this.rotationControl = rotationControl;
         yPID= new PIDController(pCon, iCon, dCon, runtime);
         xPID= new PIDController(pCon, iCon, dCon, runtime);
+        accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
     }
 
     /**
@@ -42,8 +43,7 @@ public class AccelerationControl {
      * @param odometryPacket gives the ingo needed to fully update Acceleration control
      */
 
-    public void update(OdometryPacket odometryPacket, double accelRatio){
-        this.accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
+    public void update(OdometryPacket odometryPacket){
         double velX = odometryPacket.getVelX();
         double velY = odometryPacket.getVelY();
         robotPosNow = splinePathInterpreter.getRobotPosition(0);
@@ -53,8 +53,8 @@ public class AccelerationControl {
         double velNeededY = (robotPosNow.get(1) - robotPosNext.get(1)) / lookAheadTime1;
         double velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0)) / (lookAheadTime2);
         double velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1)) / (lookAheadTime2);
-        double neededAccelerationX = (velNextX - velNeededX) / lookAheadTime1 * this.accelRatio;
-        double neededAccelerationY = (velNextY - velNeededY) / lookAheadTime1 * this.accelRatio;
+        double neededAccelerationX = (velNextX - velNeededX) / lookAheadTime1 * accelRatio;
+        double neededAccelerationY = (velNextY - velNeededY) / lookAheadTime1 * accelRatio;
         
         setMotorPowers(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
     }

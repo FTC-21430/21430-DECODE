@@ -29,14 +29,14 @@ public class SWEEP {
     /**
      * Constructor for the entire spline following library.
      */
-    public SWEEP(DecodeBot robot, PIDController pidController, ElapsedTime runtime){
+    public SWEEP(DecodeBot robot, ElapsedTime runtime, double accelRatio, double pCon, double iCon, double dCon){
         // TODO: get to Robot Actions
         this.robot = robot;
 
         //TODO: figure out what parameters this class needs - ie, robot specific tuning details. - want to make this modular and reusable without changing the library here
         // init
         splinePathInterpreter = new SplinePathInterpreter();
-        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl, pidController, pidController.getPConstant(), pidController.getIConstant(), pidController.getDConstant(),runtime);
+        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl, pCon, iCon, dCon, runtime, accelRatio);
         pathPlanner = new PathPlanning(robot);
     }
 
@@ -62,7 +62,7 @@ public class SWEEP {
         //  and following them with the accelerationController, then update local
         //  variables to allow for the power getters to work
 
-        accelerationControl.update(new OdometryPacket(0,0,0,0,0),1);
+        accelerationControl.update(new OdometryPacket(0,0,0,0,0));
         splinePathInterpreter.executeActions();
     }
     public void setFollowingCoefficients(){
