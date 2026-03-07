@@ -30,12 +30,12 @@ public class AccelerationControl {
     private SimpleMatrix robotPosNow;
     private SimpleMatrix robotPosNext;
     private SimpleMatrix robotPosNextNext;
-    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatio) {
+    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatioTemp) {
         this.splinePathInterpreter = splinePathInterpreter;
         this.rotationControl = rotationControl;
         yPID= new PIDController(pCon, iCon, dCon, runtime);
         xPID= new PIDController(pCon, iCon, dCon, runtime);
-        accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
+        accelRatio = (1-accelRatioTemp!=0) ? 1-accelRatioTemp : 1e-7;
     }
 
     /**
@@ -44,6 +44,7 @@ public class AccelerationControl {
      */
 
     public void update(OdometryPacket odometryPacket){
+        double minorRatio = (1-accelRatio) > 0 ? 1-accelRatio:1e-7;
         double velX = odometryPacket.getVelX();
         double velY = odometryPacket.getVelY();
         robotPosNow = splinePathInterpreter.getRobotPosition(0);
@@ -53,21 +54,24 @@ public class AccelerationControl {
         double velNeededY = (robotPosNow.get(1) - robotPosNext.get(1)) / lookAheadTime1;
         double velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0)) / (lookAheadTime2);
         double velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1)) / (lookAheadTime2);
-        double neededAccelerationX = (velNextX - velNeededX) / lookAheadTime1 * accelRatio;
-        double neededAccelerationY = (velNextY - velNeededY) / lookAheadTime1 * accelRatio;
+        double targetVelX = velNeededX*accelRatio + velNextX * minorRatio;
+        double targetVelY = velNeededY*accelRatio + velNextY * minorRatio;
         
-        setMotorPowers(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
+        setMotorPowers(targetVelX, targetVelY, odometryPacket);
     }
 
     /**
      * Finds the motor powers required, then sets them with a lot of math
-     * @param accelerationX - helps with correcting with the X velocity
-     * @param accelerationY - helps with the Y axis velocity
-     * @param robotAngle - it's the robots angle, and is used to help the wheels figure out where they are, and how to move accordingly
+     * @param targetVelocityX - helps with correcting with the X velocity
+     * @param targetVelocityY - helps with the Y axis velocity
+     * @param odometryPacket - contains the robot position and velocity information needed for these calculations to the PID controllers
      */
-    private void setMotorPowers(double accelerationX, double accelerationY, double robotAngle){
-        xPID.update(accelerationX);
-        yPID.update(accelerationY);
+    private void setMotorPowers(double targetVelocityX, double targetVelocityY, OdometryPacket odometryPacket){
+        double robotAngle = odometryPacket.getYaw();
+        xPID.setTarget(targetVelocityX);
+        yPID.setTarget(targetVelocityY);
+        xPID.update(odometryPacket.getVelX());
+        yPID.update(odometryPacket.getVelY());
         fwdPower=(xPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + yPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * -1;;
         sidePower=(xPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - yPID.getPower() * Math.sin(Math.toRadians(-robotAngle))) * 1;;
         rotPower=rotationControl.getOutputPower(robotAngle);
