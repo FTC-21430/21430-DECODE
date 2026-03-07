@@ -42,6 +42,7 @@ public class AccelerationControl {
      */
 
     public void update(OdometryPacket odometryPacket, double accelRatio){
+<<<<<<< HEAD
         this.accelRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
         double velX = odometryPacket.getVelX();
         double velY = odometryPacket.getVelY();
@@ -54,6 +55,20 @@ public class AccelerationControl {
         double velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1)) / (lookAheadTime2);
         double neededAccelerationX = (velNextX - velNeededX) / lookAheadTime1 * this.accelRatio;
         double neededAccelerationY = (velNextY - velNeededY) / lookAheadTime1 * this.accelRatio;
+=======
+        double minorRatio = (1-accelRatio!=0) ? 1-accelRatio : 1e-7;
+        velX = odometryPacket.getVelX();
+        velY = odometryPacket.getVelY();
+        robotPosNow = splinePathInterpreter.getRobotPosition(0);
+        robotPosNext = splinePathInterpreter.getRobotPosition(lookAheadTime1);
+        robotPosNextNext = splinePathInterpreter.getRobotPosition(lookAheadTime2);
+        velNeededX = (robotPosNow.get(0) - robotPosNext.get(0))/ lookAheadTime1;
+        velNeededY = (robotPosNow.get(1) - robotPosNext.get(1))/ lookAheadTime1;
+        velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0))/(lookAheadTime2);
+        velNextY = (robotPosNext.get(1) - robotPosNextNext.get(1))/(lookAheadTime2);
+        neededAccelerationX = (velNextX*this.accelRatio - velNeededX*minorRatio)/lookAheadTime1;
+        neededAccelerationY = (velNextY*this.accelRatio - velNeededY*minorRatio)/lookAheadTime1;
+>>>>>>> b8f2c8af7043f98dbf13dd1297c9109f1b05a916
         
         setMotorPowers(neededAccelerationX, neededAccelerationY, robotPosNow.get(2));
     }
