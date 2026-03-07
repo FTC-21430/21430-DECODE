@@ -25,7 +25,6 @@ public class AccelerationControl {
     //Lookahead time is the waypoint time to look ahead. I am using point 2 for the time being
     public static double lookAheadTime1 = 0.5;
     public static double lookAheadTime2 = 1;
-    //accel ratio is 
     public static double accelRatio;
     public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatio) {
         this.splinePathInterpreter = splinePathInterpreter;
@@ -39,7 +38,6 @@ public class AccelerationControl {
      * This updates acceleration control by giving it all the correct values to stay current
      * @param odometryPacket gives the ingo needed to fully update Acceleration control
      */
-    //TODO: COMMENT!!
     public void update(OdometryPacket odometryPacket){
         double velX = odometryPacket.getVelX();
         double velY = odometryPacket.getVelY();
