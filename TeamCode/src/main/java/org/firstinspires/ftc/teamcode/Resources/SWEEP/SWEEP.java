@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
+import org.firstinspires.ftc.teamcode.Resources.PIDController;
 
 //TODO: Explain the entire purpose and structure of the spine following project
 public class SWEEP {
@@ -26,14 +29,14 @@ public class SWEEP {
     /**
      * Constructor for the entire spline following library.
      */
-    public SWEEP(DecodeBot robot){
+    public SWEEP(DecodeBot robot, PIDController pidController, ElapsedTime runtime){
         // TODO: get to Robot Actions
         this.robot = robot;
 
         //TODO: figure out what parameters this class needs - ie, robot specific tuning details. - want to make this modular and reusable without changing the library here
         // init
         splinePathInterpreter = new SplinePathInterpreter();
-        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl);
+        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl, pidController, pidController.getPConstant(), pidController.getIConstant(), pidController.getDConstant(),runtime);
         pathPlanner = new PathPlanning(robot);
     }
 
@@ -59,7 +62,7 @@ public class SWEEP {
         //  and following them with the accelerationController, then update local
         //  variables to allow for the power getters to work
 
-        accelerationControl.update(new OdometryPacket(0,0,0,0,0));
+        accelerationControl.update(new OdometryPacket(0,0,0,0,0),1);
         splinePathInterpreter.executeActions();
     }
     public void setFollowingCoefficients(){

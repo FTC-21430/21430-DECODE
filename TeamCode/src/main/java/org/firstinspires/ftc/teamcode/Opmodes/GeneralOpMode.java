@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
-import org.firstinspires.ftc.teamcode.Resources.PIDController;
 
 // Creates robot object. All OpModes inherit this.
 abstract public class GeneralOpMode extends LinearOpMode {
@@ -17,7 +16,7 @@ abstract public class GeneralOpMode extends LinearOpMode {
     // normal functions
     public void initialize(boolean resetSpindexer, boolean resetOdemetry,boolean isAuto) {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        robot = new DecodeBot(hardwareMap, telemetry, 0, 0, 0, this, resetSpindexer, resetOdemetry,isAuto, "red",gamepad2, pidController) {
+        robot = new DecodeBot(hardwareMap, telemetry, 0, 0, 0, this, resetSpindexer, resetOdemetry,isAuto, "red",gamepad2) {
         };
     }
 }
