@@ -22,15 +22,11 @@ public class AccelerationControl {
     // private constants - ie - robot data like acceleration and stuff needed to translate points, needed acceleration to drivetrain powers
     //private attributes
     private double fwdPower, sidePower, rotPower;
-
+    //Lookahead time is the waypoint time to look ahead. I am using point 2 for the time being
     public static double lookAheadTime1 = 0.5;
     public static double lookAheadTime2 = 1;
     public static double accelRatio;
-
-    private SimpleMatrix robotPosNow;
-    private SimpleMatrix robotPosNext;
-    private SimpleMatrix robotPosNextNext;
-    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatioTemp) {
+    public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, ElapsedTime runtime, double accelRatio) {
         this.splinePathInterpreter = splinePathInterpreter;
         this.rotationControl = rotationControl;
         yPID= new PIDController(pCon, iCon, dCon, runtime);
@@ -42,14 +38,13 @@ public class AccelerationControl {
      * This updates acceleration control by giving it all the correct values to stay current
      * @param odometryPacket gives the ingo needed to fully update Acceleration control
      */
-
     public void update(OdometryPacket odometryPacket){
         double minorRatio = (1-accelRatio) > 0 ? 1-accelRatio:1e-7;
         double velX = odometryPacket.getVelX();
         double velY = odometryPacket.getVelY();
-        robotPosNow = splinePathInterpreter.getRobotPosition(0);
-        robotPosNext = splinePathInterpreter.getRobotPosition(lookAheadTime1);
-        robotPosNextNext = splinePathInterpreter.getRobotPosition(lookAheadTime2);
+        SimpleMatrix robotPosNow = splinePathInterpreter.getRobotPosition(0);
+        SimpleMatrix robotPosNext = splinePathInterpreter.getRobotPosition(lookAheadTime1);
+        SimpleMatrix robotPosNextNext = splinePathInterpreter.getRobotPosition(lookAheadTime2);
         double velNeededX = (robotPosNow.get(0) - robotPosNext.get(0)) / lookAheadTime1;
         double velNeededY = (robotPosNow.get(1) - robotPosNext.get(1)) / lookAheadTime1;
         double velNextX = (robotPosNext.get(0) - robotPosNextNext.get(0)) / (lookAheadTime2);
