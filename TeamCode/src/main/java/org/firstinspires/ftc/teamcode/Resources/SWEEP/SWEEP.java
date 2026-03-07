@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
-import org.firstinspires.ftc.teamcode.Resources.PIDController;
 
 //TODO: Explain the entire purpose and structure of the spine following project
 public class SWEEP {
