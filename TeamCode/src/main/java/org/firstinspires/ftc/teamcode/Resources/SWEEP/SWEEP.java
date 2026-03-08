@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Resources.OdometryPacket;
 
 //TODO: Explain the entire purpose and structure of the spine following project
+@Config
 public class SWEEP {
     //TODO create the needed objects in all corresponding definition categories with comments
 
@@ -24,14 +25,15 @@ public class SWEEP {
     private CubicSplineSegment[] splines;
     private Action[] actions;
 
+    public static double followSpeed = 1;
 
     /**
      * Constructor for the entire spline following library.
      */
-    public SWEEP(DecodeBot robot, ElapsedTime runtime, double accelRatio, double pCon, double iCon, double dCon){
+    public SWEEP(DecodeBot robot, double accelRatio, double pCon, double iCon, double dCon){
         this.robot = robot;
-        splinePathInterpreter = new SplinePathInterpreter();
-        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl, pCon, iCon, dCon, runtime, accelRatio);
+        splinePathInterpreter = new SplinePathInterpreter(followSpeed);
+        accelerationControl = new AccelerationControl(splinePathInterpreter,robot.rotationControl, pCon, iCon, dCon, accelRatio, robot.telemetry);
         pathPlanner = new PathPlanning(robot);
     }
 
@@ -55,6 +57,10 @@ public class SWEEP {
     public void update(OdometryPacket odometryPacket){
         accelerationControl.update(odometryPacket);
         splinePathInterpreter.executeActions();
+        robot.telemetry.addData("targetX",splinePathInterpreter.getRobotPosition(0).get(0));
+        robot.telemetry.addData("targetY", splinePathInterpreter.getRobotPosition(0).get(1));
+        robot.telemetry.addData("targetAngle", splinePathInterpreter.getRobotPosition(0).get(2));
+
     }
     public void setFollowingCoefficients(double p, double i, double d){
        accelerationControl.setPIDCoeffs(p,i,d);

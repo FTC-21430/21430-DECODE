@@ -1,18 +1,24 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing.SWEEP;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 
+@Autonomous
 public class InitialSWEEPImplementation extends BaseAuto {
 
     private void defineRoute(){
-        robot.SWEEP.pathPlanner.chill(0,0,0,1);
+//        robot.SWEEP.pathPlanner.chill(0,0,0,1);
+//        robot.SWEEP.pathPlanner.splineTo(0,0,1);
+//        robot.SWEEP.pathPlanner.splineTo(24,0,0.75);
+//        robot.SWEEP.pathPlanner.splineToConstantAngle(0,24, 0, 0.25);
+//        robot.SWEEP.pathPlanner.chill(0,24,180,2);
+//        robot.SWEEP.pathPlanner.splineToConstantAngle(-24,-24, 90, 0.5);
+//        robot.SWEEP.pathPlanner.splineTo(0,0,1);
+//        robot.SWEEP.pathPlanner.chill(0,0,0,3);
         robot.SWEEP.pathPlanner.splineTo(0,0,1);
-        robot.SWEEP.pathPlanner.splineTo(24,0,0.75);
-        robot.SWEEP.pathPlanner.splineToConstantAngle(0,24, 0, 0.25);
-        robot.SWEEP.pathPlanner.chill(0,24,180,2);
-        robot.SWEEP.pathPlanner.splineToConstantAngle(-24,-24, 90, 0.5);
-        robot.SWEEP.pathPlanner.splineTo(0,0,1);
-        robot.SWEEP.pathPlanner.chill(0,0,0,3);
+        robot.SWEEP.pathPlanner.chill(0,0,0,20);
+        robot.SWEEP.pathPlanner.chill(0,0,0,20);
     }
 
     @Override
@@ -21,8 +27,10 @@ public class InitialSWEEPImplementation extends BaseAuto {
         defineRoute();
         robot.SWEEP.computeSplines();
         waitForStart();
+        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
+
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());
 //            robot.intake.updateIntake();

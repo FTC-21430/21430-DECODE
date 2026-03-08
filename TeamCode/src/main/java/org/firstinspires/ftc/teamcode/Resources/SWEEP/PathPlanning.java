@@ -78,36 +78,38 @@ public class PathPlanning {
         if (waypoints.size()<2){
             return new CubicSplineSegment[0];
         }
-         double time = 0;
-        int pathSize = waypoints.get(waypoints.size()-1).isWaitPoint()? waypoints.size()-2 : waypoints.size()-1;
+        double time = 0;
         ArrayList<CubicSplineSegment> path = new ArrayList<CubicSplineSegment>();
-        //The first part of this for loop is for having the previous, start, end and next point
-        for (int i = 0; i < pathSize; i++) {
-            if(waypoints.get(i).isWaitPoint()){
-                CubicSplineSegment spline = new CubicSplineSegment(waypoints.get(i),time,waypoints.get(i).getDuration());
+        // iterate every waypoint; create a wait-segment for chill points, otherwise build a spline
+        for (int i = 0; i < waypoints.size(); i++) {
+            Waypoint current = waypoints.get(i);
+            // if this is an explicit wait/chill waypoint, create a time-based segment
+            if (current.isWaitPoint()) {
+                CubicSplineSegment spline = new CubicSplineSegment(current, time, current.getDuration());
                 path.add(spline);
                 time = spline.getEndTime();
                 continue;
             }
-            if (i  >= waypoints.size()-1){
+
+            // regular spline: need a following waypoint to form a segment; if none, skip
+            if (i >= waypoints.size() - 1) {
                 continue;
             }
-            //For the previous and the new idx the ? is basically like a else statment
-            // So in this situation if there is no previous or next point then it just doesn't use it
-            int prevIdx = (i - 1 >= 0) ? i - 1 : 0;
+
+            int prevIdx = Math.max(0, i - 1);
             int startIdx = i;
             int endIdx = i + 1;
-            int nextIdx = (i + 2 < waypoints.size()) ? i + 2 : endIdx;
+            int nextIdx = Math.min(i + 2, waypoints.size() - 1);
 
-            //This is when it actually applies the logic in order to get the points it needs
             Waypoint prev = waypoints.get(prevIdx);
             Waypoint start = waypoints.get(startIdx);
             Waypoint end = waypoints.get(endIdx);
             Waypoint next = waypoints.get(nextIdx);
+
             CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed, end.shouldHoldAngle());
             time = spline.getEndTime();
             path.add(spline);
-            }
+        }
         return path.toArray(new CubicSplineSegment[0]);
 
     }
