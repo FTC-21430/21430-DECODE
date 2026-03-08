@@ -57,9 +57,9 @@ public abstract class DecodeBot extends Robot{
     public static double xOffset = -3.125;
     public static double yOffset = -7;
 
-    public static double SWEEP_P = 1;
+    public static double SWEEP_P = 0.2;
     public static double SWEEP_I = 0;
-    public static double SWEEP_D = 0.01;
+    public static double SWEEP_D = 0.0;
 
 
     public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){

@@ -54,7 +54,13 @@ public class VisualizerMain {
         final double coordRange = 48.0; // 48 units (e.g., inches or cm) square
         final double robotTopSpeed = 12.0; // arbitrary units per second
 
-        List<Waypoint> waypoints = generateRandomWaypoints(waypointCount, coordRange, randomSeed);
+//        List<Waypoint> waypoints = generateRandomWaypoints(waypointCount, coordRange, randomSeed);
+        ArrayList<Waypoint> waypoints = new ArrayList<>();
+        waypoints.add(new Waypoint(0,0,0,1,false));
+        waypoints.add(new Waypoint(24,0,1,1,false));
+        waypoints.add(new Waypoint(0,24,1,1,false));
+        waypoints.add(new Waypoint(-24,-24,0,1,false));
+        waypoints.add(new Waypoint(0,0,0,1,false));
         List<SegmentInfo> segments = buildSegmentsFromWaypoints(waypoints, robotTopSpeed);
         List<Point2D.Double> samples = sampleSegments(segments, 200);
         List<Marker> markers = computeMarkers(segments, 0.5);
@@ -123,8 +129,8 @@ public class VisualizerMain {
             Waypoint start = pts.get(i);
             Waypoint end = pts.get(i + 1);
             Waypoint next = (i + 2 < pts.size()) ? pts.get(i + 2) : pts.get(i + 1);
-            CubicSplineSegment seg = new CubicSplineSegment(last, start, end, next, startTime, robotTopSpeed);
-            double endTime = seg.endTime();
+            CubicSplineSegment seg = new CubicSplineSegment(last, start, end, next, startTime, robotTopSpeed,true);
+            double endTime = seg.getEndTime();
             segments.add(new SegmentInfo(seg, startTime, endTime));
             startTime = endTime;
         }

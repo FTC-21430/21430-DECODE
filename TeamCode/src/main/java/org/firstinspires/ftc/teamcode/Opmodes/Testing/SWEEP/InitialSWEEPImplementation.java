@@ -8,17 +8,16 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 public class InitialSWEEPImplementation extends BaseAuto {
 
     private void defineRoute(){
-//        robot.SWEEP.pathPlanner.chill(0,0,0,1);
+        robot.SWEEP.pathPlanner.chill(0,0,0,1);
+
+        robot.SWEEP.pathPlanner.splineTo(24,0,1);
+        robot.SWEEP.pathPlanner.splineTo(0,24, 1);
+        robot.SWEEP.pathPlanner.splineTo(-24,-24, 1);
+        robot.SWEEP.pathPlanner.splineToConstantAngle(0,0,180,1);
+        robot.SWEEP.pathPlanner.chill(0,0,180,2);
 //        robot.SWEEP.pathPlanner.splineTo(0,0,1);
-//        robot.SWEEP.pathPlanner.splineTo(24,0,0.75);
-//        robot.SWEEP.pathPlanner.splineToConstantAngle(0,24, 0, 0.25);
-//        robot.SWEEP.pathPlanner.chill(0,24,180,2);
-//        robot.SWEEP.pathPlanner.splineToConstantAngle(-24,-24, 90, 0.5);
-//        robot.SWEEP.pathPlanner.splineTo(0,0,1);
-//        robot.SWEEP.pathPlanner.chill(0,0,0,3);
-        robot.SWEEP.pathPlanner.splineTo(0,0,1);
-        robot.SWEEP.pathPlanner.chill(0,0,0,20);
-        robot.SWEEP.pathPlanner.chill(0,0,0,20);
+//        robot.SWEEP.pathPlanner.chill(0,0,0,20);
+//        robot.SWEEP.pathPlanner.chill(0,0,0,20);
     }
 
     @Override

@@ -59,6 +59,7 @@ public class AccelerationControl {
         telemetry.addData("errorX", posNeededX - odometryPacket.getX());
         telemetry.addData("errorY", posNeededY - odometryPacket.getY());
         setMotorPowers(posNeededX, posNeededY, odometryPacket);
+        rotationControl.setTargetAngle(robotPosNext.get(2));
     }
     public void setPIDCoeffs(double p, double i, double d){
         xPID.updatePIDConstants(p,i,d);
@@ -71,10 +72,10 @@ public class AccelerationControl {
      * @param odometryPacket - contains the robot position and velocity information needed for these calculations to the PID controllers
      */
     private void setMotorPowers(double targetPosX, double targetPosY, OdometryPacket odometryPacket){
-//        double robotAngle = odometryPacket.getYaw();
-        double robotAngle = 0;
-        xPID.setTarget(0);
-        yPID.setTarget(0);
+        double robotAngle = odometryPacket.getYaw();
+
+        xPID.setTarget(targetPosX);
+        yPID.setTarget(targetPosY);
         xPID.update(odometryPacket.getX());
         yPID.update(odometryPacket.getY());
         telemetry.addData("xPID", xPID.getPower());
@@ -83,6 +84,7 @@ public class AccelerationControl {
 
         fwdPower=(yPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + xPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * 1;
         sidePower=(yPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - xPID.getPower() * Math.sin(Math.toRadians(-robotAngle))) * -1;
+
         rotPower=rotationControl.getOutputPower(robotAngle);
     }
 
