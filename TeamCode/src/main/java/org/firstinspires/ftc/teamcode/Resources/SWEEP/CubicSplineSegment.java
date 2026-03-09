@@ -169,12 +169,12 @@ public class CubicSplineSegment {
      * If constantAngle is true, evaluates the interpolated rotation polynomial.
      * Otherwise, derives heading from the direction of travel via a look-ahead.
      */
-    public double getRotation(double time) {
+    public double getRotation(double time, double lookAheadAmount) {
         if (this.constantAngle) {
             return rotPolynomial.compute(putTimeInRange(time) - startTime);
         } else {
             time = putTimeInRange(time);
-            double lookAheadTime = (time + 0.1 <= endTime) ? time + 0.1 : endTime;
+            double lookAheadTime = Math.min(time + lookAheadAmount, endTime);
             double xDifference = getX(lookAheadTime) - getX(time);
             double yDifference = getY(lookAheadTime) - getY(time);
             xDifference = Math.abs(xDifference) > 0 ? xDifference : 1e-7;
@@ -249,6 +249,7 @@ class CubicPolynomial {
     public double derivative(double time) {
         double t = time / timeScalar;
         if (t < 0) t = 0;
+
         if (t > 1) t = 1;
         double dDtau = 3.0 * a * Math.pow(t, 2) + 2.0 * b * t + c;
         return dDtau / timeScalar;

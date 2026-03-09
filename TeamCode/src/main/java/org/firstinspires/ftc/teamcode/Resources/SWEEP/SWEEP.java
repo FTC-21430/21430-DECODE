@@ -47,9 +47,11 @@ public class SWEEP {
     }
     public void startPath(){
         splinePathInterpreter.startPath(splines, actions);
+        robot.driveTrain.fieldCentricDriving(false);
     }
     public void startPath(double startTime){
         splinePathInterpreter.startPath(splines, actions, startTime);
+        robot.driveTrain.fieldCentricDriving(false);
     }
     public void setInterpreterSpeed(double speedRatio){
         splinePathInterpreter.setProgramSpeed(speedRatio);

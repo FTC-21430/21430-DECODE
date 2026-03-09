@@ -25,8 +25,7 @@ public class AccelerationControl {
     //private attributes
     private double fwdPower, sidePower, rotPower;
     //Lookahead time is the waypoint time to look ahead. I am using point 2 for the time being
-    public static double lookAheadTime1 = 0.5;
-    public static double lookAheadTime2 = 1;
+    public static double lookAheadTime1 = 0.1; // WARNING: PID Coeffs are dependant on this value!
     public static double accelRatio;
     public AccelerationControl(SplinePathInterpreter splinePathInterpreter, RotationControl rotationControl, double pCon, double iCon, double dCon, double accelRatioTemp, Telemetry telemetry) {
         this.splinePathInterpreter = splinePathInterpreter;
@@ -46,20 +45,11 @@ public class AccelerationControl {
         double minorRatio = (1-accelRatio) > 0 ? 1-accelRatio:1e-7;
         SimpleMatrix robotPosNow = splinePathInterpreter.getRobotPosition(0);
         SimpleMatrix robotPosNext = splinePathInterpreter.getRobotPosition(lookAheadTime1);
-        SimpleMatrix robotPosNextNext = splinePathInterpreter.getRobotPosition(lookAheadTime2);
-        // compute velocities as (future - current) / dt so positive targets point toward increasing coordinates
+        // get a look ahead position
         double posNeededX = robotPosNext.get(0);
         double posNeededY = robotPosNext.get(1);
-        //double posNextX = (robotPosNextNext.get(0) - robotPosNext.get(0)) / lookAheadTime2;
-        //double posNextY = (robotPosNextNext.get(1) - robotPosNext.get(1)) / lookAheadTime2;
-        //double targetPosX = posNeededX*accelRatio + posNextX * minorRatio;
-        //double targetPosY = posNeededY*accelRatio + posNextY * minorRatio;
-        telemetry.addData("targetX", posNeededX);
-        telemetry.addData("targetY", posNeededY);
-        telemetry.addData("errorX", posNeededX - odometryPacket.getX());
-        telemetry.addData("errorY", posNeededY - odometryPacket.getY());
         setMotorPowers(posNeededX, posNeededY, odometryPacket);
-        rotationControl.setTargetAngle(robotPosNext.get(2));
+        rotationControl.setTargetAngle(robotPosNow.get(2));
     }
     public void setPIDCoeffs(double p, double i, double d){
         xPID.updatePIDConstants(p,i,d);
@@ -78,13 +68,9 @@ public class AccelerationControl {
         yPID.setTarget(targetPosY);
         xPID.update(odometryPacket.getX());
         yPID.update(odometryPacket.getY());
-        telemetry.addData("xPID", xPID.getPower());
-        telemetry.addData("yPID", yPID.getPower());
-
 
         fwdPower=(yPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + xPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * 1;
         sidePower=(yPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - xPID.getPower() * Math.sin(Math.toRadians(-robotAngle))) * -1;
-
         rotPower=rotationControl.getOutputPower(robotAngle);
     }
 

@@ -50,7 +50,7 @@ public class SplinePathInterpreter {
         return new SimpleMatrix(new double[]{
                 segment.getX(scaledTime),
                 segment.getY(scaledTime),
-                segment.getRotation(scaledTime)
+                segment.getRotation(scaledTime, lookaheadTime)
         });
     }
     public void executeActions(){
