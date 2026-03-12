@@ -48,8 +48,15 @@ public class AccelerationControl {
         // get a look ahead position
         double posNeededX = robotPosNext.get(0);
         double posNeededY = robotPosNext.get(1);
+        rotationControl.setTargetAngle(robotPosNext.get(2));
+//        rotationControl.setTargetAngle(90);
         setMotorPowers(posNeededX, posNeededY, odometryPacket);
-        rotationControl.setTargetAngle(robotPosNow.get(2));
+        telemetry.addData("----currentAngle", odometryPacket.getYaw());
+        // Use the look-ahead's computed rotation as the desired heading so the robot
+        // points along the path of travel (instead of sampling rotation with a zero
+        // look-ahead which could produce undefined/degenerate values).
+        // set the rotation target to the look-ahead rotation but choose the equivalent
+        // angle closest to the current robot heading to avoid large discontinuities.
     }
     public void setPIDCoeffs(double p, double i, double d){
         xPID.updatePIDConstants(p,i,d);
@@ -69,9 +76,13 @@ public class AccelerationControl {
         xPID.update(odometryPacket.getX());
         yPID.update(odometryPacket.getY());
 
-        fwdPower=(yPID.getPower() * Math.sin(Math.toRadians(-robotAngle)) + xPID.getPower() * Math.cos(Math.toRadians(-robotAngle))) * 1;
-        sidePower=(yPID.getPower() * Math.cos(Math.toRadians(-robotAngle)) - xPID.getPower() * Math.sin(Math.toRadians(-robotAngle))) * -1;
-        rotPower=rotationControl.getOutputPower(robotAngle);
+        fwdPower=(yPID.getPower() * Math.sin(Math.toRadians(robotAngle)) + xPID.getPower() * Math.cos(Math.toRadians(robotAngle))) * 1;
+        sidePower=(yPID.getPower() * Math.cos(Math.toRadians(robotAngle)) - xPID.getPower() * Math.sin(Math.toRadians(robotAngle))) * -1;
+        rotPower = rotationControl.getOutputPower(robotAngle);
+
+        telemetry.addData("fwdPower", fwdPower);
+        telemetry.addData("sidePower", sidePower);
+        telemetry.addData("rotPower", rotPower);
     }
 
     //These functions will get the overall power of the robot in each of their respective directions

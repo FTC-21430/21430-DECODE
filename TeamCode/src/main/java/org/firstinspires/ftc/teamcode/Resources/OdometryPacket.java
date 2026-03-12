@@ -48,7 +48,7 @@ public class OdometryPacket {
 
     /**
      * Returns the robot heading (yaw).
-     * @return the yaw/heading (typically in radians)
+     * @return the yaw/heading (in degrees)
      */
     public double getYaw() {
         return yaw;

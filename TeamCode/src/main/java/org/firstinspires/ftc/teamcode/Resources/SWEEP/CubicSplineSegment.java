@@ -177,11 +177,24 @@ public class CubicSplineSegment {
             double lookAheadTime = Math.min(time + lookAheadAmount, endTime);
             double xDifference = getX(lookAheadTime) - getX(time);
             double yDifference = getY(lookAheadTime) - getY(time);
-            xDifference = Math.abs(xDifference) > 0 ? xDifference : 1e-7;
-            yDifference = Math.abs(yDifference) > 0 ? yDifference : 1e-7;
+            double mag = Math.hypot(xDifference, yDifference);
+            // If the look-ahead displacement is negligibly small (e.g. very slow test speeds or tiny lookahead),
+            // use the instantaneous derivative (velocity) direction instead of finite differences to compute heading.
+            if (mag < 1e-8) {
+                double dxdt = xPolynomial.derivative(putTimeInRange(time) - startTime);
+                double dydt = yPolynomial.derivative(putTimeInRange(time) - startTime);
+                double speedMag = Math.hypot(dxdt, dydt);
+                if (speedMag < 1e-12) {
+                    // fallback: use rotation polynomial if derivatives are effectively zero
+                    return rotPolynomial.compute(putTimeInRange(time) - startTime);
+                }
+                return Math.toDegrees(Math.atan2(dydt, dxdt));
+            }
             return Math.toDegrees(Math.atan2(yDifference, xDifference));
         }
     }
+
+
 
     /**
      * Returns the instantaneous speed (magnitude of velocity vector) at the given absolute time.
