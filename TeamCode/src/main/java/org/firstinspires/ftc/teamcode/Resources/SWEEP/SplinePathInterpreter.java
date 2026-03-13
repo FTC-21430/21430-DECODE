@@ -67,6 +67,9 @@ public class SplinePathInterpreter {
         CubicSplineSegment last = path[path.length - 1];
         return scaledTime >= last.getEndTime();
     }
+    public int getCurrentSplineIndex(){
+        return currentSplineIndex;
+    }
     public void setProgramSpeed(double speedRatio){
         programSpeed = speedRatio;
     }

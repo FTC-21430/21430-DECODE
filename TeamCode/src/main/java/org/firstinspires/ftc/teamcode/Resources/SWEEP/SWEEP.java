@@ -62,6 +62,7 @@ public class SWEEP {
         robot.telemetry.addData("targetX",splinePathInterpreter.getRobotPosition(0).get(0));
         robot.telemetry.addData("targetY", splinePathInterpreter.getRobotPosition(0).get(1));
         robot.telemetry.addData("targetAngle", splinePathInterpreter.getRobotPosition(0).get(2));
+        robot.telemetry.addData("currentSpline", splinePathInterpreter.getCurrentSplineIndex());
 
     }
     public void setFollowingCoefficients(double p, double i, double d){

@@ -51,7 +51,8 @@ public class AccelerationControl {
         rotationControl.setTargetAngle(robotPosNext.get(2));
 //        rotationControl.setTargetAngle(90);
         setMotorPowers(posNeededX, posNeededY, odometryPacket);
-        telemetry.addData("----currentAngle", odometryPacket.getYaw());
+        double followError = Math.hypot(robotPosNow.get(0)-odometryPacket.getX(),robotPosNow.get(1)-odometryPacket.getY());
+        telemetry.addData("FollowError", followError);
         // Use the look-ahead's computed rotation as the desired heading so the robot
         // points along the path of travel (instead of sampling rotation with a zero
         // look-ahead which could produce undefined/degenerate values).

@@ -18,7 +18,7 @@ public class Waypoint {
         this.angle = angle;
         this.velocity = 0;
         this.duration = duration;
-        this.shouldHoldAngle = false;
+        this.shouldHoldAngle = true;
         isWaitPoint = true;
     }
 
