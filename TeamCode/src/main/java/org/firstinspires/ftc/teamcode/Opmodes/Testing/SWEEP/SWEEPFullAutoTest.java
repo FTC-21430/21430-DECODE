@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 
 @Autonomous
-public class SWEEPAutoTemplate extends BaseAuto {
+public class SWEEPFullAutoTest extends BaseAuto {
 
 
     /// Route definition methods:
@@ -17,9 +17,36 @@ public class SWEEPAutoTemplate extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner; // have a shorthand variable name to make typing this easier.
-        path.splineStart(0,0,0); // the start of the path
-        // Put all next steps here
-        path.splineEnd(0,0,0);
+        path.splineStart(64,16,90); // the start of the path
+
+        path.splineToConstantAngle(49,10,150,1);
+        path.chill(49,10,150,2);
+
+        path.splineTo(55,30,0.8);
+        path.splineToConstantAngle(64,62,270,1);
+        path.chill(64,62,270,0.3);
+        path.splineTo(34,14,1);
+        path.splineToConstantAngle(-14,13,140,1);
+        path.chill(-14,13,140,2);
+
+        path.splineToConstantAngle(-11,54,250,0.6);
+
+        path.splineToConstantAngle(-14,13,140,1);
+        path.chill(-14,13,140,2);
+
+        path.splineToConstantAngle(12,54,250,0.6);
+
+        path.splineToConstantAngle(-14,13,140,1);
+        path.chill(-14,13,140,2);
+
+        path.splineToConstantAngle(49,54,250,0.6);
+
+        path.splineTo(49,12,1);
+
+
+
+
+        path.splineEnd(49,10,150);
     }
 
     @Override
@@ -28,7 +55,7 @@ public class SWEEPAutoTemplate extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(0,0,0);
+        robot.odometry.overridePosition(64,16,90);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();

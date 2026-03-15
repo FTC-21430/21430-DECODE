@@ -17,8 +17,8 @@ public class PathPlanning {
     private ArrayList<Waypoint> waypoints;
 
     // spline count goes up with every new spline that is going to exist. One waypoint is not enough. splines = waypoints - 1. 0 indexed
-    private int splineCount = -1;
-    public static double robotSpeed = 32; // my guess of 20 inches / s
+    private int splineCount = 0;
+    public static double robotSpeed = 38; // my guess of 20 inches / s
     public static double minHoldTime = 0.2;
     public PathPlanning(DecodeBot bot){
         this.robotActions = new RobotActions(bot);
@@ -41,7 +41,7 @@ public class PathPlanning {
     public void splineStart(double x, double y, double angle){
         Waypoint waypoint = new Waypoint(x,y,angle,0,true);
         waypoints.add(waypoint);
-        splineCount++;
+
     }
     public void splineEnd(double x,double y,double angle){
         chill(x,y,angle,2);

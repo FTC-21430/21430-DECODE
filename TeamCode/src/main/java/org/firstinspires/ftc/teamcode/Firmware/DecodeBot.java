@@ -75,7 +75,7 @@ public abstract class DecodeBot extends Robot{
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
 //        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
-//        intake = new Intake(hardwareMap, telemetry);
+        intake = new Intake(hardwareMap, telemetry);
 //        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 
 @Autonomous
 public class SWEEPTuning extends BaseAuto {
@@ -20,8 +21,10 @@ public class SWEEPTuning extends BaseAuto {
         path.splineStart(0,0,0); // the start of the path
         for (int i = 0; i < 3; i++){
             path.splineToConstantAngle(40,0,0,1);
+            path.addAction(RobotActions.Actions.IDLE);
             path.chill(40,0,0,2);
             path.splineToConstantAngle(0,0,0,1);
+            path.addAction(RobotActions.Actions.INTAKE);
             path.chill(0,0,0,2);
         }
         path.chill(0,0,0,3); // the end of the path
@@ -38,7 +41,7 @@ public class SWEEPTuning extends BaseAuto {
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());
-            //TODO: update robot system loops
+            robot.intake.updateIntake();
             robot.driveTrain.setDrivePower(robot.SWEEP.getForwardPower(),robot.SWEEP.getSidePower(),robot.SWEEP.getRotationPower(),robot.odometry.getRobotAngle());
             telemetry.update();
             robot.bulkSensorBucket.clearCache();
