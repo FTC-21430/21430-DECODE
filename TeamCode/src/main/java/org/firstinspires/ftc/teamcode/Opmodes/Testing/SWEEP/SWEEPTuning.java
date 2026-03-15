@@ -18,7 +18,7 @@ public class SWEEPTuning extends BaseAuto {
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner; // have a shorthand variable name to make typing this easier.
         path.splineStart(0,0,0); // the start of the path
-        for (int i = 0; i < 30; i++){
+        for (int i = 0; i < 3; i++){
             path.splineToConstantAngle(40,0,0,1);
             path.chill(40,0,0,2);
             path.splineToConstantAngle(0,0,0,1);

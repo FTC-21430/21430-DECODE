@@ -105,6 +105,33 @@ public class CubicSplineSegment {
         this.rotPolynomial.setTimeScalar(duration);
     }
 
+    // New constructor: rotation-in-place segment
+    // Keeps x/y constant at the startPoint location and rotates from startPoint.angle to endPoint.angle
+    // over the provided duration. The rotateOnly boolean differentiates this signature.
+    public CubicSplineSegment(Waypoint startPoint, Waypoint endPoint, double startTime, double duration, boolean rotateOnly) {
+        this.constantAngle = true;
+        this.startTime = Math.abs(startTime);
+        this.endTime = this.startTime + Math.abs(duration);
+
+        // Constant position polynomials at the start point coordinates
+        this.xPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, 0, startPoint.getX()}));
+        this.yPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, 0, startPoint.getY()}));
+
+        // Build a linear rotation from startAngle to endAngle: rot(t) = c*t + d
+        double startAng = startPoint.getAngle();
+        double delta = endPoint.getAngle() - startAng;
+        // normalize delta to shortest direction
+        while (delta > 180.0) delta -= 360.0;
+        while (delta < -180.0) delta += 360.0;
+        double c = delta; // change over the segment
+        double d = startAng; // starting angle
+        this.rotPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, c, d}));
+
+        this.xPolynomial.setTimeScalar(duration);
+        this.yPolynomial.setTimeScalar(duration);
+        this.rotPolynomial.setTimeScalar(duration);
+    }
+
     /**
      * Compute uniform Catmull-Rom coefficients [a, b, c, d] for a single scalar dimension,
      * returned as a 1x4 SimpleMatrix so CubicPolynomial can unpack them directly.

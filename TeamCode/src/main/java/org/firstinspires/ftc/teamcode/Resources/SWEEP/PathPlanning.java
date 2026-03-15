@@ -18,7 +18,8 @@ public class PathPlanning {
 
     // spline count goes up with every new spline that is going to exist. One waypoint is not enough. splines = waypoints - 1. 0 indexed
     private int splineCount = -1;
-    public static double robotSpeed = 4; // my guess of 20 inches / s
+    public static double robotSpeed = 32; // my guess of 20 inches / s
+    public static double minHoldTime = 0.2;
     public PathPlanning(DecodeBot bot){
         this.robotActions = new RobotActions(bot);
         this.waypoints = new ArrayList<Waypoint>();
@@ -42,6 +43,9 @@ public class PathPlanning {
         waypoints.add(waypoint);
         splineCount++;
     }
+    public void splineEnd(double x,double y,double angle){
+        chill(x,y,angle,2);
+    }
     //This function gets the spline to the constant angle
     public void splineToConstantAngle(double x, double y, double angle, double speedRatio){
         Waypoint waypoint = new Waypoint(x,y,angle,speedRatio,true);
@@ -56,6 +60,9 @@ public class PathPlanning {
     }
     /**
      * Add a wait to the route so that the robot paused in it's path
+     * @param x
+     * @param y
+     * @param angle
      * @param time
      */
     //This chill function is basically the wait time
@@ -84,64 +91,43 @@ public class PathPlanning {
         double time = 0;
         ArrayList<CubicSplineSegment> path = new ArrayList<CubicSplineSegment>();
 
-        // Build the path in the same order as the waypoints so that hold (wait) segments
-        // are inserted at the exact place they were defined by the opmode. The previous
-        // implementation delayed inserting hold segments until later which caused holds
-        // to appear after later movement segments (effectively skipping the pause).
         for (int i = 0; i < waypoints.size(); i++) {
-            Waypoint current = waypoints.get(i);
 
-            // If current is a wait point, add a hold segment and continue.
-            if (current.isWaitPoint()) {
-                CubicSplineSegment hold = new CubicSplineSegment(current, time, current.getDuration());
+            Waypoint current = waypoints.get(i);
+            if (current.isWaitPoint()){
+                CubicSplineSegment hold = new CubicSplineSegment(current,time, current.getDuration());
                 path.add(hold);
                 time = hold.getEndTime();
                 continue;
             }
 
-            // If there is no next waypoint to spline to, we're done.
-            if (i + 1 >= waypoints.size()) break;
-
-            // The end of this spline is the immediate next waypoint (even if it is a wait).
-            Waypoint start = current;
-            Waypoint end = waypoints.get(i + 1);
-
-            // Find the previous non-wait waypoint to use for tangent calculation (or duplicate start).
-            int prevIdx = i;
-            for (int j = i - 1; j >= 0; j--) {
-                if (!waypoints.get(j).isWaitPoint()) {
-                    prevIdx = j;
-                    break;
-                }
+            if (i == 0){
+                continue;
+            }
+            if (i+1>=waypoints.size()){
+                continue;
             }
 
-            // Find the next non-wait waypoint after the end (or duplicate end if none).
-            int nextIdx = i + 1;
-            for (int j = i + 2; j < waypoints.size(); j++) {
-                if (!waypoints.get(j).isWaitPoint()) {
-                    nextIdx = j;
-                    break;
-                }
-            }
+            Waypoint previous = (i-2 >= 0)? waypoints.get(i-2):waypoints.get(0);
+            Waypoint start = waypoints.get(i-1);
+            Waypoint end = waypoints.get(i);
+            Waypoint next = (i+1 < waypoints.size())? waypoints.get(i+1):end;
 
-            Waypoint prev = waypoints.get(prevIdx);
-            Waypoint next = waypoints.get(nextIdx);
-
-            CubicSplineSegment spline = new CubicSplineSegment(prev, start, end, next, time, robotSpeed, end.shouldHoldAngle());
-            time = spline.getEndTime();
-            path.add(spline);
-
-            // If the end waypoint is a wait point, insert its hold immediately after the spline
-            // so the robot will pause at that point before continuing.
-            if (end.isWaitPoint()) {
-                CubicSplineSegment hold = new CubicSplineSegment(end, time, end.getDuration());
+            // get the travel distance
+            double distance = Math.hypot(end.getX()-start.getX(),end.getY()-start.getY());
+            final double distanceThreshold = 1e-3;
+            if (distance <= distanceThreshold) {
+                CubicSplineSegment hold = new CubicSplineSegment(start, time, minHoldTime);
                 path.add(hold);
                 time = hold.getEndTime();
-
-                // advance the loop index to skip the end waypoint since we've already processed it
-                i = i + 1;
+                continue;
             }
+
+            CubicSplineSegment spline = new CubicSplineSegment(previous,start,end,next, time, robotSpeed, end.shouldHoldAngle());
+            path.add(spline);
+            time = spline.getEndTime();
         }
+
 
         return path.toArray(new CubicSplineSegment[0]);
     }
