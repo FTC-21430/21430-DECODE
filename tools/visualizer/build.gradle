@@ -17,5 +17,6 @@ repositories {
 }
 
 dependencies {
+    implementation("org.ejml:ejml-all:0.44.0")
     // No external dependencies required; pure Java2D/Swing implementation
 }

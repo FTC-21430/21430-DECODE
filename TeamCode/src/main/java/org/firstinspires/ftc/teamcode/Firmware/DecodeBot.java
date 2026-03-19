@@ -57,8 +57,8 @@ public abstract class DecodeBot extends Robot{
     public static double xOffset = -3.125;
     public static double yOffset = -7;
 
-    public static double SWEEP_P = 1;
-    public static double SWEEP_I = 0;
+    public static double SWEEP_P = 0.22;
+    public static double SWEEP_I = 0.0001;
     public static double SWEEP_D = 0.01;
 
 
@@ -74,7 +74,7 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
-        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
+//        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
 //        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
 //        lifter = new Lifter(hardwareMap, telemetry);
@@ -83,7 +83,7 @@ public abstract class DecodeBot extends Robot{
 
 //        aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
-        this.SWEEP = new SWEEP(this, new ElapsedTime(), 0.9, SWEEP_P,SWEEP_I,SWEEP_D);
+        this.SWEEP = new SWEEP(this, 0.9, SWEEP_P,SWEEP_I,SWEEP_D);
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
 //        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics);

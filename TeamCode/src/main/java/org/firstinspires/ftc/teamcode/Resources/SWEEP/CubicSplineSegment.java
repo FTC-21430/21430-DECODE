@@ -1,5 +1,5 @@
 /// Copyright (c) 2026 Tobin Rumsey, all rights reserved
-/// Comment assist by ChatGPT, OpenAI - Github Copilot
+/// Comment and debug assist by Claude, Anthropic
 /// Prototype for class and python implementation made in Google Colab, Formatting Help by Google Gemini. EJML Matrix library used because I needed Matrix's :)
 /// Theory behind concept from Catmull-Rom splines and general cubic spline interpolation, as well as time-based path following algorithms commonly used in robotics.
 /// Permitted use of class for FIRST Tech Challenge team 21430, BroomBots until the end of the 2029-2030 season,
@@ -14,271 +14,284 @@ import org.ejml.simple.SimpleMatrix;
 
 /**
  * CubicSplineSegment represents a single segment of a cubic spline path, defined by cubic polynomials for x, y, and rotation (angle) as functions of time along the segment.
- * Each segment is constructed using Catmull-Rom interpolation based on 4 control points (
- * the previous waypoint, the start waypoint, the end waypoint, and the next waypoint) to ensure smooth transitions between segments.
- * The segment also calculates its duration based on the distance between the start and end points and the desired speed defined in the end waypoint, allowing for time-based evaluation of the spline.
- * The compute() method allows for evaluating the position and rotation at any given absolute time along the segment, making it compatible with path following algorithms that operate in real time and need to know the target position and orientation at any given time.
- * This class is designed to be used as part of a larger path following system, where multiple CubicSplineSegments are chained together to form a complete path for the robot to follow.
- * The class also includes an alternate constructor for creating "hold" segments, which keep the robot at a fixed position and orientation for a specified duration, allowing for easy implementation of wait times at waypoints without needing special handling in the path following logic.
- * Overall, CubicSplineSegment encapsulates the mathematical representation of a segment of a cubic spline path, including the geometry defined by the control points and the timing based on the desired speed, providing a convenient interface for evaluating the target position and orientation at any given time along the segment.
- * Note: This class is designed to be used in a real-time path following context, where the compute() method will be called repeatedly with the current time to get the target position and orientation for the robot to follow. The internal use of cubic polynomials allows for smooth interpolation between waypoints, while the time-based evaluation ensures that the robot can follow the path at the desired speed.
+ * Each segment is constructed using Catmull-Rom interpolation based on 4 control points (the previous waypoint, the start waypoint, the end waypoint, and the next waypoint)
+ * to ensure smooth transitions between segments.
+ * The segment also calculates its duration based on the distance between the start and end points and the desired speed defined in the end waypoint,
+ * allowing for time-based evaluation of the spline.
+ * The compute() method allows for evaluating the position and rotation at any given absolute time along the segment, making it compatible with path following
+ * algorithms that operate in real time and need to know the target position and orientation at any given time.
+ * This class is designed to be used as part of a larger path following system, where multiple CubicSplineSegments are chained together to form a complete path.
+ * The class also includes an alternate constructor for creating "hold" segments, which keep the robot at a fixed position and orientation for a specified duration,
+ * allowing for easy implementation of wait times at waypoints without needing special handling in the path following logic.
  */
-
 public class CubicSplineSegment {
-    private final CubicPolynomial xPolynomial, yPolynomial, rotPolynomial; // Cubic polynomials for x, y, and rotation (angle) as functions of time along the segment, using custom class to optimize code complexity
-    // CubicPolynomial is exclusive to this class, learn about it at the bottom of this file
+    private final CubicPolynomial xPolynomial, yPolynomial, rotPolynomial;
     private final boolean constantAngle;
 
-    private final double startTime, endTime; // Absolute time at which this segment starts and ends; used to determine which segment to evaluate at a given time and to convert absolute time to the 0-1 range for polynomial evaluation
+    private final double startTime, endTime;
 
     /**
      * One pathing segment, contains three cubic polynomials. Input four waypoints that define the path in terms of time.
-     * Calculates the spline
      * If one of these points does not exist due to a stop or the start or end of the path, provide a duplicate of either the start or end point.
      * start and end points are REQUIRED to be unique.
      *
-     * @param lastPoint  the start point of the previous spline
-     * @param startPoint where this spline starts
-     * @param endPoint   where this spline ends
-     * @param nextPoint  where the next spline ends
+     * @param lastPoint   the start point of the previous spline
+     * @param startPoint  where this spline starts
+     * @param endPoint    where this spline ends
+     * @param nextPoint   where the next spline ends
+     * @param startTime   absolute time at which this segment starts (seconds)
+     * @param robotTopSpeed maximum speed of the robot (units/second)
+     * @param constantAngle if true, interpolate the rotation polynomial; if false, derive heading from direction of travel
      */
-    public CubicSplineSegment(Waypoint lastPoint, Waypoint startPoint, Waypoint endPoint, Waypoint nextPoint, double startTime, double robotTopSpeed, boolean constantAngle) {
+    public CubicSplineSegment(Waypoint lastPoint, Waypoint startPoint, Waypoint endPoint, Waypoint nextPoint,
+                              double startTime, double robotTopSpeed, boolean constantAngle) {
         this.constantAngle = constantAngle;
-
-        // ensure that negative numbers -- which we should not get but nice to not crash -- is supported (yes I used an em-dash. I am not an AI, but I like them. - Tobin)
         this.startTime = Math.abs(startTime);
         robotTopSpeed = Math.abs(robotTopSpeed);
 
         double speedRatio = endPoint.getSpeed();
         double segmentSpeed = speedRatio * robotTopSpeed;
-
-
-        SimpleMatrix segmentControlPoints = new SimpleMatrix(new double[][]{
-            {lastPoint.getX(),lastPoint.getY(),lastPoint.getAngle()},
-            {startPoint.getX(),startPoint.getY(),startPoint.getAngle()},
-            {endPoint.getX(),endPoint.getY(),endPoint.getAngle()},
-            {nextPoint.getX(),nextPoint.getY(),nextPoint.getAngle()}
-        });
-
-        // alpha = 0.5 is standard for Catmull-Rom implementation
-        CubicPolynomial[] polynomials = createCubicSplineSegment(segmentControlPoints, 0.5);
-
-        double segmentLength = getArcLength(polynomials[0], polynomials[1]);
-        segmentLength = segmentLength > 0.0 ? segmentLength : 1.0;
         segmentSpeed = segmentSpeed > 0.0 ? segmentSpeed : 1.0;
-        double segmentTime = segmentLength / segmentSpeed;
-        for (CubicPolynomial poly : polynomials){
-            poly.setTimeScalar(segmentTime);
-        }
-        this.xPolynomial = polynomials[0];
-        this.yPolynomial = polynomials[1];
-        this.rotPolynomial = polynomials[2];
 
-        this.endTime = startTime + segmentTime;
+        // Build uniform Catmull-Rom coefficients per dimension independently.
+        // This matches the original working implementation: each axis uses the classic
+        // alpha=0 formula operating on scalar values, with no cross-axis knot distances.
+        SimpleMatrix xCoeffs = catmullRomCoeffs(
+                lastPoint.getX(), startPoint.getX(), endPoint.getX(), nextPoint.getX());
+        SimpleMatrix yCoeffs = catmullRomCoeffs(
+                lastPoint.getY(), startPoint.getY(), endPoint.getY(), nextPoint.getY());
+        SimpleMatrix rCoeffs = catmullRomCoeffs(
+                lastPoint.getAngle(), startPoint.getAngle(), endPoint.getAngle(), nextPoint.getAngle());
+
+        CubicPolynomial xp = new CubicPolynomial(xCoeffs);
+        CubicPolynomial yp = new CubicPolynomial(yCoeffs);
+        CubicPolynomial rp = new CubicPolynomial(rCoeffs);
+
+        // Estimate arc length by sampling the raw [0,1] curve before applying the time scalar
+        double length = getArcLength(xp, yp, 100);
+        length = length > 0.0 ? length : 1.0;
+        double segmentTime = length / segmentSpeed;
+
+        // Map the [0,1] polynomial parameter to real segment duration
+        xp.setTimeScalar(segmentTime);
+        yp.setTimeScalar(segmentTime);
+        rp.setTimeScalar(segmentTime);
+
+        this.xPolynomial   = xp;
+        this.yPolynomial   = yp;
+        this.rotPolynomial = rp;
+        this.endTime = this.startTime + segmentTime;
     }
+
     /**
      * Alternate constructor for a "hold" segment that keeps the robot at a fixed position and orientation for a specified duration.
-     * compatible with the same path following algorithms since it just uses constant polynomials, but allows for easy implementation of wait times at waypoints.
-     * @param holdPoint the point to hold at for the duration of this segment (Waypoint Object with x, y, and angle)
-     * @param startTime the absolute time at which this hold segment should start (seconds)
-     * @param duration the duration to hold at the point (seconds)
+     *
+     * @param holdPoint the point to hold at
+     * @param startTime the absolute time at which this hold segment starts (seconds)
+     * @param duration  the duration to hold at the point (seconds)
      */
-    public CubicSplineSegment(Waypoint holdPoint, double startTime, double duration){
+    public CubicSplineSegment(Waypoint holdPoint, double startTime, double duration) {
         this.constantAngle = true;
-        // Save start time and end time
         this.startTime = startTime;
-        this.endTime = startTime + duration;
+        this.endTime   = startTime + duration;
 
-        // set polynomials to be in form of constants so that the target x position return is the hold point,
-        // works well because the same interpreter and algorithms for following paths can also be used in the same way for waits!
-        this.xPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0,0,0,holdPoint.getX()}));
-        this.yPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0,0,0,holdPoint.getY()}));
-        this.rotPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0,0,0,holdPoint.getAngle()}));
+        // Constant polynomials: only the d term is non-zero, so compute() always returns the hold value
+        this.xPolynomial   = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, 0, holdPoint.getX()}));
+        this.yPolynomial   = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, 0, holdPoint.getY()}));
+        this.rotPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, 0, holdPoint.getAngle()}));
 
-        // Currently the polynomials range from 0.0 - 1.0, time scalar allows the full duration of the segment to be mapped to this range, so that compute() can take absolute time and internally convert to 0-1 for the polynomial evaluation
         this.xPolynomial.setTimeScalar(duration);
         this.yPolynomial.setTimeScalar(duration);
         this.rotPolynomial.setTimeScalar(duration);
     }
-    private CubicPolynomial[] createCubicSplineSegment(SimpleMatrix segmentControlPoints, double splineAlpha){
-        SimpleMatrix P0 = segmentControlPoints.getRow(0);
-        SimpleMatrix P1 = segmentControlPoints.getRow(1);
-        SimpleMatrix P2 = segmentControlPoints.getRow(2);
-        SimpleMatrix P3 = segmentControlPoints.getRow(3);
-        // P = (x, y, yaw)
 
-        // Calculate times between all of the spline control points
+    // New constructor: rotation-in-place segment
+    // Keeps x/y constant at the startPoint location and rotates from startPoint.angle to endPoint.angle
+    // over the provided duration. The rotateOnly boolean differentiates this signature.
+    public CubicSplineSegment(Waypoint startPoint, Waypoint endPoint, double startTime, double duration, boolean rotateOnly) {
+        this.constantAngle = true;
+        this.startTime = Math.abs(startTime);
+        this.endTime = this.startTime + Math.abs(duration);
 
-        double t0 = 0.0;
-        double t1 = t0 + Math.pow(P1.minus(P0).normF(), splineAlpha);
-        double t2 = t1 + Math.pow(P2.minus(P1).normF(), splineAlpha);
-        double t3 = t2 + Math.pow(P3.minus(P2).normF(), splineAlpha);
+        // Constant position polynomials at the start point coordinates
+        this.xPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, 0, startPoint.getX()}));
+        this.yPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, 0, startPoint.getY()}));
 
+        // Build a linear rotation from startAngle to endAngle: rot(t) = c*t + d
+        double startAng = startPoint.getAngle();
+        double delta = endPoint.getAngle() - startAng;
+        // normalize delta to shortest direction
+        while (delta > 180.0) delta -= 360.0;
+        while (delta < -180.0) delta += 360.0;
+        double c = delta; // change over the segment
+        double d = startAng; // starting angle
+        this.rotPolynomial = new CubicPolynomial(new SimpleMatrix(new double[]{0, 0, c, d}));
 
-        double scaleFactor = (t2 - t1); // internal scale factor the current range of 0.0-1.0 that is the spline
-
-        // Tangent segments:
-
-        // prevent divide by zero errors
-        final double EPS = 1e-9;
-        if (Math.abs(t2 - t0) < EPS) t2 += EPS;
-        if (Math.abs(t3 - t1) < EPS) t3 += EPS;
-
-        // first for the X polynomial
-        double Mx1 = ((P2.get(0) - P0.get(0)) / (t2 - t0)) * scaleFactor;
-        double Mx2 = ((P3.get(0) - P1.get(0)) / (t3 - t1)) * scaleFactor;
-
-        // now for the Y polynomial
-
-        double My1 = ((P2.get(1) - P0.get(1)) / (t2 - t0)) * scaleFactor;
-        double My2 = ((P3.get(1) - P1.get(1)) / (t3 - t1)) * scaleFactor;
-
-        // Now for the angle (yaw) polynomial
-
-        double Ma1 = ((P2.get(2) - P0.get(2)) / (t2 - t0)) * scaleFactor;
-        double Ma2 = ((P3.get(2) - P1.get(2)) / (t3 - t1)) * scaleFactor;
-
-        // a = angle = yaw
-
-        SimpleMatrix xCoeffs = getSplineCoeffs(P1.get(0),P2.get(0),Mx1,Mx2);
-        SimpleMatrix yCoeffs = getSplineCoeffs(P1.get(1),P2.get(1),My1,My2);
-        SimpleMatrix aCoeffs = getSplineCoeffs(P1.get(2),P2.get(2),Ma1,Ma2);
-
-        CubicPolynomial XPolynomial = new CubicPolynomial(xCoeffs);
-        CubicPolynomial YPolynomial = new CubicPolynomial(yCoeffs);
-        CubicPolynomial YawPolynomial = new CubicPolynomial(aCoeffs);
-        return new CubicPolynomial[]{
-                XPolynomial, YPolynomial, YawPolynomial
-        };
-
+        this.xPolynomial.setTimeScalar(duration);
+        this.yPolynomial.setTimeScalar(duration);
+        this.rotPolynomial.setTimeScalar(duration);
     }
-    private SimpleMatrix getSplineCoeffs(double v1, double v2, double Mu1, double Mu2){
-        // Coeffs formulas are from the expansion of the standard Catmull-Rom Spline formula - Learn more here https://en.wikipedia.org/wiki/Catmull%E2%80%93Rom_spline
-        double d = v1;
-        double c = Mu1;
-        double b = (-1 * v1) - (2 * Mu1) + (3 * v2) - Mu2;
-        double a = (2 * v1) + Mu1 - (2 * v2) + Mu2;
-        // Return in Matrix form - 1x4
-        return new SimpleMatrix(new double[][]{
-            {a,b,c,d}
-        });
-    }
+
     /**
-     * Compute the geometric arc length of a parametric curve defined by x(t) and y(t)
-     * cubic polynomials over t in [0,1]. Returned length is in the same units as
-     * the x/y polynomials (e.g. meters).
+     * Compute uniform Catmull-Rom coefficients [a, b, c, d] for a single scalar dimension,
+     * returned as a 1x4 SimpleMatrix so CubicPolynomial can unpack them directly.
+     * Uses the standard alpha=0 (uniform) formula operating on scalar values independently —
+     * no cross-axis distances involved, which keeps each dimension clean.
+     *
+     * @param P0 value at the point before the segment start (for tangent)
+     * @param P1 value at the segment start
+     * @param P2 value at the segment end
+     * @param P3 value at the point after the segment end (for tangent)
+     * @return 1x4 SimpleMatrix {a, b, c, d} such that f(t) = a*t^3 + b*t^2 + c*t + d for t in [0,1]
      */
-    private double getArcLength(CubicPolynomial xPoly, CubicPolynomial yPoly){
-        int segment_resolution = Math.max(2, 100);
-        SimpleMatrix ts = new SimpleMatrix(1, segment_resolution);
-        for (int i = 0; i < segment_resolution; i++) {
-            ts.set(0, i, (double) i / (segment_resolution - 1));
-        }
+    private SimpleMatrix catmullRomCoeffs(double P0, double P1, double P2, double P3) {
+        double d = P1;
+        double c = 0.5 * (P2 - P0);
+        double b = 0.5 * (2*P0 - 5*P1 + 4*P2 - P3);
+        double a = 0.5 * (-P0 + 3*P1 - 3*P2 + P3);
+        return new SimpleMatrix(new double[][]{{a, b, c, d}});
+    }
 
+    /**
+     * Estimate arc length of the parametric curve (xPoly, yPoly) over t in [0,1] by summing
+     * chord distances between evenly-spaced sample points. Called before setTimeScalar so the
+     * polynomials are still in their raw [0,1] domain.
+     */
+    private double getArcLength(CubicPolynomial xPoly, CubicPolynomial yPoly, int samples) {
+        samples = Math.max(2, samples);
         double length = 0.0;
-        double prevX = xPoly.compute(ts.get(0, 0));
-        double prevY = yPoly.compute(ts.get(0, 0));
-        for (int i = 1; i < segment_resolution; i++) {
-            double t = ts.get(0, i);
+        double prevX = xPoly.compute(0.0);
+        double prevY = yPoly.compute(0.0);
+        for (int i = 1; i < samples; i++) {
+            double t = (double) i / (samples - 1);
             double curX = xPoly.compute(t);
             double curY = yPoly.compute(t);
-            double dx = curX - prevX;
-            double dy = curY - prevY;
-            length += Math.hypot(dx, dy);
+            length += Math.hypot(curX - prevX, curY - prevY);
             prevX = curX;
             prevY = curY;
         }
         return length;
     }
-    private double putTimeInRange(double time){
-        // ensure that the inputted time is within the range of the polynomial
-        return Math.max(Math.min(time, endTime), startTime);
 
+    private double putTimeInRange(double time) {
+        return Math.max(Math.min(time, endTime), startTime);
     }
 
-   /**
-     * Returns the x-coordinate value of this spline segment at the given time.
-     *
-     * @param time the parameter (time) at which to evaluate the cubic polynomial
-     * @return the x-coordinate value at the specified time
+    /**
+     * Returns the x-coordinate at the given absolute time.
      */
-    public double getX(double time){
+    public double getX(double time) {
         return xPolynomial.compute(putTimeInRange(time) - startTime);
     }
 
     /**
-     * Returns the y-coordinate value of this spline segment at the given time.
-     *
-     * @param time the parameter (time) at which to evaluate the cubic polynomial
-     * @return the y-coordinate value at the specified time
+     * Returns the y-coordinate at the given absolute time.
      */
-    public double getY(double time){
+    public double getY(double time) {
         return yPolynomial.compute(putTimeInRange(time) - startTime);
     }
 
     /**
-     * Returns the rotation value of this spline segment at the given time.
-     * Depends of whether or not the robot should be following a constant angle or the
-     *
-     * @param time the parameter (time) at which to evaluate the cubic polynomial
-     * @return the rotation value at the specified time
+     * Returns the rotation at the given absolute time.
+     * If constantAngle is true, evaluates the interpolated rotation polynomial.
+     * Otherwise, derives heading from the direction of travel via a look-ahead.
      */
-    public double getRotation(double time){
-        if (this.constantAngle){
-            // return the constant angle from the original polynomial calculation
+    public double getRotation(double time, double lookAheadAmount) {
+        if (this.constantAngle) {
             return rotPolynomial.compute(putTimeInRange(time) - startTime);
-        }else{
+        } else {
             time = putTimeInRange(time);
-            double lookAheadTime = time + 0.1 <= endTime? time + 1 : endTime;
-            // Get the current direction we are headed
-            double xDifference = getX(time+lookAheadTime)-getX(time);
-            double yDifference = getY(time+lookAheadTime)-getY(time);
-            xDifference = Math.abs(xDifference) > 0 ? xDifference:1e-7;
-            yDifference = Math.abs(yDifference) > 0 ? yDifference:1e-7;
+            double lookAheadTime = Math.min(time + lookAheadAmount, endTime);
+            double xDifference = getX(lookAheadTime) - getX(time);
+            double yDifference = getY(lookAheadTime) - getY(time);
+            double mag = Math.hypot(xDifference, yDifference);
+            // If the look-ahead displacement is negligibly small (e.g. very slow test speeds or tiny lookahead),
+            // use the instantaneous derivative (velocity) direction instead of finite differences to compute heading.
+            if (mag < 1e-8) {
+                double dxdt = xPolynomial.derivative(putTimeInRange(time) - startTime);
+                double dydt = yPolynomial.derivative(putTimeInRange(time) - startTime);
+                double speedMag = Math.hypot(dxdt, dydt);
+                if (speedMag < 1e-12) {
+                    // fallback: use rotation polynomial if derivatives are effectively zero
+                    return rotPolynomial.compute(putTimeInRange(time) - startTime);
+                }
+                return Math.toDegrees(Math.atan2(dydt, dxdt));
+            }
             return Math.toDegrees(Math.atan2(yDifference, xDifference));
         }
-
-
     }
 
+
+
     /**
-     * Returns the absolute start time of this spline segment.
-     * @return
+     * Returns the instantaneous speed (magnitude of velocity vector) at the given absolute time.
+     * Computed from the derivatives of the x and y polynomials.
      */
+    public double getSpeed(double time) {
+        double dxdt = xPolynomial.derivative(putTimeInRange(time) - startTime);
+        double dydt = yPolynomial.derivative(putTimeInRange(time) - startTime);
+        return Math.hypot(dxdt, dydt);
+    }
+
+    /** Returns the absolute start time of this segment. */
     public double getStartTime() {
         return startTime;
     }
 
-    /**
-     * Returns the absolute end time of this spline segment.
-     * @return
-     */
-    public double getEndTime(){
+    /** Returns the absolute end time of this segment. */
+    public double getEndTime() {
         return this.endTime;
     }
 }
+
 /**
- * support class for CubicSplineSegment, holds information for each component of the spline,
- * takes 4 constants and can return the result in terms of what should be time in this case
+ * Support class for CubicSplineSegment. Holds coefficients for a cubic polynomial
+ * f(t) = a*t^3 + b*t^2 + c*t + d, evaluated over a normalized [0,1] domain via a
+ * time scalar that maps real segment duration to that range.
  */
 class CubicPolynomial {
     private final double a, b, c, d;
-    private double timeScalar = 1;
-    public CubicPolynomial(SimpleMatrix coeffs){
+    private double timeScalar = 1.0;
+
+    /**
+     * Construct from a 1x4 (or 4-element) SimpleMatrix {a, b, c, d}.
+     */
+    public CubicPolynomial(SimpleMatrix coeffs) {
         this.a = coeffs.get(0);
         this.b = coeffs.get(1);
         this.c = coeffs.get(2);
         this.d = coeffs.get(3);
     }
-    public void setTimeScalar(double segmentDuration){
-        this.timeScalar = segmentDuration;
+
+    /**
+     * Set the time scalar to map absolute time to the [0,1] range.
+     * @param segmentDuration duration of this segment in seconds
+     */
+    public void setTimeScalar(double segmentDuration) {
+        this.timeScalar = segmentDuration > 0 ? segmentDuration : 1.0;
     }
-    public double compute(double input){
-        input /= timeScalar;
-        double cubicTerm = a * Math.pow(input,3);
-        double quadraticTerm = b * Math.pow(input,2);
-        double linearTerm = c * input;
-        double constantTerm = d;
-        return cubicTerm + quadraticTerm + linearTerm + constantTerm;
+
+    /**
+     * Evaluate the polynomial at the given time (relative to segment start).
+     * Internally normalizes to t = time/timeScalar, clamped to [0,1].
+     */
+    public double compute(double time) {
+        double t = time / timeScalar;
+        if (t < 0) t = 0;
+        if (t > 1) t = 1;
+        return a * Math.pow(t, 3) + b * Math.pow(t, 2) + c * t + d;
+    }
+
+    /**
+     * Compute the derivative of the polynomial with respect to absolute time at the given
+     * relative time. Uses the chain rule: d/dt = (d/dτ) * (1/timeScalar).
+     */
+    public double derivative(double time) {
+        double t = time / timeScalar;
+        if (t < 0) t = 0;
+
+        if (t > 1) t = 1;
+        double dDtau = 3.0 * a * Math.pow(t, 2) + 2.0 * b * t + c;
+        return dDtau / timeScalar;
     }
 }

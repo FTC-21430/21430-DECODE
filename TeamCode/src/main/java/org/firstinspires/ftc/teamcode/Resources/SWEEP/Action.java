@@ -56,14 +56,18 @@ public class Action {
                 actionIntake();
                 break;
             // Add cases for other actions here
+            case IDLE:
+                actionIdle();
+                break;
         }
     }
 
     // Action run methods
 
     private void actionIntake() {
-        if (robot != null && robot.operatorStateMachine != null) {
-            robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
-        }
+        robot.intake.turnOn();
+    }
+    private void actionIdle(){
+        robot.intake.turnOff();
     }
 }

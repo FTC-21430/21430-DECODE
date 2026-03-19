@@ -38,7 +38,7 @@ public class GobildaPinpointModuleFirmware {
         pinpoint.setOffsets(xPodOffset,yPodOffset,DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD
         );
 
@@ -66,7 +66,12 @@ public class GobildaPinpointModuleFirmware {
 //        Our frame of reference and the gobilda frame of reference is different, so you units needed to change.
         robotX = position.getX(DistanceUnit.INCH);
         robotY = position.getY(DistanceUnit.INCH);
-        robotAngle = Math.toDegrees(pinpoint.getHeading(UnnormalizedAngleUnit.RADIANS));
+        robotAngle = pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES);
+        telemetry.addLine("-------------------------");
+        telemetry.addData("UnnormalizedAngle", pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES));
+        telemetry.addData("positionAngle", position.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("NormalizedAngle", pinpoint.getHeading(AngleUnit.DEGREES));
+        telemetry.addLine("------------------------");
 
         updateVelocity();
 

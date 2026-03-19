@@ -18,7 +18,8 @@ public class RobotActions {
         LAUNCH_THREE,
         LAUNCH_SORTED_THREE,
         SCAN_MOTIF,
-        READY_RAMP
+        READY_RAMP,
+        IDLE
         //TODO: add extra possible actions the robot's mechanisms could do during autonomous to this list
     }
 

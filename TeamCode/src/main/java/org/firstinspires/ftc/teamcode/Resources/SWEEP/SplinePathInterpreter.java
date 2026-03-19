@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.ejml.simple.SimpleMatrix;
+import java.util.Arrays;
 
 /**
  * Handle spline segment switching and interpolation to get the robot's target position at any given time.
  * Executes robot actions at specified times and /  or spline indexes along the path, allowing for complex autonomous routines.
  * Also handles time delays and program speed adjustments for testing purposes.
- *
  */
 public class SplinePathInterpreter {
     private final ElapsedTime runtime;
@@ -45,26 +45,30 @@ public class SplinePathInterpreter {
     public SimpleMatrix getRobotPosition(double lookaheadTime){
         if (path == null || path.length == 0) return new SimpleMatrix(new double[]{0,0,0});
         lookaheadTime = lookaheadTime >= 0 ? lookaheadTime : 0.0;
-        double time = runtime.seconds() + timeDelay + lookaheadTime;
-        time *= programSpeed;
-        CubicSplineSegment splineSegment = getCurrentSpline(time);
+        double scaledTime = (runtime.seconds() + timeDelay + lookaheadTime) * SplinePathInterpreter.programSpeed;
+        CubicSplineSegment segment = getCurrentSpline(scaledTime);
         return new SimpleMatrix(new double[]{
-                splineSegment.getX(time), // x - inches
-                splineSegment.getY(time), // y - inches
-                splineSegment.getRotation(time) // yaw - degrees
+                segment.getX(scaledTime),
+                segment.getY(scaledTime),
+                segment.getRotation(scaledTime, lookaheadTime)
         });
     }
     public void executeActions(){
         if (actions == null || actions.length == 0) return;
         Action queuedAction = actions[0];
-        if (queuedAction.checkAction(currentSplineIndex,runtime.seconds() + timeDelay)){
+        double scaledTime = (runtime.seconds() + timeDelay) * SplinePathInterpreter.programSpeed;
+        if (queuedAction.checkAction(currentSplineIndex, scaledTime)){
             actions = completeAction(actions);
         }
     }
     public boolean isPathFinished(){
         if (path == null || path.length == 0) return true;
-        double time = runtime.seconds()+ timeDelay;
-        return currentSplineIndex+1 == path.length && time >= getCurrentSpline(time).getEndTime();
+        double scaledTime = (runtime.seconds() + timeDelay) * SplinePathInterpreter.programSpeed;
+        CubicSplineSegment last = path[path.length - 1];
+        return scaledTime >= last.getEndTime();
+    }
+    public int getCurrentSplineIndex(){
+        return currentSplineIndex;
     }
     public void setProgramSpeed(double speedRatio){
         programSpeed = speedRatio;
