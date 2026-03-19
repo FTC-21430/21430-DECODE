@@ -29,18 +29,10 @@ public class Spindexer {
     };
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.
-    private boolean ejecting = false; // Indicates if the spindexer is currently ejecting.
-    public static double ejectionTimeout = 0.1; // Timeout duration for ejection in seconds.
-    public static double ejectionTimein = 0.12;
     private final int SLOT_INCREMENT = 120; // Degrees between slots.
-    private final Servo EJECTOR_SERVO; // Servo for controlling the ejector mechanism.
-    private double ejectorOutPos = 0.8; // Position of the ejector when pushed out.
-    private double ejectorInPos = 0.545; // Position of the ejector when retracted.
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
-    private boolean ejectorOut = false;
-
     public static double intakeOffSet = 11;
     public static double launchOffSet = 13.2;
     public static double idleOffSet = 20.0;
@@ -59,8 +51,6 @@ public class Spindexer {
         PADDLE_SERVO = new SpindexerServoFirmware(hardwareMap, true, 0, 120, 240, "intake",telemetry);
         RUNTIME = new ElapsedTime();
         this.telemetry = telemetry;
-        // Range of motion for the ServoPlus class is in inches for linear movement.
-        EJECTOR_SERVO = hardwareMap.get(Servo.class, "ejector");
         COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor1","colorSensor2");
         recalibrateSpindexerPosition();
 
@@ -77,12 +67,7 @@ public class Spindexer {
      */
     public void updateSpindexer() {
         if (!calibrating) {
-            if (RUNTIME.seconds() >= ejectionTimeout) {
-                moveEjector(false); // Retracts the ejector after ejection timeout.
-            }
-            if (RUNTIME.seconds() >= ejectionTimeout+ejectionTimein){
-                ejectorOut = false;
-            }
+
         } else {
             if (RUNTIME.seconds() >= calibrationTimeout) {
                 calibrating = false; // Ends calibration mode after timeout.
@@ -126,64 +111,20 @@ public class Spindexer {
         };
     }
     public void prepColor(COLORS color){
-        if (color == COLORS.NONE) {
-            int launchIndex = getCurrentIndexInLaunch();
-            if (launchIndex == -1) return;
-            if (indexColors[launchIndex - 1] == COLORS.NONE){
-                if (indexColors[launchIndex%3] != COLORS.NONE){
-                    moveIndexToLaunch((launchIndex%3)+1);
-                } else if (indexColors[((launchIndex+1)%3)] != COLORS.NONE) {
-                    moveIndexToLaunch(((launchIndex+1)%3)+1);
-                }else{
-                    moveToNextIndex();
-                }
-            }
-        } else {
-            int idx = getIndexWithColor(color);
-            if (idx != -1) {
-                preppedCatalog[idx-1] = true;
-                moveIndexToLaunch(idx);
-            }
-            else {
-                for (int i = 0; i < 3; i++){
-                    if (!preppedCatalog[i]){
-                        moveIndexToLaunch(i+1);
-                        return;
-                    }
-                }
-                moveToNextIndex();
-            }
-        }
+
     }
 //    zero is index 1 at intake, positive moves counterclockwise facing intake, so 120 will be index 1 at launcher
     public void moveIndexToLaunch(int index){
-        if (index < 1 || index > 3){
-            return;
-        }
-        if (ejecting) return;
+        index = index % 3;
         double pos = (index * SLOT_INCREMENT) % 360;
         PADDLE_SERVO.setSpindexerPosition(pos);
-    }
-
-    public int getIndexWithColor(COLORS color){
-        for (int i = 0; i < indexColors.length; i++){
-            if (indexColors[i] == color){
-                return i + 1;
-            }
-        }
-        return -1; // if we do not find the color
     }
     public void moveIndexToIntake(int index){
         if (index < 1 || index > 3){
             return;
         }
-        if (ejecting) return;
         double pos = ((index-1) * SLOT_INCREMENT);
         PADDLE_SERVO.setSpindexerPosition(pos);
-    }
-
-    public boolean isEjectorOut(){
-        return ejectorOut;
     }
 
     public void storeColorAtIndex(){
@@ -204,21 +145,12 @@ public class Spindexer {
         };
     }
 
-    /**
-     * Ejects the current item if the spindexer is at a valid slot.
-     */
-    public void eject(){
-        if (PADDLE_SERVO.isAtTarget()){
-            moveEjector(true); // Pushes the ejector out for ejection.
-            RUNTIME.reset(); // Resets the timer for ejection timeout.
-        }
-    }
 
     /**
      * Recalibrates the spindexer position to the starting point.
      */
     public void recalibrateSpindexerPosition(){
-        moveEjector(false); // Ensures the ejector is retracted.
+
         PADDLE_SERVO.calibrationPosition(); // Moves the spindexer to the calibration position.
         calibrating = true; // Sets the spindexer to calibration mode.
         RUNTIME.reset(); // Resets the timer for calibration timeout.
@@ -232,11 +164,6 @@ public class Spindexer {
     public boolean isAtRest(){
         return stoppedSampling >= stoppedSamplingThreshold;
     }
-
-    public void refreshOffset(){
-
-    }
-
     /**
      * Gets the current index of the spindexer in the intake position.
      * @return Index number (1-3) or -1 if not at a valid slot.
@@ -274,24 +201,8 @@ public class Spindexer {
      * Moves the spindexer to the next index position.
      */
     public void moveToNextIndex(){
-        if (ejecting) return;
        int pos = getCurrentIndexInIntake() + 1; // Calculates the next index position.
        PADDLE_SERVO.setSpindexerSlot(pos); // Moves the spindexer to the calculated position.
-    }
-
-    /**
-     * Moves the ejector to the specified position (out or in).
-     * @param pushOut True to push the ejector out, false to retract it.
-     */
-    private void moveEjector(boolean pushOut){
-        if (pushOut){
-            EJECTOR_SERVO.setPosition(ejectorOutPos); // Sets the ejector to the out position.
-            ejecting = true; // Marks the spindexer as ejecting.
-            ejectorOut = true;
-        }else{
-            EJECTOR_SERVO.setPosition(ejectorInPos); // Sets the ejector to the in position.
-            ejecting = false; // Marks the spindexer as not ejecting.
-        }
     }
 
     /**
@@ -299,7 +210,6 @@ public class Spindexer {
      * @param degree - degrees counter clockwise from the init position
      */
     public void setSpindexerPos(double degree){
-        if (ejecting) return;
         PADDLE_SERVO.setSpindexerPosition(degree);
     }
 
