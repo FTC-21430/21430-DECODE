@@ -22,6 +22,7 @@ public class Spindexer {
     private DigitalChannel intakeLimitSwitchOne = null;
     private DigitalChannel intakeLimitSwitchTwo = null;
 
+    // Stored by intake index, not by launch order.
     public COLORS[] indexColors = {
       COLORS.NONE,
       COLORS.NONE,
@@ -34,7 +35,7 @@ public class Spindexer {
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     public static double intakeOffSet = 11;
-    public static double launchOffSet = 13.2;
+    public static double launchOffSet = -5; // the angle that the ejector paddle will fall between artifacts from pure angles TODO: tune
     public static double idleOffSet = 20.0;
 
     public enum INDEX_TYPE{
@@ -77,6 +78,7 @@ public class Spindexer {
             telemetry.addData("Encoder", getEncoderPosition());
             telemetry.addData("target", PADDLE_SERVO.getTargetPosition());
             PADDLE_SERVO.update(); // Updates the spindexer servo position.
+        // rest is based on repeated target hits, not raw velocity. this is a small debounce for state logic.
         if (PADDLE_SERVO.isAtTarget()){
             ++stoppedSampling;
         }else{
@@ -84,8 +86,13 @@ public class Spindexer {
         }
     }
 
+    public void eject(double degrees){
+        PADDLE_SERVO.launchSpin(degrees);
+    }
+
     public void setIndexOffset(INDEX_TYPE type){
-        switch (type){
+        // offsets change which physical feature lines up with a slot without changing the chosen slot itself.
+        switch (type) {
             case INTAKE:
                 PADDLE_SERVO.setSpindexerOffset(intakeOffSet);
                 break;
@@ -97,24 +104,71 @@ public class Spindexer {
                 break;
         }
     }
-
-    private boolean preppedCatalog[] = {
-            false,
-            false,
-            false
-    };
-    public void clearPreppedCatalog(){
-        preppedCatalog = new boolean[]{
-                false,
-                false,
-                false
-        };
+    public void prepLaunch(COLORS[] launchSequence){
+        int launchIndex = getSortedIndex(launchSequence, getCurrentIndexInLaunch());
+        // prep should be the non-eject direction so the passive ejector folds in instead of pushing a ball out.
+        setPaddleDirection(true); //TODO: check that this is the right direction
+        setIndexOffset(INDEX_TYPE.LAUNCH);
+        moveIndexToLaunch(launchIndex);
     }
-    public void prepColor(COLORS color){
-
+    public double getVelocity(){
+        return PADDLE_SERVO.getMovementVelocity();
     }
+
+    /**
+     * Algorithm for determining the best launch order, will return the index that should move to the launch position. NOTE: reference to the launch slot of the spindexer, while other parts use the intake!!!
+     * @param launchSequence an array of three colors, can handle all types: PURPLE, GREEN, NONE
+     * @param currentIdx the current spindexer index that is in the launch position to have the order prioritize the index we are already in,
+     *                   for the edge case of not actually having a perfect match such as [G,G,P] where the target is [G,P,P]
+     * @return the index that should be in the LAUNCH position. spinning in the launching direction will cause the correct order to leave the launcher. (high throughput rates will likely cause the order to be lost inside the goal.
+     */
+     private int getSortedIndex(COLORS[] launchSequence, int currentIdx){
+         // best count is the 'high score' for the pattern matching, the best Index stores which position is currently the best
+        int bestCount = 0, bestIndex = -1;
+        // starts from currentIdx so ties prefer the smallest movement from where we already are.
+        for (int i = currentIdx; i < currentIdx+3; i++){
+            // the iteration counts, match and none. Because none balls would not actually shoot a ball, Nones are skipped and instead only counts the next index for a match. matchCount is how many matches this index has
+            int matchCount = 0 , noneCount = 0;
+            // j is the single color in the pattern, and we iterate through all three.
+            for (int j = 0; j < 3; j++){
+                // gets the color at the index of the launch slot, the +1 ensures that we get the correct artifact.
+                COLORS color = indexColors[(i+j+1)%3];
+                // check if the color is a none, if it is skip it and signal to the next iteration that we skipped one.
+                if (color == COLORS.NONE){
+                    noneCount++;
+                    continue;
+                }
+                if (j-noneCount >= 0) {
+                    // check if there is a match the the target launch order, MOD 3 to ensure correct wrapping. noneCount is used to know if we skipped an index without shooting another color.
+                    if (color == launchSequence[(j - noneCount) % 3]) {
+                        matchCount++;
+                    }
+                }
+            }
+            // check if the latest was the best, if it is less than or equal to than we use the earlier one because it is closer to our current position
+            if (matchCount > bestCount){
+                bestCount = matchCount;
+                bestIndex = i % 3; // MOD 3 for keeping inside the 0-2 range
+                if (bestCount == 3){ // in the edge case that we find the perfect match, there is no reason to continue searching.
+                    break;
+                }
+            }
+        }
+
+        if (bestIndex == -1){
+            // all NONE or no useful match: keep the current launch slot instead of inventing a new one.
+            return currentIdx % 3;
+        }
+
+        // returns the best result. If all Nones were passed or some other strange launch sequence
+        return bestIndex;
+     }
+
+
+
 //    zero is index 1 at intake, positive moves counterclockwise facing intake, so 120 will be index 1 at launcher
     public void moveIndexToLaunch(int index){
+        // launch indexing is intentionally not the same frame as intake indexing.
         index = index % 3;
         double pos = (index * SLOT_INCREMENT) % 360;
         PADDLE_SERVO.setSpindexerPosition(pos);
@@ -169,6 +223,7 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInIntake(){
+        // this uses the commanded target frame, not the live encoder frame.
         switch ((int) Math.round(PADDLE_SERVO.getTargetPosition()/120)){
             case 0:
                 return 1;
@@ -185,6 +240,7 @@ public class Spindexer {
      * @return Index number (1-3) or -1 if not at a valid slot.
      */
     public int getCurrentIndexInLaunch(){
+        // launch slot numbering is rotated relative to intake because the exit hole is on a different face.
         switch ((int) Math.round(PADDLE_SERVO.getTargetPosition()/120)){
             case 0:
                 return 3;
@@ -222,9 +278,6 @@ public class Spindexer {
     }
 
     public boolean getIntakeSwitch(){
-        telemetry.addData("intakeSwitch1", intakeLimitSwitchOne.getState());
-        telemetry.addData("intakeSwitch2", intakeLimitSwitchTwo.getState());
-
         return intakeLimitSwitchOne.getState() || intakeLimitSwitchTwo.getState();
     }
     public boolean isFull(){
@@ -233,7 +286,7 @@ public class Spindexer {
     public double getTarget(){
         return PADDLE_SERVO.getTargetPosition();
     }
-    public void setPaddleDirection(boolean clockwise){
+    private void setPaddleDirection(boolean clockwise){
         PADDLE_SERVO.setDirection(clockwise);
     }
 }

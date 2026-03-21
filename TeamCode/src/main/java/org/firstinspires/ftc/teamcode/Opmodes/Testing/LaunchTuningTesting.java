@@ -51,7 +51,7 @@ public class LaunchTuningTesting extends BaseTeleOp {
                 robot.spindexer.moveToNextIndex();
             }
             if (gamepad1.crossWasPressed()){
-                robot.spindexer.eject();
+                robot.spindexer.eject(120);
             }
             robot.intake.openGate();
 //            robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
