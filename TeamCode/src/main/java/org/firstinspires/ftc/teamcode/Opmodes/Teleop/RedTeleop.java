@@ -46,7 +46,7 @@ public class RedTeleop extends BaseTeleOp {
                     robot.spindexer.moveToNextIndex();
                 }
                 if (gamepad2.rightBumperWasPressed()) {
-                    robot.spindexer.eject();
+                    robot.spindexer.eject(130);
                 }
 
                 if (gamepad2.dpadDownWasPressed()){

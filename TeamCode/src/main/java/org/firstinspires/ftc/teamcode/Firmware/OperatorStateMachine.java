@@ -20,8 +20,10 @@ public class OperatorStateMachine {
     // All states the operator is at
     public enum State {
         IDLE,
+        PREPPING,
         LAUNCH,
         INTAKE
+
     }
 
     // The idle speed the flywheel will be set too when not actively shooting
@@ -40,18 +42,12 @@ public class OperatorStateMachine {
 
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
-    // Logic to ensure that a launch is completed before it starts the next launch
-    private boolean prepping = false;
-    private boolean launched = false;
-    public static double launchingTimeout = 0.0;
     public static double sortingTimeout = 0.12;
-    private ElapsedTime runtime = null;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
     private TrajectoryKinematics trajectoryKinematics = null;
-    public static double launcherTimeOut = 0.1;
-    private boolean launchTimeOuting = false;
+
 
     // Will Trigger the transition from one state to the next
 
@@ -70,17 +66,18 @@ public class OperatorStateMachine {
         this.intake = intake;
         this.telemetry = telemetry;
         this.setLauncherBasedOnTags = setLauncherBasedOnTags;
-        this.runtime = new ElapsedTime();
         this.gamepad2 = gamepad2;
         this.launchTimer = new ElapsedTime();
-        this.preppingTimer =new ElapsedTime();
+        this.preppingTimer = new ElapsedTime();
         this.trajectoryKinematics = trajectoryKinematics;
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
     }
     public void moveToState(State state){
-        switch (currentState){
+        State lastState = currentState;
+        currentState = state;
+        switch (lastState){
             case IDLE:
                 switch (state){
                     case IDLE:
@@ -88,11 +85,31 @@ public class OperatorStateMachine {
                     case INTAKE:
                         idleToIntake();
                         break;
+                    case PREPPING:
+                        idleToPrepping();
+                        break;
                     case LAUNCH:
                         idleToLaunch();
                         break;
                 }
             break;
+
+            case PREPPING:
+                switch (state){
+                    case IDLE:
+                        preppingToIdle();
+                        break;
+                    case INTAKE:
+                        preppingToIntake();
+                        break;
+                    case LAUNCH:
+                        preppingToLaunch();
+                        break;
+                    case PREPPING:
+                        refreshPrep();
+                        break;
+                }
+                break;
 
             case LAUNCH:
                 switch (state){
@@ -101,6 +118,9 @@ public class OperatorStateMachine {
                         break;
                     case INTAKE:
                         launchToIntake();
+                        break;
+                    case PREPPING:
+                        launchToPrepping();
                         break;
                     case LAUNCH:
                         break;
@@ -114,13 +134,18 @@ public class OperatorStateMachine {
                         break;
                     case INTAKE:
                         break;
+                    case PREPPING:
+                        intakeToPrepping();
+                        break;
                     case LAUNCH:
                         intakeToLaunch();
                         break;
                 }
             break;
+
+
         }
-        currentState = state;
+
     }
 
     // Will call the corresponding update function to the current state
@@ -140,9 +165,13 @@ public class OperatorStateMachine {
             case INTAKE:
                 intakeState();
                 break;
+            case PREPPING:
+                preppingState();
+                break;
             case LAUNCH:
                 launchState();
                 break;
+
         }
     }
 
@@ -156,12 +185,11 @@ public class OperatorStateMachine {
             launchQueue.remove(0);
         }
     }
-    public void shootOneBall(){
-        launchQueue = new ArrayList<>();
-        addToQueue(COLORS.NONE);
-        moveToState(State.LAUNCH);
+    public void clearQueue(){
+        for (int i = 0; i < 3; i++){
+            addToQueue(COLORS.NONE);
+        }
     }
-
     /**
      * The idle state update method
      * retracts and slows down launcher, updates spindexer
@@ -216,7 +244,7 @@ public class OperatorStateMachine {
         telemetry.addData("switchSampling", switchSampling);
 
         if (spindexer.isFull() && spindexer.isAtRest()){
-            moveToState(State.IDLE);
+            moveToState(State.PREPPING);
         }
 
         launcher.update();
@@ -224,8 +252,40 @@ public class OperatorStateMachine {
 
     }
 
-    private double currentLaunchTimeout = 0;
-    public static double preppingTimeout = 0.02;
+    public static double preppingTimeout = 0.3;
+    private void preppingState(){
+
+        launcher.update();
+        spindexer.updateSpindexer();
+        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+
+        if (queuedLaunch && preppingTimer.seconds() >= preppingTimeout){
+            moveToState(State.LAUNCH);
+        }
+    }
+    private boolean queuedLaunch = false;
+    private void prep(){
+        preppingTimer.reset();
+        while (launchQueue.size() < 3){
+            addToQueue(COLORS.NONE);
+        }
+
+        COLORS[] launchSequence = new COLORS[3];
+        for (int i = 0; i < 3; i++){
+            COLORS color = launchQueue.get(i);
+            launchSequence[i] = color;
+        }
+
+        spindexer.prepLaunch(launchSequence);
+    }
+    public static double singleLaunchIncrement = 130;
+    public static double fullLaunchIncrement = 400;
+    public static double launchJamThreshold = 0.01;
+    public static int launchJamSampleThresh = 24;
+    private int launchJamSampling = 0;
+    private int shotsRemaining = 0;
+    private boolean launchStalled = false;
+    private boolean spinning = false;
 
     /**
      * The launch state update method
@@ -240,54 +300,49 @@ public class OperatorStateMachine {
         setLauncherBasedOnTags.run();
         launcher.revFlywheel();
 
-        if (!launchQueue.isEmpty() && !prepping && !launched){
-            COLORS toPrep = launchQueue.remove(0);
-            spindexer.prepColor(toPrep);
-            prepping = true;
-            preppingTimer.reset();
-            launcher.setGatePosition(true);
-            currentLaunchTimeout = toPrep != COLORS.NONE? sortingTimeout:launchingTimeout;
-
-        }
-
-
-        // When prepped and launcher is ready, eject and clear the stored color
-
-
-        if (prepping && spindexer.isAtRest() && launcher.isUpToSpeed() && launcher.rampReady() && preppingTimer.seconds() >= preppingTimeout){
-            spindexer.eject();
-            prepping = false;
-            launched = true;
-            launchTimer.reset();
-
-            // Clear the color from the spindexer and remove it from the queue so we don't re-prep it
-
-            int clearedIndex = spindexer.getCurrentIndexInLaunch() -1;
-            if (clearedIndex < 0){
-                telemetry.speak("ERROR, negative launch clear index");
-
-                moveToState(State.IDLE);
-                spindexer.setColorIndexing(COLORS.NONE,COLORS.NONE,COLORS.NONE);
-            }else{
-                spindexer.clearColor(clearedIndex);
+        // check if we should be sorting our shots
+        boolean shouldSort = false;
+        for (int i = 0; i < 3; i++){
+            if (launchQueue.get(i) != COLORS.NONE){
+                shouldSort = true;
             }
         }
-        // Wait for ejector to fully retract before allowing next cycle
-        if (launched && !spindexer.isEjectorOut() && launchTimer.seconds() >= launchingTimeout){
-            launched = false;
+
+        if (spindexer.isAtRest() && shotsRemaining > 0 && !launchStalled){
+            spinning = false;
+            if (shouldSort){
+                launchStalled = true;
+                launchTimer.reset();
+
+            } else {
+                spindexer.eject(fullLaunchIncrement);
+                shotsRemaining = 0;
+                spinning = true;
+            }
         }
 
-        // If nothing left to launch and nothing in progress, go idle
-        if (launchQueue.isEmpty() && !prepping && !launched && !spindexer.isEjectorOut()){
-            if (!launchTimeOuting) {
-                runtime.reset();
-                launchTimeOuting = true;
+        if (spinning){
+            if (Math.abs(spindexer.getVelocity()) < launchJamThreshold){
+                launchJamSampling++;
             }
-            if (runtime.seconds() >= launcherTimeOut && launchTimeOuting) {
-                launchTimeOuting = false;
-                moveToState(State.IDLE);
-                launcher.setGatePosition(false);
+            if (launchJamSampling >= launchJamSampleThresh){
+                launchJamSampling = 0;
+                queuedLaunch = true;
+                moveToState(State.PREPPING);
+
             }
+        }
+
+        if (launchStalled && launchTimer.seconds() >= sortingTimeout){
+            launchStalled = false;
+            spindexer.eject(singleLaunchIncrement);
+            shotsRemaining -= 1;
+            spinning = true;
+        }
+
+        if (spindexer.isAtRest() && shotsRemaining <= 0 && !launchStalled){
+            moveToState(State.IDLE);
+            spinning = false;
         }
 
         launcher.update();
@@ -306,15 +361,11 @@ public class OperatorStateMachine {
      * Transition from launch to idle
      */
     private void launchToIdle(){
-        for (int i = 0; i < 3; i++){
-            addToQueue(COLORS.NONE);
-        }
+        clearQueue();
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         intake.turnOff();
         intake.openGate();
-        prepping = false;
-        launched = false;
     }
     /**
      * Transition from intake to idle
@@ -331,8 +382,8 @@ public class OperatorStateMachine {
         intake.turnOff();
         intake.closeGate();
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
-        prepping = false;
-        launched = false;
+        queuedLaunch = true;
+        moveToState(State.PREPPING);
     }
     /**
      * Transition from launch to intake
@@ -342,17 +393,44 @@ public class OperatorStateMachine {
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         intake.turnOn();
         intake.openGate();
-        prepping = false;
-        launched = false;
     }
     /**
      * Transition from idle to launch
      */
     private void idleToLaunch(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
-        prepping = false;
-        launched = false;
+        queuedLaunch = true;
+        moveToState(State.PREPPING);
     }
+    private void preppingToLaunch(){
+        launcher.setGatePosition(true);
+        shotsRemaining = 3;
+    }
+    private void preppingToIdle(){
+        // nothing really needed
+    }
+    private void preppingToIntake(){
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        intake.turnOn();
+        intake.openGate();
+    }
+
+    private void idleToPrepping(){
+        prep();
+    }
+    private void launchToPrepping(){
+        launcher.setGatePosition(false);
+        prep();
+    }
+    private void intakeToPrepping(){
+        intake.turnOff();
+        intake.closeGate();
+        prep();
+    }
+    private void refreshPrep(){
+        prep();
+    }
+
     public List<COLORS> getLaunchQueue(){
         return launchQueue;
     }
