@@ -55,7 +55,15 @@ public class Action {
             case INTAKE:
                 actionIntake();
                 break;
-            // Add cases for other actions here
+            case LAUNCH_THREE:
+                actionLaunch();
+                break;
+            case LAUNCH_SORTED_THREE:
+                actionSortedLaunch();
+                break;
+            case SCAN_MOTIF:
+                actionScanMotiff();
+                break;
             case IDLE:
                 actionIdle();
                 break;
@@ -67,6 +75,10 @@ public class Action {
     private void actionIntake() {
         robot.intake.turnOn();
     }
+    private void actionLaunch(){robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);}
+    private void actionSortedLaunch(){robot.spindexer.storeColorAtIndex();}
+    private void actionScanMotiff(){robot.aprilTags.getMotifID();}
+
     private void actionIdle(){
         robot.intake.turnOff();
     }

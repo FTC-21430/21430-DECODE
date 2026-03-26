@@ -13,8 +13,6 @@ import java.util.ArrayList;
 public class RobotActions {
     public enum Actions {
         INTAKE,
-        LAUNCH_ONE,
-        LAUNCH_TWO,
         LAUNCH_THREE,
         LAUNCH_SORTED_THREE,
         SCAN_MOTIF,
