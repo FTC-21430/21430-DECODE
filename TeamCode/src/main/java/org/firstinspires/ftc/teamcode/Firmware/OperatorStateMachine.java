@@ -42,7 +42,7 @@ public class OperatorStateMachine {
 
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
-    public static double sortingTimeout = 0.12;
+    public static double sortingTimeout = 0.45;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;

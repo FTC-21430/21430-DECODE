@@ -34,7 +34,7 @@ public class Spindexer {
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
-    public static double intakeOffSet = 11;
+    public static double intakeOffSet = 0;
     public static double launchOffSet = -5; // the angle that the ejector paddle will fall between artifacts from pure angles TODO: tune
     public static double idleOffSet = 20.0;
 
@@ -107,7 +107,7 @@ public class Spindexer {
     public void prepLaunch(COLORS[] launchSequence){
         int launchIndex = getSortedIndex(launchSequence, getCurrentIndexInLaunch());
         // prep should be the non-eject direction so the passive ejector folds in instead of pushing a ball out.
-        setPaddleDirection(true); //TODO: check that this is the right direction
+        setPaddleDirection(false);
         setIndexOffset(INDEX_TYPE.LAUNCH);
         moveIndexToLaunch(launchIndex);
     }
@@ -161,6 +161,9 @@ public class Spindexer {
         }
 
         // returns the best result. If all Nones were passed or some other strange launch sequence
+         bestIndex += 1;
+        if (bestIndex < 0) bestIndex = 2;
+        if (bestIndex > 2) bestIndex = 0;
         return bestIndex;
      }
 
@@ -257,7 +260,8 @@ public class Spindexer {
      * Moves the spindexer to the next index position.
      */
     public void moveToNextIndex(){
-       int pos = getCurrentIndexInIntake() + 1; // Calculates the next index position.
+        setPaddleDirection(false);
+       int pos = (getCurrentIndexInIntake()-1)%3; // Calculates the next index position.
        PADDLE_SERVO.setSpindexerSlot(pos); // Moves the spindexer to the calculated position.
     }
 

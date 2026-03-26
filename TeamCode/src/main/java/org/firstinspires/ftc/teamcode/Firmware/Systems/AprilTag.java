@@ -46,9 +46,9 @@ public class AprilTag {
 //    public static double cameraX = 144.5;
 //    public static double cameraY = 30;
 //    public static double cameraZ = 350;
-    public static double cameraX = 30;
-    public static double cameraY = -144.5;
-    public static double cameraZ = 350;
+    public static double cameraX = 3.13;
+    public static double cameraY = 0;
+    public static double cameraZ = 393;
 
     private double x, y, angle = 0;
     // Filter scalar, the amount we rely on the april tags

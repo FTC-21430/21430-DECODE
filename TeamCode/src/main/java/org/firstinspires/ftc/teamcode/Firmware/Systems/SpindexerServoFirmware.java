@@ -19,7 +19,7 @@ public class SpindexerServoFirmware {
     private final Servo spindexerServo; // Servo controlling the spindexer.
     private final double[] slots; // Degree values for each slot.
     // This is continuous-servo power, not a target angle. the tuned values matter more than the names here.
-    private double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
+    public static double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
 
     // The servo degree that is the current target
     private double targetPosition = 0;
@@ -187,7 +187,7 @@ public class SpindexerServoFirmware {
 
         lastTarget = targetPosition;
         targetPosition = position;
-        setDirection(true); // TODO: double check that this is the correct direciton, I forgot which frame of reference this rotation is measured from (I remember from the intake side but it prolly should be launch side ¯\_(ツ)_/¯)
+        // TODO: double check that this is the correct direciton, I forgot which frame of reference this rotation is measured from (I remember from the intake side but it prolly should be launch side ¯\_(ツ)_/¯)
         update();
     }
 
@@ -204,7 +204,7 @@ public class SpindexerServoFirmware {
         lastTarget = targetPosition;
         targetPosition = position;
 
-        setDirection(false); //TODO: check that this is the ejection direction
+        setDirection(true); //TODO: check that this is the ejection direction
         remainingSpin = degrees;
         spinning = true;
 
@@ -218,6 +218,7 @@ public class SpindexerServoFirmware {
     public void setSpindexerSlot(int slot){
         if (slot < 1) slot = 3;
         if (slot > 3) slot = 1;
+        direction = 0.83;
         setSpindexerPosition(slots[slot-1]);
     }
 

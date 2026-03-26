@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
-@Disabled
+//@Disabled
 public class OperatorStateMachineTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -17,6 +17,9 @@ public class OperatorStateMachineTesting extends BaseTeleOp {
         while (opModeIsActive()){
             if (gamepad1.triangleWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
+            }
+            if (gamepad1.touchpadWasPressed()){
+                robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
             }
             if (gamepad1.circleWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
