@@ -204,7 +204,7 @@ public class SpindexerServoFirmware {
         lastTarget = targetPosition;
         targetPosition = position;
 
-        setDirection(true); //TODO: check that this is the ejection direction
+        setDirection(true); // turn to shoot
         remainingSpin = degrees;
         spinning = true;
 

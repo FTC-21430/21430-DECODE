@@ -35,7 +35,7 @@ public class Spindexer {
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     public static double intakeOffSet = 0;
-    public static double launchOffSet = -5; // the angle that the ejector paddle will fall between artifacts from pure angles TODO: tune
+    public static double launchOffSet = -5;
     public static double idleOffSet = 20.0;
 
     public enum INDEX_TYPE{

@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Resources.AprilTagProcessorDistortion;
+import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.teamcode.Resources.AprilTagProcessorImplWithDistortionCorrection;
@@ -42,7 +43,7 @@ public class AprilTag {
     private int aprilTagID;
 
 
-//
+//Software testing bot values
 //    public static double cameraX = 144.5;
 //    public static double cameraY = 30;
 //    public static double cameraZ = 350;
@@ -213,6 +214,11 @@ public class AprilTag {
         locateAprilTags(mode);
         return aprilTagID != 0;
     }
+    public boolean isTag(String mode, double currentY, double currentX, double currentYaw){
+        locateAprilTags(mode);
+        //TODO: Write out math that makes this code see the angle from camera to AprilTags, and if less than 30, return false
+        return aprilTagID != 0;
+    }
 
     // the getMotifID function gets the ID of the motif on the obelisk
     public int getMotifID(){
@@ -235,7 +241,7 @@ public class AprilTag {
      * @return returns true if there is a found tag, false if there is not. Uses either red or blue goal to calibrate.
      */
     public boolean updateAprilValues(double currentX, double currentY, double currentYaw, boolean hardUpdate, String alliance) {
-        if (!isTag(alliance)) return false;
+        if (!isTag(alliance, currentY, currentX, currentYaw)) return false;
         double aprilX = getSpecific(aprilTagID).robotPose.getPosition().x;
         double aprilY = getSpecific(aprilTagID).robotPose.getPosition().y;
         double aprilYaw = getSpecific(aprilTagID).robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
@@ -253,7 +259,7 @@ public class AprilTag {
     }
 
     // how wrong the aprilTag filtered values are allowed to be in order to be used.
-    public static double disallowedErrorThreshold = 5;
+    public static double disallowedErrorThreshold = 1;
     /**
      * Scales a value with a common filter algorithm
      * @param currentValue the current value of what we think it is

@@ -252,7 +252,7 @@ public class OperatorStateMachine {
 
     }
 
-    public static double preppingTimeout = 0.3;
+    public static double preppingTimeout = 0.7;
     private void preppingState(){
 
         launcher.update();
@@ -261,6 +261,7 @@ public class OperatorStateMachine {
 
         if (queuedLaunch && preppingTimer.seconds() >= preppingTimeout){
             moveToState(State.LAUNCH);
+            queuedLaunch = false;
         }
     }
     private boolean queuedLaunch = false;
@@ -362,8 +363,13 @@ public class OperatorStateMachine {
      */
     private void launchToIdle(){
         clearQueue();
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        spindexer.setSpindexerPos(0);
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+        for (int i = 0; i < 2; i++) {
+            spindexer.clearColor(i);
+        }
         intake.turnOff();
         intake.openGate();
     }
@@ -391,6 +397,9 @@ public class OperatorStateMachine {
     private void launchToIntake(){
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        for (int i = 0; i < 2; i++) {
+            spindexer.clearColor(i);
+        }
         intake.turnOn();
         intake.openGate();
     }

@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @TeleOp
-@Disabled
 public class AprilTagTesting extends OpMode {
 
     AprilTag aprilTag = new AprilTag();

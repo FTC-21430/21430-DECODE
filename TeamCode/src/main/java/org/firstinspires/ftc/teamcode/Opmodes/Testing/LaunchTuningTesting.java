@@ -56,6 +56,7 @@ public class LaunchTuningTesting extends BaseTeleOp {
             robot.intake.openGate();
 //            robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.bulkSensorBucket.clearCache();
+
             robot.spindexer.updateSpindexer();
             robot.aprilTags.clearCache();
         }
