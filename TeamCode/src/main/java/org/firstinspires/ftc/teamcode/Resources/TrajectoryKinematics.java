@@ -212,7 +212,7 @@ public class TrajectoryKinematics {
     private double angleRegression(double distance){
         // values a-e represent the tuning values of this 1st-degree polynomial
         double a = 0.00221365;
-        double b = 0.697602;
+        double b = -0.697602;
         double c = 87.33488;
         return a * Math.pow(distance,2) + b * Math.pow(distance,1) + c;
     }

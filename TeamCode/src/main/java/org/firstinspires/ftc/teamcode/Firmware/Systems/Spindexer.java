@@ -213,13 +213,14 @@ public class Spindexer {
         RUNTIME.reset(); // Resets the timer for calibration timeout.
     }
 
-    public static int stoppedSamplingThreshold = 2;
+    public static int stoppedSamplingThreshold = 4;
     /**
      * Checks if the spindexer is at rest (not moving).
      * @return True if at rest, false otherwise.
      */
     public boolean isAtRest(){
-        return stoppedSampling >= stoppedSamplingThreshold;
+        if (PADDLE_SERVO.getRemainingLaunchSpin() > 1) return false;
+        return stoppedSampling >= stoppedSamplingThreshold ;
     }
     /**
      * Gets the current index of the spindexer in the intake position.

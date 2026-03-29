@@ -259,10 +259,11 @@ public class OperatorStateMachine {
     public static double preppingTimeout = 0.7;
     private void preppingState(){
         trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
-        launcher.update();
-        spindexer.updateSpindexer();
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        launcher.update();
+        spindexer.updateSpindexer();
+
 
 
         if (queuedLaunch && preppingTimer.seconds() >= preppingTimeout){
@@ -304,8 +305,11 @@ public class OperatorStateMachine {
         }else if(gamepad2.square){
             intake.setIntakePower(0);
         }
-        setLauncherBasedOnTags.run();
-        launcher.revFlywheel();
+//        setLauncherBasedOnTags.run();
+
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
 
         // check if we should be sorting our shots
         boolean shouldSort = false;
@@ -347,8 +351,11 @@ public class OperatorStateMachine {
             spinning = true;
         }
 
-        if (spindexer.isAtRest() && shotsRemaining <= 0 && !launchStalled){
+        if (!spinning && shotsRemaining <= 0){
             moveToState(State.IDLE);
+        }
+
+        if (spindexer.isAtRest() && !launchStalled){
             spinning = false;
         }
 

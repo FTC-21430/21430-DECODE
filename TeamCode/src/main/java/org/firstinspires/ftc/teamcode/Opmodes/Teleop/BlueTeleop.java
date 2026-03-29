@@ -15,10 +15,10 @@ public class BlueTeleop extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initialize(true,false, false);
+        initialize(true, false,false);
         robot.setAlliance("blue");
         robot.driveTrain.fieldCentricDriving(true);
-        robot.aprilTags.setExposure(10);
+
         waitForStart();
         robot.rotationControl.setTargetAngle(0);
         while(opModeIsActive()) {
@@ -26,9 +26,6 @@ public class BlueTeleop extends BaseTeleOp {
             // get and update functions
             robot.updateLoopTime();
             robot.odometry.updateOdometry();
-            telemetry.addData("X",robot.odometry.getRobotX());
-            telemetry.addData("Y", robot.odometry.getRobotY());
-            telemetry.addLine("-----------------------------");
             robot.updateTrajectories();
 
             // resets Field Centric Driving
@@ -36,7 +33,7 @@ public class BlueTeleop extends BaseTeleOp {
                 robot.odometry.resetIMU();
                 robot.rotationControl.setTargetAngle(0);
             }
-            if (gamepad2.shareWasPressed()){
+            if (gamepad2.squareWasPressed()){
                 if (manualMode){
                     manualMode = false;
                 }else{
@@ -44,14 +41,12 @@ public class BlueTeleop extends BaseTeleOp {
                 }
             }
 
-
-
             if (manualMode){
                 if (gamepad2.squareWasPressed()){
                     robot.spindexer.moveToNextIndex();
                 }
                 if (gamepad2.rightBumperWasPressed()) {
-                    robot.spindexer.eject(120);
+                    robot.spindexer.eject(130);
                 }
 
                 if (gamepad2.dpadDownWasPressed()){
@@ -88,6 +83,9 @@ public class BlueTeleop extends BaseTeleOp {
                 if (gamepad1.crossWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
+                if (gamepad2.triangleWasPressed()){
+                    robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
+                }
                 if (gamepad1.circleWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
                 }
@@ -122,20 +120,24 @@ public class BlueTeleop extends BaseTeleOp {
 
                 robot.operatorStateMachine.updateStateMachine();
             }
-            if (gamepad2.leftBumperWasPressed() && gamepad2.square){
+            // end of automated mode code
+
+            if (gamepad2.leftBumperWasPressed()){
                 robot.lifter.lift();
             }
-            if (gamepad2.rightBumperWasPressed() && gamepad2.square){
-                robot.lifter.lockLatches();
-            }
-            if (gamepad2.dpadDownWasPressed() && gamepad2.square){
+            if (gamepad2.rightBumperWasPressed()){
                 robot.lifter.home();
             }
+            if (gamepad2.left_trigger>0.6){
+                robot.lifter.lockLatches();
+            }
+
             if (gamepad1.left_bumper){
                 robot.updateOdometryOnTags(true);
             }else{
                 robot.updateOdometryOnTags(false);
             }
+
             if (gamepad1.left_trigger > 0.2){
                 robot.aimAtGoal();
                 robot.driveTrain.setTurnPriority((gamepad1.left_trigger/2)+0.8);
@@ -145,10 +147,10 @@ public class BlueTeleop extends BaseTeleOp {
             }
             if (gamepad1.dpad_down){
                 robot.park();
-
-            }else {
+            }else{
                 //sets drive power and what gamepad does
                 robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
+
             }
 
             robot.updateRobot(false, false, false);

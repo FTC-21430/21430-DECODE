@@ -121,7 +121,7 @@ public class Flywheel {
 
         flywheel.setVelocity(targetSpeed);
         currentSpeed = flywheel.getVelocity();
-        telemetry.addData("FLYWHEELvelocity", currentSpeed);
+        telemetry.addData("FLYWHEELvelocity", currentSpeed); //Ticks per second
     }
 
     /**
