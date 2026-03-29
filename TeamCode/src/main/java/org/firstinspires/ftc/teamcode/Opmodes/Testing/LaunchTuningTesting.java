@@ -26,26 +26,21 @@ public class LaunchTuningTesting extends BaseTeleOp {
         robot.rotationControl.setTargetAngle(0);
         robot.launcher.setGatePosition(true);
         waitForStart();
+        robot.odometry.resetPositionAndIMU();
         while (opModeIsActive()){
+
             robot.intake.setIntakePower(-0.6);
             robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
             robot.odometry.updateOdometry();
-            robot.updateOdometryOnTags(false);
-            robot.aimAtGoal();
-            robot.launcher.setLaunchAngle(angle);
+//            robot.updateOdometryOnTags(false);
+//            robot.aimAtGoal();
+            robot.launcher.setLaunchAngle(angle+robot.trajectoryKinematics.necessaryRampOffset(robot.launcher.getFlywheelError()));
             robot.launcher.setSpeed(speed);
             robot.launcher.update();
-            telemetry.addData("readyForLaunch", robot.launcher.isUpToSpeed());
-            telemetry.addLine("-----------------------------");
             telemetry.addData("angle", angle);
             telemetry.addData("speed", speed);
-            telemetry.addData("distance", robot.aprilTags.getDistance("red",robot.odometry.getRobotX(),robot.odometry.getRobotY()));
+            telemetry.addData("distance", robot.trajectoryKinematics.getDistance("red",robot.odometry.getRobotX(), robot.odometry.getRobotY()));
             telemetry.addLine("------------------------------");
-            if (robot.aprilTags.isTag("red")) {
-                telemetry.addData("robotX", robot.aprilTags.getRobotX());
-                telemetry.addData("robotY", robot.aprilTags.getRobotY());
-                telemetry.addData("robotAngle", robot.aprilTags.getRobotAngle());
-            }
             telemetry.update();
             if (gamepad1.circleWasPressed()){
                 robot.spindexer.moveToNextIndex();

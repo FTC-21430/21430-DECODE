@@ -47,6 +47,8 @@ public class OperatorStateMachine {
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
     private TrajectoryKinematics trajectoryKinematics = null;
+    private String alliance;
+    private DecodeBot bot;
 
 
     // Will Trigger the transition from one state to the next
@@ -60,7 +62,7 @@ public class OperatorStateMachine {
      * @param telemetry
      * @param setLauncherBasedOnTags - One function we need from DecodeBot.java but this is just a refernce to call method, not anything else in DecodeBot!
      */
-    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags, Gamepad gamepad2, TrajectoryKinematics trajectoryKinematics){
+    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags, Gamepad gamepad2, TrajectoryKinematics trajectoryKinematics, DecodeBot bot){
         this.launcher = launcher;
         this.spindexer = spindexer;
         this.intake = intake;
@@ -69,7 +71,9 @@ public class OperatorStateMachine {
         this.gamepad2 = gamepad2;
         this.launchTimer = new ElapsedTime();
         this.preppingTimer = new ElapsedTime();
+        this.alliance = alliance;
         this.trajectoryKinematics = trajectoryKinematics;
+        this.bot = bot;
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
@@ -254,10 +258,12 @@ public class OperatorStateMachine {
 
     public static double preppingTimeout = 0.7;
     private void preppingState(){
-
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
         launcher.update();
         spindexer.updateSpindexer();
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+
 
         if (queuedLaunch && preppingTimer.seconds() >= preppingTimeout){
             moveToState(State.LAUNCH);
