@@ -35,7 +35,7 @@ public class RedElephant extends BaseAuto {
 
         robot.chill(true,0.3);
         robot.aimAtGoal();
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
 //
     }
     @Override
@@ -50,7 +50,7 @@ public class RedElephant extends BaseAuto {
         robot.odometry.overridePosition(-49.82,54.5782,125.08);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         //This is the position that the robot moves to to shoot the first three balls
-        motifId = 0;
+        robot.motifId = 0;
         robot.aimAtGoal();
         robot.chill(true,0.2);
         sortedLaunch(false, true);

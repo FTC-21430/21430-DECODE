@@ -18,8 +18,8 @@ public class BlueDolphin extends BaseAuto {
 
         while (opModeInInit()){
             int tempID = robot.aprilTags.getMotifID();
-            if (tempID != 0) motifId = tempID;
-            telemetry.addData("CurrentMotif", motifId);
+            if (tempID != 0) robot.motifId = tempID;
+            telemetry.addData("CurrentMotif", robot.motifId);
             telemetry.update();
         }
         robot.setAlliance("blue");
@@ -31,7 +31,7 @@ public class BlueDolphin extends BaseAuto {
         robot.autoMoveTo(58,-13,-165,4);
         // launch preloads
         robot.aimAtGoal();
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
 
         //move off the line
         robot.autoMoveTo(60,-45,-180,6);
