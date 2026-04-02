@@ -30,7 +30,7 @@ public abstract class DecodeBot extends Robot{
     public Launcher launcher = null;
     public Spindexer spindexer = null;
     public Intake intake = null;
-    public Ramp ramp = null;
+    //public Ramp ramp = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
     public Lifter lifter = null;
@@ -175,7 +175,7 @@ public abstract class DecodeBot extends Robot{
         aprilTags.getMotifID();
     }
     public void readyRamp(){
-        LauncherRamp.
+        
     }
     public static double parkPosX = 28;
     public static double parkPosY = -40;
