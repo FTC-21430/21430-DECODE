@@ -30,7 +30,6 @@ public abstract class DecodeBot extends Robot{
     public Launcher launcher = null;
     public Spindexer spindexer = null;
     public Intake intake = null;
-    public Ramp ramp = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
     public Lifter lifter = null;
@@ -61,11 +60,9 @@ public abstract class DecodeBot extends Robot{
     public static double aprilTagUpdateSpeed = 2;
 
     // These odometry pod position value are just for the software testing bot
-    public static double xOffset = -3.125;
-    public static double yOffset = -7;
 
-    public static double SWEEP_P = 0.22;
-    public static double SWEEP_I = 0.0001;
+    public static double SWEEP_P = 0.12;
+    public static double SWEEP_I = 0.0005;
     public static double SWEEP_D = 0.01;
 
 
@@ -81,7 +78,7 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
-//        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
+        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
         lifter = new Lifter(hardwareMap, telemetry);
@@ -178,9 +175,6 @@ public abstract class DecodeBot extends Robot{
     }
     public void scanMotiff(){
         aprilTags.getMotifID();
-    }
-    public void readyRamp(){
-        LauncherRamp.
     }
     public static double parkPosX = 28;
     public static double parkPosY = -40;

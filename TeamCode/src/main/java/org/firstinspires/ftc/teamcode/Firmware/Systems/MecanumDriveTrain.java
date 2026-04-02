@@ -141,17 +141,17 @@ public class MecanumDriveTrain {
         }
 
         // main robot
-//        double powerFL = (forwardPower + sidewaysPower - turnPower* turnPriority)*speedMultiplier;
-//        double powerFR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
-//        double powerBL = (forwardPower - sidewaysPower - turnPower* turnPriority)*speedMultiplier;
-//        double powerBR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+        double powerFL = (forwardPower + sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+        double powerFR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+        double powerBL = (forwardPower - sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+        double powerBR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
 
         // testing robot
-        double powerFL = (forwardPower + sidewaysPower - turnPower* turnPriority)*speedMultiplier;
-        double powerFR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
-        double powerBL = (forwardPower - sidewaysPower - turnPower* turnPriority)*speedMultiplier;
-        double powerBR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
-
+//        double powerFL = (forwardPower + sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+//        double powerFR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+//        double powerBL = (forwardPower - sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+//        double powerBR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+//
 
         double powers[] = {powerFL, powerFR, powerBL, powerBR};
         double maxPower = getMaxDouble(powers);
