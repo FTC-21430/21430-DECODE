@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.LauncherRamp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
@@ -29,6 +30,7 @@ public abstract class DecodeBot extends Robot{
     public Launcher launcher = null;
     public Spindexer spindexer = null;
     public Intake intake = null;
+    public Ramp ramp = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
     public Lifter lifter = null;
@@ -168,6 +170,12 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics.calculateTrajectory(distanceToGoal);
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.revFlywheel();
+    }
+    public void scanMotiff(){
+        aprilTags.getMotifID();
+    }
+    public void readyRamp(){
+        LauncherRamp.
     }
     public static double parkPosX = 28;
     public static double parkPosY = -40;
