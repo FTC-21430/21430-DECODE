@@ -193,7 +193,7 @@ public class SpindexerServoFirmware {
 
 
     private double remainingSpin = 0;
-    private boolean spinning = false;
+    public boolean spinning = false;
     public void launchSpin(double degrees){
         // spin still sets a final target so the servo holds the post-launch resting angle when the burst ends.
         hasReachedTarget = false;

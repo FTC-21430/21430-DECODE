@@ -219,7 +219,7 @@ public class Spindexer {
      * @return True if at rest, false otherwise.
      */
     public boolean isAtRest(){
-        return stoppedSampling >= stoppedSamplingThreshold;
+        return stoppedSampling >= stoppedSamplingThreshold && !PADDLE_SERVO.spinning;
     }
     /**
      * Gets the current index of the spindexer in the intake position.

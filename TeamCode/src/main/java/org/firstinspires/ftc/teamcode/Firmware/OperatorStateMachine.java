@@ -96,7 +96,7 @@ public class OperatorStateMachine {
                         idleToLaunch();
                         break;
                 }
-            break;
+                break;
 
             case PREPPING:
                 switch (state){
@@ -129,7 +129,7 @@ public class OperatorStateMachine {
                     case LAUNCH:
                         break;
                 }
-            break;
+                break;
 
             case INTAKE:
                 switch (state){
@@ -145,7 +145,7 @@ public class OperatorStateMachine {
                         intakeToLaunch();
                         break;
                 }
-            break;
+                break;
 
 
         }
@@ -204,6 +204,7 @@ public class OperatorStateMachine {
         } else if (gamepad2.square) {
             intake.setIntakePower(0);
         }
+        launcher.setSpeed(1200);
         launcher.retractRamp();
         launcher.update();
         spindexer.updateSpindexer();
@@ -258,13 +259,12 @@ public class OperatorStateMachine {
 
     public static double preppingTimeout = 0.7;
     private void preppingState(){
+        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
         trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
-        launcher.update();
-        spindexer.updateSpindexer();
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
-
-
+        launcher.update();
+        spindexer.updateSpindexer();
         if (queuedLaunch && preppingTimer.seconds() >= preppingTimeout){
             moveToState(State.LAUNCH);
             queuedLaunch = false;
@@ -272,6 +272,7 @@ public class OperatorStateMachine {
     }
     private boolean queuedLaunch = false;
     private void prep(){
+
         preppingTimer.reset();
         while (launchQueue.size() < 3){
             addToQueue(COLORS.NONE);
@@ -305,7 +306,10 @@ public class OperatorStateMachine {
             intake.setIntakePower(0);
         }
         setLauncherBasedOnTags.run();
-        launcher.revFlywheel();
+        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
 
         // check if we should be sorting our shots
         boolean shouldSort = false;
@@ -347,8 +351,11 @@ public class OperatorStateMachine {
             spinning = true;
         }
 
-        if (spindexer.isAtRest() && shotsRemaining <= 0 && !launchStalled){
+        if (!spinning && shotsRemaining <= 0){
             moveToState(State.IDLE);
+        }
+
+        if (spindexer.isAtRest() && !launchStalled){
             spinning = false;
         }
 
