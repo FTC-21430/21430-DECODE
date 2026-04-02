@@ -1,3 +1,0 @@
-C:\Users\Tobin R\Documents\GitHub\21430-DECODE\tools\visualizer\src\main\java\org\example\visualizer\VisualizerMain.java
-C:\Users\Tobin R\Documents\GitHub\21430-DECODE\tools\visualizer\src\main\java\org\example\visualizer\spline\CubicSplineSegment.java
-C:\Users\Tobin R\Documents\GitHub\21430-DECODE\tools\visualizer\src\main\java\org\example\visualizer\spline\Waypoint.java

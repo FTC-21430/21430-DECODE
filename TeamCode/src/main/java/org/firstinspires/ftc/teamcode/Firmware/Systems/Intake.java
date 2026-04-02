@@ -29,7 +29,7 @@ public class Intake {
         setIntakePower(0);
     }
     public void updateIntake(){
-//        gate.updateGate();
+        gate.updateGate();
     }
     public void openGate(){
         gate.openGate();

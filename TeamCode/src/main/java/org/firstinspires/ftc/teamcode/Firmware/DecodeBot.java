@@ -4,20 +4,16 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.LauncherRamp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
-import org.firstinspires.ftc.teamcode.Resources.SWEEP.SWEEP;
 import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 @Config
@@ -30,7 +26,6 @@ public abstract class DecodeBot extends Robot{
     public Launcher launcher = null;
     public Spindexer spindexer = null;
     public Intake intake = null;
-    public Ramp ramp = null;
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
     public Lifter lifter = null;
@@ -60,14 +55,8 @@ public abstract class DecodeBot extends Robot{
 
     public static double aprilTagUpdateSpeed = 2;
 
-    // These odometry pod position value are just for the software testing bot
-    public static double xOffset = -3.125;
-    public static double yOffset = -7;
-
-    public static double SWEEP_P = 0.22;
-    public static double SWEEP_I = 0.0001;
-    public static double SWEEP_D = 0.01;
-
+//    public static double xOffset = -3.125;
+//    public static double yOffset = -7;
 
     public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);
@@ -81,16 +70,15 @@ public abstract class DecodeBot extends Robot{
         trajectoryKinematics = new TrajectoryKinematics(isAuto, telemetry);
         bulkSensorBucket = new BulkSensorBucket(hardwareMap);
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
-//        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
+        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
         lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
-//        aprilTags = new AprilTag();
+        aprilTags = new AprilTag();
 
-//        aprilTags.init(hardwareMap,telemetry,cameraExposure);
+        aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
-        this.SWEEP = new SWEEP(this, 0.9, SWEEP_P,SWEEP_I,SWEEP_D);
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
         operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics, this);
@@ -176,14 +164,8 @@ public abstract class DecodeBot extends Robot{
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.revFlywheel();
     }
-    public void scanMotiff(){
-        aprilTags.getMotifID();
-    }
-    public void readyRamp(){
-        LauncherRamp.
-    }
-    public static double parkPosX = 28;
-    public static double parkPosY = -40;
+    public static double parkPosX = 36.475;
+    public static double parkPosY = 40.5;
     public void park(){
         pathFollowing.setAutoConstants(P_CONSTANT+0.3,I_CONSTANT,D_CONSTANT);
         double angle = 90;

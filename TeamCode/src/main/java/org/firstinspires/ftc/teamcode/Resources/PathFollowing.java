@@ -27,27 +27,28 @@ public class PathFollowing {
 
   // How close does the robot need to be to the target for the isWithinTolerance function to be true.
   private double followTolerance = 1; // inches
+  
+  
+  /**
+   * the constructor for this class. this is used to set the class attributes
+   * and run the constructors of both PID controllers
+   * @param pX proportional constant X
+   * @param pY proportional constant Y
+   * @param dX derivative constant X
+   * @param dY derivative constant Y
+   * @param runtime the runtime object from the first SDK
+   */
+  public PathFollowing(double pX, double pY, double iX, double iY, double dX, double dY, ElapsedTime runtime){
+   pXConstant = pX;
+   pYConstant = pY;
+   dXConstant = dX;
+   dYConstant = dY;
+    xPID = new PIDController(pXConstant, 0.2, dXConstant, runtime);
+    yPID = new PIDController(pYConstant, 0.2, dYConstant, runtime);
 
-
-
-    /**
-     * the constructor for this class. this is used to set the class attributes
-     * and run the constructors of both PID controllers
-     * @param pX proportional constant X
-     * @param pY proportional constant Y
-     * @param dX derivative constant X
-     * @param dY derivative constant Y
-     * @param runtime the runtime object from the first SDK
-     */
-    public PathFollowing(double pX, double pY, double iX, double iY, double dX, double dY, ElapsedTime runtime){
-        pXConstant = pX;
-        pYConstant = pY;
-        dXConstant = dX;
-        dYConstant = dY;
-        xPID = new PIDController(pXConstant, iX, dXConstant, runtime);
-        yPID = new PIDController(pYConstant, iY, dYConstant, runtime);
-    }
-
+  }
+  
+  
   /**
    * this is used as the update method for this class. you should call this every iteration before getting the powers S & F
    * @param robotX the robots CURRENT X position
@@ -88,9 +89,7 @@ public class PathFollowing {
   }
   
   // returns followSpeed just in case you need it somewhere.
-  public double getFollowSpeed(){
-      return followSpeed;
-  }
+  public double getFollowSpeed(){ return followSpeed; }
 
   public void setAutoConstants(double p, double i, double d){
     xPID.updatePIDConstants(p,i,d);

@@ -31,7 +31,6 @@ public class PIDController {
   
   // The runtime instance from the main op-mode
   private ElapsedTime runtime;
-  private boolean shouldWrap = true;
   
   private double minWrap = 0.0, maxWrap = 0.0;
 
@@ -47,19 +46,6 @@ public class PIDController {
     this.dConstant = dConstant;
     this.iConstant = iConstant;
     this.runtime = runtime;
-    shouldWrap = true;
-
-    iNormal = iConstant;
-
-    // to ensure lastTime is correct for the first iteration of update.
-    lastTime = runtime.time();
-  }
-  public PIDController(double pConstant, double iConstant, double dConstant, ElapsedTime runtime, boolean shouldWrap) {
-    this.pConstant = pConstant;
-    this.dConstant = dConstant;
-    this.iConstant = iConstant;
-    this.runtime = runtime;
-    this.shouldWrap = shouldWrap;
 
     iNormal = iConstant;
 
@@ -83,9 +69,7 @@ public class PIDController {
     // the error of how far you are from where you want to be
     // added wrap to the error equation
     double error = currentPosition - target;
-    if (shouldWrap) {
-      error = Utlities.wrap(error);
-    }
+    error = Utlities.wrap(error);
     iSum += error *deltaTime;
 
     
@@ -151,13 +135,4 @@ public class PIDController {
   public double getPower() {
     return power;
   }
-    public double getPConstant(){
-        return pConstant;
-    }
-    public double getIConstant(){
-        return iConstant;
-    }
-    public double getDConstant(){
-        return dConstant;
-    }
 }

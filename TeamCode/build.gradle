@@ -46,5 +46,4 @@ dependencies {
     implementation project(':FtcRobotController')
     implementation("dev.frozenmilk.sinister:Sloth:0.2.4")
     implementation("com.acmerobotics.slothboard:dashboard:0.2.4+0.4.17")
-    implementation("org.ejml:ejml-all:0.44.0")
 }
