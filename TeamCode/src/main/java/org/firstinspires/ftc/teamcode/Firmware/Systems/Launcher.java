@@ -27,7 +27,7 @@ public class Launcher {
     private final TrajectoryKinematics TRAJECTORY_KINEMATICS;
 
     //the speed at which the flywheel remains when there is nothing to do :`(
-    public double idleSpeed = 1000;
+    public double idleSpeed = 1400;
     public static double accuracyThreshold = 50;
     public double closeSpeed = 1200;
     public double midSpeed = 1400;

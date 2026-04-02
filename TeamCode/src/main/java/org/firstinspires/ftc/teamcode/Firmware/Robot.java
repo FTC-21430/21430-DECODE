@@ -10,33 +10,9 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirm
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
-
-//TODO - Refactor this class to be season non-specific and move all specific details to the DecodeBot class and override information in this class.
-
 @Config
 public abstract class Robot {
-    public enum Speed {
-        SLOW, FAST
-    }
-
-    // TODO: Refactor this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
-    // used for how fast the turning input is used.
-    // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
-    public static double maxTurnDegPerSecond = 280;
-
-    //TODO: Find values for these to tune PID constants
-    //TODO: Also make final and private once values have been found
-    //PID constants
-    public static double pCon;
-    public static double dCon;
-
-    //TODO: Comment out the purpose of these vars.
-    //BC no usages, I cannot look and see usages for ideas of how used
-    private double drive;
-    private double slide;
-    private double turn;
-
-    //Linking classes
+    //Linking common classes
     public MecanumDriveTrain driveTrain;
     public GobildaPinpointModuleFirmware odometry;
     public RotationControl rotationControl;
@@ -46,8 +22,6 @@ public abstract class Robot {
     public PathFollowing pathFollowing;
     public ElapsedTime runtime = new ElapsedTime();
     public BulkSensorBucket bulkSensorBucket = null;
-
-    public boolean aiming = false;
     private double currentLoopTime, previousLoopTime;
 
   

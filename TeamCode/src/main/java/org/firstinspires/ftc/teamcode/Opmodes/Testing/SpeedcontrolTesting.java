@@ -6,10 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 @Config
 @TeleOp
-@Disabled
 public class SpeedcontrolTesting extends BaseTeleOp {
 
-    public static double targetSpeed = 0.0;
+    public static double targetSpeed = 100;
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true, false,false);

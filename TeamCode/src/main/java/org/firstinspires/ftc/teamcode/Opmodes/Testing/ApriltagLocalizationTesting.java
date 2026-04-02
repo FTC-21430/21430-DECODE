@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
-@Disabled
+//@Disabled
 public class ApriltagLocalizationTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -23,7 +23,7 @@ public class ApriltagLocalizationTesting extends BaseTeleOp {
             robot.telemetry.addData("odomAngle", robot.odometry.getRobotAngle());
             robot.aimAtGoal();
             robot.bulkSensorBucket.clearCache();
-            robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
+//            robot.driveTrain.setDrivePower(0, 0, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.aprilTags.clearCache();
             telemetry.update();
         }

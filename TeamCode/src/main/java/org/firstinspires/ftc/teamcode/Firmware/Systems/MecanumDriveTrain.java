@@ -55,11 +55,12 @@ public class MecanumDriveTrain {
         motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
+        //TODO: put this back on.
 
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     //Allows fieldCentricDriving to be turned on and off

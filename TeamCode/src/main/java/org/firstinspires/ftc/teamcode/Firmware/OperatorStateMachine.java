@@ -42,11 +42,13 @@ public class OperatorStateMachine {
 
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
-    public static double sortingTimeout = 0.12;
+    public static double sortingTimeout = 0.45;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
     private TrajectoryKinematics trajectoryKinematics = null;
+    private String alliance;
+    private DecodeBot bot;
 
 
     // Will Trigger the transition from one state to the next
@@ -60,7 +62,7 @@ public class OperatorStateMachine {
      * @param telemetry
      * @param setLauncherBasedOnTags - One function we need from DecodeBot.java but this is just a refernce to call method, not anything else in DecodeBot!
      */
-    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags, Gamepad gamepad2, TrajectoryKinematics trajectoryKinematics){
+    public OperatorStateMachine(Launcher launcher, Spindexer spindexer, Intake intake, Telemetry telemetry, Runnable setLauncherBasedOnTags, Gamepad gamepad2, TrajectoryKinematics trajectoryKinematics, DecodeBot bot){
         this.launcher = launcher;
         this.spindexer = spindexer;
         this.intake = intake;
@@ -69,7 +71,9 @@ public class OperatorStateMachine {
         this.gamepad2 = gamepad2;
         this.launchTimer = new ElapsedTime();
         this.preppingTimer = new ElapsedTime();
+        this.alliance = alliance;
         this.trajectoryKinematics = trajectoryKinematics;
+        this.bot = bot;
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
@@ -252,15 +256,18 @@ public class OperatorStateMachine {
 
     }
 
-    public static double preppingTimeout = 0.3;
+    public static double preppingTimeout = 0.7;
     private void preppingState(){
-
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
         launcher.update();
         spindexer.updateSpindexer();
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+
 
         if (queuedLaunch && preppingTimer.seconds() >= preppingTimeout){
             moveToState(State.LAUNCH);
+            queuedLaunch = false;
         }
     }
     private boolean queuedLaunch = false;
@@ -362,8 +369,13 @@ public class OperatorStateMachine {
      */
     private void launchToIdle(){
         clearQueue();
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        spindexer.setSpindexerPos(0);
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
+        for (int i = 0; i < 2; i++) {
+            spindexer.clearColor(i);
+        }
         intake.turnOff();
         intake.openGate();
     }
@@ -391,6 +403,9 @@ public class OperatorStateMachine {
     private void launchToIntake(){
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        for (int i = 0; i < 2; i++) {
+            spindexer.clearColor(i);
+        }
         intake.turnOn();
         intake.openGate();
     }
