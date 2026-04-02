@@ -18,7 +18,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class SpindexerServoFirmware {
     private final Servo spindexerServo; // Servo controlling the spindexer.
     private final double[] slots; // Degree values for each slot.
-    private double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
+    // This is continuous-servo power, not a target angle. the tuned values matter more than the names here.
+    public static double direction; // Direction of servo movement (-1 for clockwise, 1 for counterclockwise).
 
     // The servo degree that is the current target
     private double targetPosition = 0;
@@ -28,6 +29,7 @@ public class SpindexerServoFirmware {
     // what the PWM signal is for the zero position of the servo
     public static double pwmAtZeroDegrees = 0.71;
 
+    // offset shifts the logical frame for intake / launch / idle without changing encoder zero.
     private double positionOffset = 0.0;
 
     private double lastRawPosition;
@@ -79,6 +81,7 @@ public class SpindexerServoFirmware {
     public static int jamsAmount = 16;
     private boolean hasReachedTarget = false;
     private double deltaTime = 0;
+    public static double spinningEndThreshold = 20; //degrees
     /**
      * Updates the servo position based on the target position and tolerance.
      */
@@ -86,8 +89,23 @@ public class SpindexerServoFirmware {
         updateDeltaTime();
         sensorUpdate();
 
+        if (spinning){
+            // SPPPIIIIIINNNN!!!!
+            // launch spin ignores precise hold on purpose; the goal here is throughput, not exact intermediate positioning.
+            spindexerServo.setPosition(direction);
+            // subtract measured encoder travel so battery sag changes time, not total spin distance.
+            remainingSpin -= Math.abs(deltaTime * getMovementVelocity());
+            if (remainingSpin <= spinningEndThreshold){
+                spinning = false;
+                // after ejecting, return to the normal prep/positioning direction.
+                setDirection(true);
+            }
+            return; // do not enter precise control
+        }
+
         if (isJamed) {
             if (jamRuntime.seconds() >= jamFreedTimeout){
+                // retry the original target after sitting on the backed-up position for a short time.
                 targetPosition = attemptedTarget;
                 hasReachedTarget = false;
                 isJamed = false;
@@ -102,6 +120,7 @@ public class SpindexerServoFirmware {
                 isJamed = true;
                 jamCount = 0;
                 attemptedTarget = targetPosition;
+                // jam recovery is just "undo the last move" and try again later.
                 targetPosition = lastTarget;
                 jamRuntime.reset();
             }
@@ -110,7 +129,11 @@ public class SpindexerServoFirmware {
         telemetry.addData("isJamed", isJamed);
         telemetry.addData("movement", getMovementVelocity());
         telemetry.addData("isAtTarget", isAtTarget());
-        // If within tolerance, set servo to target position; otherwise, continue moving in the set direction.
+
+
+
+
+        // once inside the handoff zone, switch from one-way spinning to direct position hold.
         if (isWithinPreciseControl()){
             spindexerServo.setPosition(degreesToServoPWM(targetPosition));
             hasReachedTarget = true;
@@ -132,7 +155,7 @@ public class SpindexerServoFirmware {
     }
 
     private boolean checkForJam(){
-        // check for if the spindexer is close enough to its target that it should be stopped.
+        // only call it a jam when we should still be cruising at full speed.
         boolean isCloseToTarget = getAngleDisplacement(encoderPosition, targetPosition) < positionTolerance;
         double velocity = getMovementVelocity();
         boolean isTooSlow = Math.abs(velocity) < jamThreshold;
@@ -140,7 +163,7 @@ public class SpindexerServoFirmware {
         return !isCloseToTarget && isTooSlow;
     }
     
-    private double getMovementVelocity(){
+    public double getMovementVelocity(){
         double delta = getDeltaTime();
         // correct delta time if it is zero to avoid divide by zero issues.
 
@@ -157,16 +180,33 @@ public class SpindexerServoFirmware {
     public void setSpindexerPosition(double position){
         hasReachedTarget = false;
 
+        // callers give logical angles; the current mode offset is applied here.
         position += positionOffset;
         position = position % 360; // Wraps position within 360 degrees.
         position = clipPositionToRange(position);
 
         lastTarget = targetPosition;
         targetPosition = position;
+        // TODO: double check that this is the correct direciton, I forgot which frame of reference this rotation is measured from (I remember from the intake side but it prolly should be launch side ¯\_(ツ)_/¯)
+        update();
+    }
 
-        double delta = ((targetPosition - encoderPosition + 540.0) % 360.0) - 180.0; // normalized to (-180,180]
-        boolean spinClockwise = delta >= 0.0;
-        setDirection(spinClockwise);
+
+    private double remainingSpin = 0;
+    private boolean spinning = false;
+    public void launchSpin(double degrees){
+        // spin still sets a final target so the servo holds the post-launch resting angle when the burst ends.
+        hasReachedTarget = false;
+        double position = targetPosition + degrees;
+        position = position % 360; // Wraps position within 360 degrees.
+        position = clipPositionToRange(position);
+
+        lastTarget = targetPosition;
+        targetPosition = position;
+
+        setDirection(true); // turn to shoot
+        remainingSpin = degrees;
+        spinning = true;
 
         update();
     }
@@ -178,10 +218,12 @@ public class SpindexerServoFirmware {
     public void setSpindexerSlot(int slot){
         if (slot < 1) slot = 3;
         if (slot > 3) slot = 1;
+        direction = 0.83;
         setSpindexerPosition(slots[slot-1]);
     }
 
     public void setSpindexerOffset(double degrees){
+        // preserve the current logical target when changing frames so we do not jump to a different slot.
         targetPosition -= (positionOffset-degrees);
         positionOffset = degrees;
 
@@ -201,7 +243,7 @@ public class SpindexerServoFirmware {
      */
     public boolean isAtTarget(){
 
-        return getAngleDisplacement(encoderPosition,targetPosition) < positionTolerance && !isJamed;
+        return getAngleDisplacement(encoderPosition,targetPosition) < positionTolerance && !isJamed && !spinning;
     }
 
     /**
@@ -209,6 +251,7 @@ public class SpindexerServoFirmware {
      * @return Target position in degrees.
      */
     public double getTargetPosition() {
+        // report back in the logical frame expected by Spindexer, not the offset internal frame.
         return targetPosition - positionOffset;
     }
 
@@ -229,6 +272,7 @@ public class SpindexerServoFirmware {
      * Moves the spindexer to the calibration position (0 degrees).
      */
     public void calibrationPosition(){
+        // this only drives to the known pose; the outer class decides when it is safe to zero the encoder.
         spindexerServo.setPosition(pwmAtZeroDegrees);
         targetPosition = 0;
     }
@@ -309,6 +353,7 @@ public class SpindexerServoFirmware {
 
     }
     private double getAngleDisplacement(double a, double b){
+        // shortest wrapped distance only. sign is ignored on purpose.
         a = Math.abs(a);
         b = Math.abs(b);
         double rawError = a - b;

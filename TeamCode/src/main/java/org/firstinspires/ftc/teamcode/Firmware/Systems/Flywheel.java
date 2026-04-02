@@ -26,10 +26,10 @@ import java.util.List;
  */
 @Config
 public class Flywheel {
-    public static double p = 70;
+    public static double p = 120;
     public static double i = 0;
     public static double d = 30;
-    public static double f = 13.5;
+    public static double f = 16.5;
 
     // Hardware map for accessing robot hardware
     private HardwareMap hardwareMap = null;
@@ -41,6 +41,8 @@ public class Flywheel {
     private double targetSpeed = 0.0;
     // Current speed of the flywheel (degrees per second)
     private double currentSpeed = 0.0;
+    //Diff between target and current speed
+    private double flywheelError;
     // The flywheel motor (DcMotorEx)
     private DcMotorEx flywheel = null;
     // Acceptable error threshold for speed (degrees per second)
@@ -65,7 +67,7 @@ public class Flywheel {
         flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         flywheel.setMotorEnable();
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
         // Set PIDF coefficients for velocity control
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(p,i,d,f));
     }
@@ -90,9 +92,16 @@ public class Flywheel {
      * Gets the target speed of the flywheel.
      * @return Target speed in degrees per second
      */
-    public double getTargetSpeed()
-    {
+    public double getTargetSpeed(){
         return targetSpeed;
+    }
+
+    /**
+     *Gets the error of the flywheel of where it should be and where it is
+     * @return Error in degrees per second
+     */
+    public double getFlywheelError(){
+        return targetSpeed-currentSpeed;
     }
 
     /**

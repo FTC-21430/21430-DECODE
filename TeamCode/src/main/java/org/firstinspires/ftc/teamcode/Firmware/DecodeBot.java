@@ -44,14 +44,19 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.14;
     public static final double I_CONSTANT = 0.11;
     public static final double D_CONSTANT = 0.031;
-    public static double P_ANGLE = 0.035;
+    public static double P_ANGLE = 0.025;
     public static double I_ANGLE = 0.0005;
-    public static double D_ANGLE = 0.0001;
-    //TODO: uncomment when switching over to main robot
-//    public static double yOffset = 2.78;
-//    public static double xOffset = 4.9574;
+    public static double D_ANGLE = 0.0002;
+    public static double yOffset = 2.78;
+    public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
     private boolean isAuto;
+    public static double closeSpeed = 1200;
+    public static double midSpeed = 1400;
+    public static double farSpeed = 1750;
+    public static double closeRamp = 56;
+    public static double midRamp = 55;
+    public static double farRamp = 52;
 
     public static double aprilTagUpdateSpeed = 2;
 
@@ -78,8 +83,8 @@ public abstract class DecodeBot extends Robot{
         driveTrain = new MecanumDriveTrain(hardwareMap, telemetry, this.alliance);
 //        launcher = new Launcher(hardwareMap,telemetry, trajectoryKinematics);
         intake = new Intake(hardwareMap, telemetry);
-//        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
-//        lifter = new Lifter(hardwareMap, telemetry);
+        spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
+        lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
 //        aprilTags = new AprilTag();
 
@@ -88,7 +93,7 @@ public abstract class DecodeBot extends Robot{
         this.SWEEP = new SWEEP(this, 0.9, SWEEP_P,SWEEP_I,SWEEP_D);
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
-//        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics);
+        operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics, this);
     }
 
     //the function used to move to a spot on the field during auto
@@ -131,7 +136,7 @@ public abstract class DecodeBot extends Robot{
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         intake.updateIntake();
         odometry.updateOdometry();
-//        lifter.update();
+        lifter.update();
 //        operatorStateMachine.updateStateMachine();
         aprilTags.clearCache();
     }
@@ -144,7 +149,7 @@ public abstract class DecodeBot extends Robot{
 
     public void updateTrajectories(){
         trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()));
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(alliance, odometry.getRobotX(),odometry.getRobotY()), launcher.getFlywheelError());
     }
     public void updateOdometryOnTags(boolean hardUpdate){
         odometry.updateOdometry();
@@ -167,7 +172,7 @@ public abstract class DecodeBot extends Robot{
         double distanceToGoal = trajectoryKinematics.getDistance(alliance,odometry.getRobotX(),odometry.getRobotY());
         telemetry.addData("alliance", alliance);
         telemetry.addData("distance", distanceToGoal);
-        trajectoryKinematics.calculateTrajectory(distanceToGoal);
+        trajectoryKinematics.calculateTrajectory(distanceToGoal, launcher.getFlywheelError());
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.revFlywheel();
     }
@@ -180,29 +185,29 @@ public abstract class DecodeBot extends Robot{
     public static double parkPosX = 28;
     public static double parkPosY = -40;
     public void park(){
+        pathFollowing.setAutoConstants(P_CONSTANT+0.3,I_CONSTANT,D_CONSTANT);
         double angle = 90;
+        double tempParkPosX = parkPosX;
+        double tempParkPosY = parkPosY;
         switch (alliance){
             case "red":
-                parkPosY *= -1;
+                tempParkPosY *= -1;
                 angle *= -1;
                 break;
             case "blue":
-                parkPosY *= 1;
+                tempParkPosY *= 1;
                 angle *= 1;
                 break;
         }
-        pathFollowing.setTargetPosition(parkPosX,parkPosY);
+        driveTrain.fieldCentricDriving(false);
+        pathFollowing.setTargetPosition(tempParkPosX,tempParkPosY);
         rotationControl.setTargetAngle(angle);
         pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
         driveTrain.setDrivePower(pathFollowing.getPowerS(),pathFollowing.getPowerF(),rotationControl.getOutputPower(odometry.getRobotAngle()),odometry.getRobotAngle());
+        driveTrain.fieldCentricDriving(true);
     }
 
-    public static double closeSpeed = 1200;
-    public static double midSpeed = 1400;
-    public static double farSpeed = 1750;
-    public static double closeRamp = 56;
-    public static double midRamp = 55;
-    public static double farRamp = 52;
+
 
     /**
      * @param distance - String input can be "close", "mid", or "far"

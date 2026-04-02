@@ -27,9 +27,22 @@ public class Launcher {
     private final TrajectoryKinematics TRAJECTORY_KINEMATICS;
 
     //the speed at which the flywheel remains when there is nothing to do :`(
-    public double idleSpeed = 1000;
+    public double idleSpeed = 1400;
     public static double accuracyThreshold = 50;
+    public double closeSpeed = 1200;
+    public double midSpeed = 1400;
+    public double farSpeed = 1750;
+    public double closeRamp = 56;
+    public double midRamp = 55;
+    public double farRamp = 52;
+    public static enum LAUNCH_STATES{
+            NONE,
+            CLOSE,
+            MID,
+            FAR
+    }
 
+    private LAUNCH_STATES current_state = LAUNCH_STATES.NONE;
     /**
      * Constructs a Launcher with the given hardware map and telemetry.
      * @param hardwareMap the hardware map to use
@@ -37,12 +50,12 @@ public class Launcher {
      */
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry, TrajectoryKinematics TRAJECTORY_KINEMATICS){
         // PID constants for flywheel speed control (values can be overridden with a different function) used only for flywheel initialization
-        final double FLYWHELLSPEEDCONTROLP = 300;
-        final double FLYWHELLSPEEDCONTROLI = 1;
-        final double FLYWHELLSPEEDCONTROLD = 10;
+        final double FLYWHEEL_SPEED_CONTROL_P = 300;
+        final double FLYWHEEL_SPEED_CONTROL_I = 1;
+        final double FLYWHEEL_SPEED_CONTROL_D = 10;
 
         // Initialize the flywheel with PID constants
-        FLYWHEEL = new Flywheel(hardwareMap, telemetry, new ElapsedTime(), FLYWHELLSPEEDCONTROLP, FLYWHELLSPEEDCONTROLI, FLYWHELLSPEEDCONTROLD);
+        FLYWHEEL = new Flywheel(hardwareMap, telemetry, new ElapsedTime(), FLYWHEEL_SPEED_CONTROL_P, FLYWHEEL_SPEED_CONTROL_I, FLYWHEEL_SPEED_CONTROL_D);
         // Set the accuracy threshold for speed control (in degrees per second)
         FLYWHEEL.setAccuracyThreshold(accuracyThreshold);
 
@@ -83,10 +96,30 @@ public class Launcher {
 
     // this allows the operator rev flywheel before launching, decreasing wait time
     public void revFlywheel(){
-
-        setSpeed(TRAJECTORY_KINEMATICS.getLaunchMagnitude());
+        if (current_state == LAUNCH_STATES.NONE){
+            setSpeed(TRAJECTORY_KINEMATICS.getLaunchMagnitude());
+        }
+        else{
+            switch (current_state){
+                case CLOSE:
+                    setSpeed(closeSpeed);
+                    setLaunchAngle(closeRamp);
+                    break;
+                case MID:
+                    setSpeed(midSpeed);
+                    setLaunchAngle(midRamp);
+                    break;
+                case FAR:
+                    setSpeed(farSpeed);
+                    setLaunchAngle(farRamp);
+                    break;
+            }
+        }
     }
 
+    public void setLaunchState(LAUNCH_STATES state){
+        current_state = state;
+    }
     //this sets the flywheel to the base speed it's at while driving around
     public void idleFlywheel(){
         setSpeed(idleSpeed);
@@ -117,6 +150,9 @@ public class Launcher {
      * @param angle Degrees Up from Horizontal in the launcher direction. Will get clipped to allowed range if value is outside of mechanical limits.
      */
     public void setLaunchAngle(double angle){
+        if (current_state != LAUNCH_STATES.NONE){
+            return;
+        }
         RAMP.setLaunchAngle(angle);
     }
 
@@ -169,5 +205,13 @@ public class Launcher {
      */
     public boolean gateMoving(){
         return !GATE.isStopped();
+    }
+
+    /**
+     *Gets the error of the flywheel of where it should be and where it is
+     * @return Error in degrees per second
+     */
+    public double getFlywheelError(){
+        return FLYWHEEL.getTargetSpeed()-FLYWHEEL.getCurrentSpeed();
     }
 }

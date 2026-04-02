@@ -16,28 +16,7 @@ import org.firstinspires.ftc.teamcode.Resources.SWEEP.SWEEP;
 
 @Config
 public abstract class Robot {
-    public enum Speed {
-        SLOW, FAST
-    }
-
-    // TODO: Refactor this part of the code to no longer have last season specific constants (lines 27-30) - Tobin 10/11/2025
-    // used for how fast the turning input is used.
-    // the number for maxTurnDegPerSecond is how much the robot can turn for one degree
-    public static double maxTurnDegPerSecond = 280;
-
-    //TODO: Find values for these to tune PID constants
-    //TODO: Also make final and private once values have been found
-    //PID constants
-    public static double pCon;
-    public static double dCon;
-
-    //TODO: Comment out the purpose of these vars.
-    //BC no usages, I cannot look and see usages for ideas of how used
-    private double drive;
-    private double slide;
-    private double turn;
-
-    //Linking classes
+    //Linking common classes
     public MecanumDriveTrain driveTrain;
     public GobildaPinpointModuleFirmware odometry;
     public RotationControl rotationControl;
@@ -48,8 +27,6 @@ public abstract class Robot {
     public SWEEP SWEEP; // Spline-based Waypoint Execution Engine for Path-following XD
     public ElapsedTime runtime = new ElapsedTime();
     public BulkSensorBucket bulkSensorBucket = null;
-
-    public boolean aiming = false;
     private double currentLoopTime, previousLoopTime;
 
   

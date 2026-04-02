@@ -54,13 +54,14 @@ public class MecanumDriveTrain {
         // F R F R for software testing bot, competition bot has F R R F
         motorFL.setDirection(DcMotor.Direction.FORWARD);
         motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
+        //TODO: put this back on.
 
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     //Allows fieldCentricDriving to be turned on and off

@@ -46,7 +46,7 @@ public class RedTeleop extends BaseTeleOp {
                     robot.spindexer.moveToNextIndex();
                 }
                 if (gamepad2.rightBumperWasPressed()) {
-                    robot.spindexer.eject();
+                    robot.spindexer.eject(130);
                 }
 
                 if (gamepad2.dpadDownWasPressed()){
@@ -83,6 +83,12 @@ public class RedTeleop extends BaseTeleOp {
                 if (gamepad1.crossWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
+                if (gamepad2.triangleWasPressed()){
+                    robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
+                }
+                if (gamepad1.circleWasPressed()){
+                    robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
+                }
                 if (gamepad2.circleWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
                 }
@@ -108,7 +114,7 @@ public class RedTeleop extends BaseTeleOp {
                 }
                 if (gamepad2.triangle){
                     robot.launcher.revFlywheel();
-                } else {
+                } else if(robot.operatorStateMachine.getCurrentState() != OperatorStateMachine.State.LAUNCH){
                     robot.launcher.idleFlywheel();
                 }
 
@@ -143,7 +149,7 @@ public class RedTeleop extends BaseTeleOp {
                 robot.park();
             }else{
                 //sets drive power and what gamepad does
-                robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
+            robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
 
             }
 

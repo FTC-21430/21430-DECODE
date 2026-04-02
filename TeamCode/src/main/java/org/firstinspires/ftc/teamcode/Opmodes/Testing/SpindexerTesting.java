@@ -27,14 +27,14 @@ public class SpindexerTesting extends BaseTeleOp {
                 spindexer.recalibrateSpindexerPosition();
             }
             if (gamepad1.squareWasPressed()){
-                spindexer.eject();
+                spindexer.eject(120);
             }
             if (gamepad1.crossWasPressed()){
                 spindexer.setSpindexerPos(pos);
             }
 
             if (gamepad1.rightBumperWasPressed()){
-                spindexer.eject();
+                spindexer.eject(400);
             }
             if (gamepad2.crossWasPressed()){
                 spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
