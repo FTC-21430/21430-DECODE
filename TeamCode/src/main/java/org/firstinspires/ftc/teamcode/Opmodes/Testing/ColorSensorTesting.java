@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
+@Disabled
 @TeleOp
 public class ColorSensorTesting extends BaseTeleOp {
 

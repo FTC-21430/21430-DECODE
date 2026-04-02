@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -139,10 +140,17 @@ public class MecanumDriveTrain {
             sidewaysPower = transformedMovementVectors.get(1);
         }
 
+        // main robot
+//        double powerFL = (forwardPower + sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+//        double powerFR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+//        double powerBL = (forwardPower - sidewaysPower - turnPower* turnPriority)*speedMultiplier;
+//        double powerBR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+
+        // testing robot
         double powerFL = (forwardPower + sidewaysPower - turnPower* turnPriority)*speedMultiplier;
-        double powerFR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+        double powerFR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
         double powerBL = (forwardPower - sidewaysPower - turnPower* turnPriority)*speedMultiplier;
-        double powerBR = (forwardPower + sidewaysPower + turnPower* turnPriority)*speedMultiplier;
+        double powerBR = (forwardPower - sidewaysPower + turnPower* turnPriority)*speedMultiplier;
 
 
         double powers[] = {powerFL, powerFR, powerBL, powerBR};
