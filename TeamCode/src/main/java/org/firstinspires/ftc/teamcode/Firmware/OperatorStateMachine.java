@@ -328,8 +328,8 @@ public class OperatorStateMachine {
             } else {
                 spindexer.eject(fullLaunchIncrement);
                 shotsRemaining = 0;
-                spinning = true;
             }
+            spinning = true;
         }
 
         if (spinning){

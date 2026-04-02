@@ -219,6 +219,7 @@ public class Spindexer {
      * @return True if at rest, false otherwise.
      */
     public boolean isAtRest(){
+        if (PADDLE_SERVO.getRemainingSpin() > 0) return false;
         return stoppedSampling >= stoppedSamplingThreshold && !PADDLE_SERVO.spinning;
     }
     /**
