@@ -83,9 +83,9 @@ public abstract class DecodeBot extends Robot{
         spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
         lifter = new Lifter(hardwareMap, telemetry);
     rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
-//        aprilTags = new AprilTag();
+        aprilTags = new AprilTag();
 
-//        aprilTags.init(hardwareMap,telemetry,cameraExposure);
+        aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
         this.SWEEP = new SWEEP(this, 0.9, SWEEP_P,SWEEP_I,SWEEP_D);
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,

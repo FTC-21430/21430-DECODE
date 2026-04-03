@@ -96,6 +96,7 @@ public class SpindexerServoFirmware {
             // subtract measured encoder travel so battery sag changes time, not total spin distance.
             remainingSpin -= Math.abs(deltaTime * getMovementVelocity());
             if (remainingSpin <= spinningEndThreshold){
+                remainingSpin = 0;
                 spinning = false;
                 // after ejecting, return to the normal prep/positioning direction.
                 setDirection(true);
@@ -193,7 +194,7 @@ public class SpindexerServoFirmware {
 
 
     private double remainingSpin = 0;
-    private boolean spinning = false;
+    public boolean spinning = false;
     public void launchSpin(double degrees){
         // spin still sets a final target so the servo holds the post-launch resting angle when the burst ends.
         hasReachedTarget = false;
@@ -365,4 +366,8 @@ public class SpindexerServoFirmware {
         //TODO Make this happen, we are depricating this feature to do TIME CRUNCH!!!
         return true;
     }
+    public double getRemainingSpin(){
+        return remainingSpin;
+    }
+
 }
