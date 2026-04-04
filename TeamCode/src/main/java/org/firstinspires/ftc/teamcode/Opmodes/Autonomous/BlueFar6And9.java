@@ -28,7 +28,7 @@ public class BlueFar6And9 extends BaseAuto {
         robot.aimAtGoal();
         robot.setLauncherBasedOnTags();
         robot.chill(true,0.1);
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
     }
 
     private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
@@ -39,7 +39,7 @@ public class BlueFar6And9 extends BaseAuto {
         }
         robot.aimAtGoal();
         robot.chill(true,0.08);
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BlueFar6And9 extends BaseAuto {
         robot.odometry.overridePosition(62.7,-31.2,-90);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         //This is the position that the robot moves to to shoot the first three balls
-        motifId = 0;
+        robot.motifId = 0;
         robot.launcher.revFlywheel();
         robot.aimAtGoal();
         robot.chill(true,0.2);
@@ -92,7 +92,7 @@ public class BlueFar6And9 extends BaseAuto {
         robot.setLauncherBasedOnTags();
         robot.autoMoveTo(-4.5,-54.3,-180,3);
         chillAndDetect(true,0.65);
-        motifId = 0;
+        robot.motifId = 0;
         sortedLaunchClose(false, false);
 
         //The robot moves to the place to intake the balls

@@ -13,12 +13,14 @@ import java.util.ArrayList;
 public class RobotActions {
     public enum Actions {
         INTAKE,
-        LAUNCH_THREE,
-        LAUNCH_SORTED_THREE,
+        LAUNCH,
         SCAN_MOTIF,
         READY_RAMP,
-        IDLE
-        //TODO: add extra possible actions the robot's mechanisms could do during autonomous to this list
+        IDLE,
+        PREPPING,
+        REV_FAR,
+        REV_CLOSE,
+        SET_LAUNCHER,
     }
 
     private ArrayList<Action> actions;

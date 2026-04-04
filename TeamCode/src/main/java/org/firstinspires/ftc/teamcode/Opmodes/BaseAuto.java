@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 // This class will have the autonomous functions applicable to every auto. All autos extend BaseAuto.
 @Config
 abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.GeneralOpMode {
-    public int motifId = 21;
 
     public void detectMotifWhileMoveTo(double targetX, double targetY, double robotAngle, double targetCircle) {
         robot.pathFollowing.setTargetPosition(targetX, targetY);
@@ -19,9 +18,9 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
         while (!robot.pathFollowing.isWithinTargetTolerance(robot.odometry.getRobotX(), robot.odometry.getRobotY()) && robot.opMode.opModeIsActive()) {
             int tempId = robot.aprilTags.getMotifID();
             if (tempId != 0) {
-                motifId = tempId;
+                robot.motifId = tempId;
             }
-            telemetry.addData("motifID", motifId);
+            telemetry.addData("motifID", robot.motifId);
             robot.updateRobot(false, false, false);
             robot.operatorStateMachine.updateStateMachine();
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
@@ -36,9 +35,9 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
         while (runtime.seconds() < startTime + timeout && opModeIsActive()){
             int tempId = robot.aprilTags.getMotifID();
             if (tempId != 0) {
-                motifId = tempId;
+                robot.motifId = tempId;
             }
-            telemetry.addData("motifID", motifId);
+            telemetry.addData("motifID", robot.motifId);
             robot.updateRobot(false,false,false);
             if (holdPos){
                 robot.pathFollowing.followPath(robot.odometry.getRobotX(),robot.odometry.getRobotY(),robot.odometry.getRobotAngle());
@@ -82,7 +81,7 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
             robot.driveTrain.setDrivePower(robot.pathFollowing.getPowerS(), robot.pathFollowing.getPowerF(), robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.operatorStateMachine.updateStateMachine();
-            telemetry.addData("motif",motifId);
+            telemetry.addData("motif",robot.motifId);
             telemetry.update();
             robot.bulkSensorBucket.clearCache();
         }

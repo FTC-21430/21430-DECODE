@@ -29,7 +29,7 @@ public class RedFarDolphin extends BaseAuto {
 
         robot.chill(true,0.3);
         robot.aimAtGoal();
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
     }
     private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
         robot.autoMoveTo(52.3, 18.9, 162.9, 8);
@@ -40,7 +40,7 @@ public class RedFarDolphin extends BaseAuto {
 
         robot.chill(true, 0.3);
         robot.aimAtGoal();
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
 //
     }
 
@@ -57,7 +57,7 @@ public class RedFarDolphin extends BaseAuto {
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         robot.chill(false,0.2);
         //This is the position that the robot moves to to shoot the first three balls
-        motifId = 0;
+        robot.motifId = 0;
         robot.launcher.revFlywheel();
         robot.aimAtGoal();
         robot.chill(true,0.0);

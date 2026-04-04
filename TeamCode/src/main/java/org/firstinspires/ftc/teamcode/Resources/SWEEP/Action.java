@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Resources.SWEEP;
 
 import org.firstinspires.ftc.teamcode.Firmware.DecodeBot;
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 
 /**
  * Assist class for one action that robot is commanded to do.
@@ -55,17 +56,29 @@ public class Action {
             case INTAKE:
                 actionIntake();
                 break;
-            case LAUNCH_THREE:
+            case LAUNCH:
                 actionLaunch();
                 break;
-            case LAUNCH_SORTED_THREE:
-                actionSortedLaunch();
-                break;
             case SCAN_MOTIF:
-                actionScanMotiff();
+                actionScanMotif();
+                break;
+            case READY_RAMP:
+                actionReadyRamp();
                 break;
             case IDLE:
                 actionIdle();
+                break;
+            case PREPPING:
+                actionPrep();
+                break;
+            case REV_FAR:
+                actionRevFar();
+                break;
+            case REV_CLOSE:
+                actionRevClose();
+                break;
+            case SET_LAUNCHER:
+                actionSetLauncher();
                 break;
         }
     }
@@ -73,13 +86,56 @@ public class Action {
     // Action run methods
 
     private void actionIntake() {
-        robot.intake.turnOn();
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
     }
-    private void actionLaunch(){robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);}
-    private void actionSortedLaunch(){robot.spindexer.storeColorAtIndex();}
-    private void actionScanMotiff(){robot.aprilTags.getMotifID();}
+    private void actionLaunch(){
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
+    }
+    private void actionPrep(){
+        if (robot.motifId == 21){
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+        }
+        if (robot.motifId == 22){
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+        }
+        if (robot.motifId == 23){
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+            robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
+        }
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
+    }
+    private void actionScanMotif(){
+        int tempID = robot.aprilTags.getMotifID();
+        if (tempID != 0){
+            robot.motifId = tempID;
+        }
+
+    }
 
     private void actionIdle(){
         robot.intake.turnOff();
+    }
+    private void actionReadyRamp(){
+        robot.trajectoryKinematics.calculateTrajectory(robot.trajectoryKinematics.getDistance(robot.alliance,robot.odometry.getRobotX(),robot.odometry.getRobotY()), robot.launcher.getFlywheelError());
+        robot.launcher.setLaunchAngle(robot.trajectoryKinematics.getInitialAngle());
+    }
+    private void actionRevFar(){
+        robot.trajectoryKinematics.calculateTrajectory(95,0);
+        robot.launcher.setSpeed(robot.trajectoryKinematics.getLaunchMagnitude());
+    }
+    private void actionRevClose(){
+        robot.trajectoryKinematics.calculateTrajectory(30,0);
+        robot.launcher.setSpeed(robot.trajectoryKinematics.getLaunchMagnitude());
+    }
+    private void actionSetLauncher(){
+        robot.trajectoryKinematics.updateVelocities(robot.odometry.getVelocityX(),robot.odometry.getVelocityY());
+        robot.trajectoryKinematics.calculateTrajectory(robot.trajectoryKinematics.getDistance(robot.alliance,robot.odometry.getRobotX(),robot.odometry.getRobotY()), robot.launcher.getFlywheelError());
+        robot.launcher.setSpeed(robot.trajectoryKinematics.getLaunchMagnitude());
+        robot.launcher.setLaunchAngle(robot.trajectoryKinematics.getInitialAngle());
     }
 }

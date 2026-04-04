@@ -65,6 +65,8 @@ public abstract class DecodeBot extends Robot{
     public static double SWEEP_I = 0.0005;
     public static double SWEEP_D = 0.01;
 
+    public int motifId = 0;
+
 
     public DecodeBot(HardwareMap hardwareMap, Telemetry telemetry, double robotX, double robotY, double robotAngle, LinearOpMode opMode, boolean resetSpindexer, boolean resetOdemetry, boolean isAuto, String alliance, Gamepad gamepad2){
         pathFollowing = new PathFollowing(P_CONSTANT, P_CONSTANT, I_CONSTANT, I_CONSTANT, D_CONSTANT, D_CONSTANT, runtime);

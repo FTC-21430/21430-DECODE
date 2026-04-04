@@ -26,7 +26,7 @@ public class RedFar6And9 extends BaseAuto {
         robot.aimAtGoal();
         robot.setLauncherBasedOnTags();
         robot.chill(true,0.1);
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
     }
     private void sortedLaunchFar(boolean finalLaunch, boolean firstLaunch) {
         robot.autoMoveTo(52.3, 16.9, 160.9, 20);
@@ -34,7 +34,7 @@ public class RedFar6And9 extends BaseAuto {
 
         robot.aimAtGoal();
         robot.chill(true,0.08);
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
 //
     }
 
@@ -51,7 +51,7 @@ public class RedFar6And9 extends BaseAuto {
         robot.odometry.overridePosition(62.7,31.2,90);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         //This is the position that the robot moves to to shoot the first three balls
-        motifId = 0;
+        robot.motifId = 0;
         robot.launcher.revFlywheel();
         robot.aimAtGoal();
         robot.chill(true,0.2);

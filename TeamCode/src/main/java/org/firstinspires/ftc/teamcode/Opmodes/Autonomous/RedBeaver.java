@@ -30,7 +30,7 @@ public class RedBeaver extends BaseAuto {
 
         robot.chill(true,0.7);
         robot.aimAtGoal();
-        autonomousLaunching(motifId);
+        autonomousLaunching(robot.motifId);
 //
     }
 
@@ -50,7 +50,7 @@ public class RedBeaver extends BaseAuto {
         robot.launcher.revFlywheel();
         robot.chill(false,0.2);
         //This is the position that the robot moves to to shoot the first three balls
-        motifId = 0;
+        robot.motifId = 0;
         robot.aimAtGoal();
         robot.launcher.revFlywheel();
         robot.chill(true,0.2);
