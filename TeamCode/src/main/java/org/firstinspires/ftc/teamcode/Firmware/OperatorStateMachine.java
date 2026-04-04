@@ -245,8 +245,6 @@ public class OperatorStateMachine {
                 switchSampling = 0;
             }
         }
-        telemetry.addData("ballSampling", ballSampling);
-        telemetry.addData("switchSampling", switchSampling);
 
         if (spindexer.isFull() && spindexer.isAtRest()){
             moveToState(State.PREPPING);

@@ -79,7 +79,7 @@ public class TrajectoryKinematics {
 
     public static double goalX = -59.2;
     public static double goalY = 63.0;
-    public static double flywheelErrorToAngle = 0;
+    public static double flywheelErrorToAngle = -0.03;
     private double flywheelError;
 
     private Telemetry telemetry;
@@ -184,6 +184,9 @@ public class TrajectoryKinematics {
         return distance;
     }
 
+    public static double overrideSpeed = 0;
+    public static double overrideRamp = 0;
+
     /**
      * Updates the computed trajectory values (initialAngle and launchMagnitude) using
      * the tuned regression functions. Call this before retrieving values via
@@ -192,12 +195,16 @@ public class TrajectoryKinematics {
      * @param distanceInches distance from front of robot to april tag (inches)
      */
     public void calculateTrajectory(double distanceInches, double flywheelError) {
-   // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
+
+        // All regression functions are calculated using the stored values above and put into Desmos graphing calculator to create a fourth degree regression function!
         initialAngle = angleRegression(distanceInches) - necessaryRampOffset(flywheelError);
         launchMagnitude = magnitudeRegression(distanceInches);
+
+        telemetry.addLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         telemetry.addData("Distance", distanceInches);
         telemetry.addData("Ramp angle", initialAngle);
         telemetry.addData("Magnitude", launchMagnitude);
+        telemetry.addLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     }
 
     /**
@@ -210,11 +217,19 @@ public class TrajectoryKinematics {
      * @return ramp angle in degrees
      */
     private double angleRegression(double distance){
+
+
         // values a-e represent the tuning values of this 1st-degree polynomial
-        double a = 0.00221365;
-        double b = -0.697602;
-        double c = 87.33488;
-        return a * Math.pow(distance,2) + b * Math.pow(distance,1) + c;
+        double a = 1.17842026e-09;
+        double b = -6.19528564e-07;
+        double c = 1.27750841e-04;
+        double d = -1.30363270e-02;
+        double e = 6.85788568e-01;
+        double f = -1.79995933e+01;
+        double g = 2.59766158e+02;
+        double result = a * Math.pow(distance,6) + b * Math.pow(distance,5) + c * Math.pow(distance,4) + d * Math.pow(distance,3) + e * Math.pow(distance,2) + f * Math.pow(distance,1) + g;
+
+        return Math.min(result, 84);
     }
 
     /**
@@ -248,13 +263,18 @@ public class TrajectoryKinematics {
      */
     private double magnitudeRegression(double distance){
         //quadratic tuning values
-        double a = -0.00153765;
-        double b = 5.11587;
-        double c = 809.64818;
 
+        double a = 3.66673556e-07;
+        double b = -1.56556627e-04;
+        double c = 2.47391956e-02;
+        double d = -1.76371903;
+        double e = 5.94863351e+01;
+        double f = 2.84088580e+02;
+
+        double result = a * Math.pow(distance,5) + b * Math.pow(distance,4) + c * Math.pow(distance,3) + d * Math.pow(distance,2) + e * Math.pow(distance,1) + f;
 
         // Math.pow is the exponent function, this is a second degree polynomial that is tuning based on real world testing
-        return a * Math.pow(distance,2) + b * Math.pow(distance,1) + c;
+        return Math.min(result, 1600);
     }
 
     /**
@@ -263,7 +283,7 @@ public class TrajectoryKinematics {
      * @return computed ramp angle in degrees
      */
     public double getInitialAngle(){
-        return initialAngle;
+          return initialAngle;
     }
 
     /**
@@ -272,7 +292,7 @@ public class TrajectoryKinematics {
      * @return computed flywheel angular velocity (degrees/sec)
      */
     public double getLaunchMagnitude(){
-        return launchMagnitude;
+               return launchMagnitude;
     }
 
     /**
@@ -280,6 +300,7 @@ public class TrajectoryKinematics {
      * @return
      */
     public double necessaryRampOffset(double flywheelError){
-        return flywheelError*flywheelErrorToAngle;
+
+        return Math.abs(flywheelError)*flywheelErrorToAngle;
     }
 }

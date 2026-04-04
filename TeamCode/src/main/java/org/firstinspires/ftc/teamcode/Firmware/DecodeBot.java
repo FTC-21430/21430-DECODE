@@ -132,7 +132,6 @@ public abstract class DecodeBot extends Robot{
     //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         intake.updateIntake();
-        odometry.updateOdometry();
         lifter.update();
 //        operatorStateMachine.updateStateMachine();
         aprilTags.clearCache();
