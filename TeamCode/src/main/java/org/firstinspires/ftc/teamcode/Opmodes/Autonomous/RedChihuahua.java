@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 
 // This Autonomous is for when the robot starts in the far zone
 @Autonomous
+@Disabled
 public class RedChihuahua extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {

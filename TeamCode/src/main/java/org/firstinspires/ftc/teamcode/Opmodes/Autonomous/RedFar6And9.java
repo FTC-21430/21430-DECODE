@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 @Autonomous
+@Disabled
 public class RedFar6And9 extends BaseAuto {
     private void sortedLaunchClose(boolean finalLaunch, boolean firstLaunch) {
         robot.setLauncherBasedOnTags();

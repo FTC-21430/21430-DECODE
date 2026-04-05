@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 
 // This Autonomous is for when the robot starts in the close zone
 @Autonomous
+@Disabled
 public class BlueElephant extends BaseAuto {
     private void sortedLaunch(boolean finalLaunch, boolean firstLaunch){
         if (!firstLaunch) {
