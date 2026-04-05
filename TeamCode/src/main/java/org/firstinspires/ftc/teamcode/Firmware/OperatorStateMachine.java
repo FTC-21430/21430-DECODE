@@ -317,7 +317,7 @@ public class OperatorStateMachine {
             }
         }
 
-        if (spindexer.isAtRest() && shotsRemaining > 0 && !launchStalled){
+        if (spindexer.isAtRest() && shotsRemaining > 0 && !launchStalled && launcher.isUpToSpeed()){
             spinning = false;
             if (shouldSort){
                 launchStalled = true;
