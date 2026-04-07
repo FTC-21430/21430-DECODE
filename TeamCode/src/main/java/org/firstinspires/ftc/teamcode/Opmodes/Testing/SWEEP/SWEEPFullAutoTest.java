@@ -57,7 +57,7 @@ public class SWEEPFullAutoTest extends BaseAuto {
         robot.SWEEP.computeSplines();
         robot.odometry.overridePosition(64,16,90);
         robot.SWEEP.startPath();
-        while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
+            while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());
             //TODO: update robot system loops
