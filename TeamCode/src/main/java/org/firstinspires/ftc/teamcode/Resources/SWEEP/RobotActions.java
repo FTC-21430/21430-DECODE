@@ -21,6 +21,7 @@ public class RobotActions {
         REV_FAR,
         REV_CLOSE,
         SET_LAUNCHER,
+        TOGGLE_GOAL_AIMING,
     }
 
     private ArrayList<Action> actions;

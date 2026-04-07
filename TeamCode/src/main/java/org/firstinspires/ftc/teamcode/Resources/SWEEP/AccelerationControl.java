@@ -41,14 +41,20 @@ public class AccelerationControl {
      * This updates acceleration control by giving it all the correct values to stay current
      * @param odometryPacket gives the ingo needed to fully update Acceleration control
      */
-    public void update(OdometryPacket odometryPacket){
+    public void update(OdometryPacket odometryPacket, boolean shouldAimAtGoal){
         double minorRatio = (1-accelRatio) > 0 ? 1-accelRatio:1e-7;
         SimpleMatrix robotPosNow = splinePathInterpreter.getRobotPosition(0);
         SimpleMatrix robotPosNext = splinePathInterpreter.getRobotPosition(lookAheadTime1);
         // get a look ahead position
         double posNeededX = robotPosNext.get(0);
         double posNeededY = robotPosNext.get(1);
-        rotationControl.setTargetAngle(robotPosNext.get(2));
+
+
+        // THE FOLLOWING IS A TEMPORARY SWEEP MODIFICATION FOR THE DECODE SEASON, TODO: remove exception or refine implementation prior to future season use.
+        if (!shouldAimAtGoal){
+            rotationControl.setTargetAngle(robotPosNext.get(2));
+        }
+
 //        rotationControl.setTargetAngle(90);
         setMotorPowers(posNeededX, posNeededY, odometryPacket);
         double followError = Math.hypot(robotPosNow.get(0)-odometryPacket.getX(),robotPosNow.get(1)-odometryPacket.getY());

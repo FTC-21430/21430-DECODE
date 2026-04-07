@@ -57,7 +57,14 @@ public class SWEEP {
         splinePathInterpreter.setProgramSpeed(speedRatio);
     }
     public void update(OdometryPacket odometryPacket){
-        accelerationControl.update(odometryPacket);
+        //TODO: Remove this exception before reusing SWEEP into seasons past DECODE
+        if (robot.shouldSWEEPAimAtGoal()){
+            robot.SWEEPAiming();
+        }
+        accelerationControl.update(odometryPacket, robot.shouldSWEEPAimAtGoal());
+
+        //End of temp code section
+
         splinePathInterpreter.executeActions();
         robot.telemetry.addData("targetX",splinePathInterpreter.getRobotPosition(0).get(0));
         robot.telemetry.addData("targetY", splinePathInterpreter.getRobotPosition(0).get(1));
