@@ -47,6 +47,10 @@ public class DemoTeleop extends BaseTeleOp {
             if (gamepad2.crossWasPressed()){
                 robot.operatorStateMachine.moveToState(OperatorStateMachine.State.IDLE);
             }
+
+            if (gamepad2.triangleWasPressed()){
+                robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
+            }
             if (gamepad2.dpadUpWasPressed()){
                 //Launch all the balls in a random order
                 robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.NONE);

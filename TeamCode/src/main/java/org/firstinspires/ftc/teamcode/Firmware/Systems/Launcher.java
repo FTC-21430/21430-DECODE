@@ -102,16 +102,19 @@ public class Launcher {
         else{
             switch (current_state){
                 case CLOSE:
-                    setSpeed(closeSpeed);
-                    setLaunchAngle(closeRamp);
+                    TRAJECTORY_KINEMATICS.calculateTrajectory(28, 0);
+                    setSpeed(TRAJECTORY_KINEMATICS.getLaunchMagnitude());
+                    setLaunchAngle(TRAJECTORY_KINEMATICS.getInitialAngle());
                     break;
                 case MID:
-                    setSpeed(midSpeed);
-                    setLaunchAngle(midRamp);
+                    TRAJECTORY_KINEMATICS.calculateTrajectory(80, 0);
+                    setSpeed(TRAJECTORY_KINEMATICS.getLaunchMagnitude());
+                    setLaunchAngle(TRAJECTORY_KINEMATICS.getInitialAngle());
                     break;
                 case FAR:
-                    setSpeed(farSpeed);
-                    setLaunchAngle(farRamp);
+                    TRAJECTORY_KINEMATICS.calculateTrajectory(120, 0);
+                    setSpeed(TRAJECTORY_KINEMATICS.getLaunchMagnitude());
+                    setLaunchAngle(TRAJECTORY_KINEMATICS.getInitialAngle());
                     break;
             }
         }
