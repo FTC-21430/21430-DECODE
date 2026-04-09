@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
-import androidx.core.content.res.FontResourcesParserCompat;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 
 @Autonomous
-public class RedBeverSWEEP extends BaseAuto {
+public class Thingy extends BaseAuto {
 
     /// Route definition methods:
     /// all units are in inches, degrees, and seconds.
@@ -17,24 +16,10 @@ public class RedBeverSWEEP extends BaseAuto {
     /// path.splineTo(x,y,angle,speedRatio) go through a specified point while keeping the angle of the robot at a constant.
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
-        PathPlanning path = robot.SWEEP.pathPlanner;
-        path.splineStart(-64.22, 34.88, 180);
-        path.splineToConstantAngle(-48.75, 21.49, 124, 0.5);
-        path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(-48.75, 21.49, 124, 1);
-        path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(-48.75, 21.49, 124, 2);
-        path.splineToConstantAngle(-11.2, 25.6, 270, 0.5);
-        path.addAction(RobotActions.Actions.INTAKE);
-        path.splineToConstantAngle(-2.2, 49.5, 270, 0.3);
-        path.splineToConstantAngle(-1.191, 49.73, 270, 0.3);
-        path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(-1.7, 53.6, 270, 0.25);
-        path.splineToConstantAngle(-21.36, 17.65, 133.8, 1);
-        path.chill(-21.36, 17.65, 133.8, 1);
-        path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(-21.36, 17.65, 136.8, 1);
-        path.chill(-21.36, 17.65, 136.8, 2);
+        PathPlanning path = robot.SWEEP.pathPlanner; // have a shorthand variable name to make typing this easier.
+        path.splineStart(-64.22,34.88,180); // the start of the path (0)
+
+        path.splineEnd(0,15,0);
     }
 
     @Override
