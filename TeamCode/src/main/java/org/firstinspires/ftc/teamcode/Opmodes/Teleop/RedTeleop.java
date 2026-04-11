@@ -128,15 +128,10 @@ public class RedTeleop extends BaseTeleOp {
             }
             // end of automated mode code
 
-            if (gamepad2.leftBumperWasPressed()){
+            if (gamepad2.leftBumperWasPressed() && gamepad2.dpad_down){
                 robot.lifter.lift();
             }
-            if (gamepad2.rightBumperWasPressed()){
-                robot.lifter.home();
-            }
-            if (gamepad2.left_trigger>0.6){
-                robot.lifter.lockLatches();
-            }
+
             if (gamepad1.left_trigger > 0.2){
                 robot.aimAtGoal();
                 robot.driveTrain.setTurnPriority((gamepad1.left_trigger/2)+0.8);
