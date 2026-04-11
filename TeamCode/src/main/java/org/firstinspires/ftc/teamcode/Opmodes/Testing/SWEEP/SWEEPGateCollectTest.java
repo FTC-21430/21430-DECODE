@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing.SWEEP;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
-
+@Disabled
 @Autonomous
 public class SWEEPGateCollectTest extends BaseAuto {
 

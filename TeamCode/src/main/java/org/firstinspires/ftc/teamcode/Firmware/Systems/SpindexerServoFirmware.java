@@ -100,6 +100,8 @@ public class SpindexerServoFirmware {
                 spinning = false;
                 // after ejecting, return to the normal prep/positioning direction.
                 setDirection(true);
+                setSpindexerOffset(-5);
+                setSpindexerPosition(getEncoderPosition());
             }
             return; // do not enter precise control
         }

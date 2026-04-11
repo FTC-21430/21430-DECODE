@@ -205,14 +205,9 @@ public class OperatorStateMachine {
             intake.setIntakePower(0);
         }
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
-        if (gamepad2.right_bumper){
-            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-            if (gamepad2.right_trigger > 0.4){
-                trajectoryKinematics.calculateTrajectory(100, launcher.getFlywheelError());
-            }else{
-                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
-            }
-        }
+
+        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
 
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
         launcher.update();
@@ -240,18 +235,11 @@ public class OperatorStateMachine {
         }
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
 
-        if (gamepad2.right_bumper){
-            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-            if (gamepad2.right_trigger > 0.4){
-                trajectoryKinematics.calculateTrajectory(100, launcher.getFlywheelError());
-            }else{
-                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
-            }
-        }
+        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
 
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
         launcher.update();
-
 
         if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= ballSamplingThreshold || switchSampling > switchSamplingThreshold){
             spindexer.storeColorAtIndex();
@@ -280,18 +268,12 @@ public class OperatorStateMachine {
 
     }
 
-    public static double preppingTimeout = 0.3;
+    public static double preppingTimeout = 0.1;
     private void preppingState(){
 
+        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
+        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
 
-        if (gamepad2.right_bumper){
-            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-            if (gamepad2.right_trigger > 0.4){
-                trajectoryKinematics.calculateTrajectory(100, launcher.getFlywheelError());
-            }else{
-                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
-            }
-        }
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
         launcher.update();

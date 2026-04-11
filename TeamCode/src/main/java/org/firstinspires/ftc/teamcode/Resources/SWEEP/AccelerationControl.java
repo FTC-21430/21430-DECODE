@@ -51,9 +51,9 @@ public class AccelerationControl {
 
 
         // THE FOLLOWING IS A TEMPORARY SWEEP MODIFICATION FOR THE DECODE SEASON, TODO: remove exception or refine implementation prior to future season use.
-        if (!shouldAimAtGoal){
-            rotationControl.setTargetAngle(robotPosNext.get(2));
-        }
+
+        rotationControl.setTargetAngle(robotPosNext.get(2));
+
 
 //        rotationControl.setTargetAngle(90);
         setMotorPowers(posNeededX, posNeededY, odometryPacket);

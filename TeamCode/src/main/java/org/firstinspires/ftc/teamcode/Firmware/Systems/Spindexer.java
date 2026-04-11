@@ -36,7 +36,7 @@ public class Spindexer {
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     public static double intakeOffSet = 0;
     public static double launchOffSet = -5;
-    public static double idleOffSet = 20.0;
+    public static double idleOffSet = 0;
 
     public enum INDEX_TYPE{
         INTAKE,

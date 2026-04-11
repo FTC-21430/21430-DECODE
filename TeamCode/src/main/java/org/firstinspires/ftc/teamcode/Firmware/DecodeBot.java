@@ -43,9 +43,9 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.14;
     public static final double I_CONSTANT = 0.11;
     public static final double D_CONSTANT = 0.031;
-    public static double P_ANGLE = 0.025;
+    public static double P_ANGLE = 0.023;
     public static double I_ANGLE = 0.0005;
-    public static double D_ANGLE = 0.0002;
+    public static double D_ANGLE = 0.0006;
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
@@ -61,9 +61,9 @@ public abstract class DecodeBot extends Robot{
 
     // These odometry pod position value are just for the software testing bot
 
-    public static double SWEEP_P = 0.12;
-    public static double SWEEP_I = 0.0005;
-    public static double SWEEP_D = 0.01;
+    public static double SWEEP_P = 0.25;
+    public static double SWEEP_I = 0.0;
+    public static double SWEEP_D = 0.02;
     private boolean SWEEPAimingAtGoal = false;
 
     public int motifId = 0;

@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing.SWEEP;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
-
+@Disabled
 @Autonomous
 public class SWEEPTuning extends BaseAuto {
 
@@ -21,10 +22,8 @@ public class SWEEPTuning extends BaseAuto {
         path.splineStart(0,0,0); // the start of the path
         for (int i = 0; i < 3; i++){
             path.splineToConstantAngle(48,0,0,1);
-            path.addAction(RobotActions.Actions.IDLE);
             path.chill(48,0,0,2);
             path.splineToConstantAngle(0,0,0,1);
-            path.addAction(RobotActions.Actions.INTAKE);
             path.chill(0,0,0,2);
         }
         path.chill(0,0,0,3); // the end of the path

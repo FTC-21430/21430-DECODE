@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Testing.SWEEP;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
-
+@Disabled
 @Autonomous
 public class InitialSWEEPImplementation extends BaseAuto {
 
