@@ -204,7 +204,19 @@ public class OperatorStateMachine {
         } else if (gamepad2.square) {
             intake.setIntakePower(0);
         }
-        launcher.setSpeed(1200);
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        if (gamepad2.right_bumper){
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
+            if (gamepad2.right_trigger > 0.4){
+                trajectoryKinematics.calculateTrajectory(100, launcher.getFlywheelError());
+            }else{
+                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+            }
+        }
+
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        launcher.update();
+
         launcher.retractRamp();
         launcher.update();
         spindexer.updateSpindexer();
@@ -218,15 +230,28 @@ public class OperatorStateMachine {
 
     private int ballSampling = 0;
     private int switchSampling = 0;
-    public static int ballSamplingThreshold = 1;
-    public static int switchSamplingThreshold = 6;
+    public static int ballSamplingThreshold = 2;
+    public static int switchSamplingThreshold = 3;
     private void intakeState (){
         if (!(gamepad2.left_trigger >= 0.4) && !gamepad2.square){
             intake.setIntakePower(-1);
         }else if(gamepad2.square){
             intake.setIntakePower(0);
-            launcher.setSpeed(0);
         }
+        spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+
+        if (gamepad2.right_bumper){
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
+            if (gamepad2.right_trigger > 0.4){
+                trajectoryKinematics.calculateTrajectory(100, launcher.getFlywheelError());
+            }else{
+                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+            }
+        }
+
+        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        launcher.update();
+
 
         if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= ballSamplingThreshold || switchSampling > switchSamplingThreshold){
             spindexer.storeColorAtIndex();
@@ -255,10 +280,18 @@ public class OperatorStateMachine {
 
     }
 
-    public static double preppingTimeout = 0.7;
+    public static double preppingTimeout = 0.3;
     private void preppingState(){
-        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+
+
+        if (gamepad2.right_bumper){
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
+            if (gamepad2.right_trigger > 0.4){
+                trajectoryKinematics.calculateTrajectory(100, launcher.getFlywheelError());
+            }else{
+                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+            }
+        }
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
         launcher.update();
@@ -366,6 +399,9 @@ public class OperatorStateMachine {
      */
     private void idleToIntake(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        for (int i = 0; i < 3; i++){
+            spindexer.clearColor(i);
+        }
         intake.turnOn();
         intake.openGate();
     }
@@ -383,6 +419,8 @@ public class OperatorStateMachine {
         }
         intake.turnOff();
         intake.openGate();
+
+
     }
     /**
      * Transition from intake to idle
@@ -408,7 +446,7 @@ public class OperatorStateMachine {
     private void launchToIntake(){
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             spindexer.clearColor(i);
         }
         intake.turnOn();
@@ -431,6 +469,9 @@ public class OperatorStateMachine {
     }
     private void preppingToIntake(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
+        for (int i = 0; i < 3; i++){
+            spindexer.clearColor(i);
+        }
         intake.turnOn();
         intake.openGate();
     }

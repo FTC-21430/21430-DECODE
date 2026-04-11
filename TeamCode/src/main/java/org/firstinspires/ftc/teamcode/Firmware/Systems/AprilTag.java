@@ -53,7 +53,7 @@ public class AprilTag {
 
     private double x, y, angle = 0;
     // Filter scalar, the amount we rely on the april tags
-    public static double filterScalar = 0.001;
+    public static double filterScalar = 0.000;
 
 
 

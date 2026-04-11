@@ -107,6 +107,10 @@ public class Lifter {
 
     public void update(){
 
+        if ((getLiftPositionLeft()+getLiftPositionRight())/2.0 > MAX_HEIGHT/2.0){
+            lockLatches();
+        }
+
         if (homing){
             if (getLiftPositionRight() < 0.8 || getLiftPositionLeft() < 0.8) {
                 liftLeft.setPower(loweringSpeed);

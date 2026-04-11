@@ -15,12 +15,13 @@ public class BlueTeleop extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initialize(true, false,false);
+        initialize(true, true,false);
         robot.setAlliance("blue");
         robot.driveTrain.fieldCentricDriving(true);
-
+        robot.odometry.recalibrateIMU();
         waitForStart();
-        robot.rotationControl.setTargetAngle(0);
+
+        robot.rotationControl.setTargetAngle(robot.odometry.getRobotAngle());
         while(opModeIsActive()) {
 
             // get and update functions
@@ -125,19 +126,12 @@ public class BlueTeleop extends BaseTeleOp {
             if (gamepad2.leftBumperWasPressed()){
                 robot.lifter.lift();
             }
-            if (gamepad2.rightBumperWasPressed()){
-                robot.lifter.home();
-            }
-            if (gamepad2.left_trigger>0.6){
-                robot.lifter.lockLatches();
-            }
 
             if (gamepad1.left_bumper){
                 robot.updateOdometryOnTags(true);
             }else{
                 robot.updateOdometryOnTags(false);
             }
-
             if (gamepad1.left_trigger > 0.2){
                 robot.aimAtGoal();
                 robot.driveTrain.setTurnPriority((gamepad1.left_trigger/2)+0.8);

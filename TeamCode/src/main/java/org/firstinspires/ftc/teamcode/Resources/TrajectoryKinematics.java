@@ -138,12 +138,12 @@ public class TrajectoryKinematics {
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
                 // center. The numbers are empirical and should be documented in design notes.
-                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
+//                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
                 break;
             case "blue":
                 // Empirically determined goal coordinates (inches) for the blue alliance
                 tempGoalY *= -1;
-                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
+//                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
                 break;
         }
 
@@ -229,7 +229,7 @@ public class TrajectoryKinematics {
         double g = 2.59766158e+02;
         double result = a * Math.pow(distance,6) + b * Math.pow(distance,5) + c * Math.pow(distance,4) + d * Math.pow(distance,3) + e * Math.pow(distance,2) + f * Math.pow(distance,1) + g;
 
-        return Math.min(result, 84);
+        return Math.min(result, 80);
     }
 
     /**
