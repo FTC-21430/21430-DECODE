@@ -64,6 +64,7 @@ public abstract class DecodeBot extends Robot{
     public static double SWEEP_P = 0.12;
     public static double SWEEP_I = 0.0005;
     public static double SWEEP_D = 0.01;
+    private boolean SWEEPAimingAtGoal = false;
 
     public int motifId = 0;
 
@@ -222,5 +223,25 @@ public abstract class DecodeBot extends Robot{
                 launcher.setLaunchAngle(farRamp);
                 break;
         }
+    }
+
+    /**
+     * Optional support method for the SWEEP Library to choose to aim at the goal. Use robot actions to say you want the aiming override, you can either disable it or enable it.
+     */
+    public void SWEEPAiming(){
+        if (SWEEPAimingAtGoal){
+            aimAtGoal();
+        }
+    }
+    public boolean shouldSWEEPAimAtGoal(){
+        return SWEEPAimingAtGoal;
+    }
+
+    /**
+     * Set whether or not SWEEP movement should have the robot yaw locked onto the Goal's position. REMEMBER TO SET ALLIANCE!!!!
+     * @param aiming true for aiming
+     */
+    public void setSweepAimingAtGoal(boolean aiming){
+        SWEEPAimingAtGoal = aiming;
     }
 }

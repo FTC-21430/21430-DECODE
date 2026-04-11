@@ -80,6 +80,8 @@ public class Action {
             case SET_LAUNCHER:
                 actionSetLauncher();
                 break;
+            case TOGGLE_GOAL_AIMING:
+                actionToggleGoalAiming();
         }
     }
 
@@ -137,5 +139,9 @@ public class Action {
         robot.trajectoryKinematics.calculateTrajectory(robot.trajectoryKinematics.getDistance(robot.alliance,robot.odometry.getRobotX(),robot.odometry.getRobotY()), robot.launcher.getFlywheelError());
         robot.launcher.setSpeed(robot.trajectoryKinematics.getLaunchMagnitude());
         robot.launcher.setLaunchAngle(robot.trajectoryKinematics.getInitialAngle());
+    }
+    private void actionToggleGoalAiming(){
+        // toggles the aiming flag. should not impact the existent SWEEP rotation code unless this action is called.
+        robot.setSweepAimingAtGoal(!robot.shouldSWEEPAimAtGoal());
     }
 }
