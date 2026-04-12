@@ -95,7 +95,6 @@ public class DemoTeleop extends BaseTeleOp {
 
 
             robot.updateRobot(false, false, false);
-            telemetry.addData("current robot heading", robot.odometry.getRobotAngle());
 
             robot.bulkSensorBucket.clearCache();
             telemetry.update();

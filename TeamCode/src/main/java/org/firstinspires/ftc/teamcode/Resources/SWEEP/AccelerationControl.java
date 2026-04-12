@@ -52,13 +52,14 @@ public class AccelerationControl {
 
         // THE FOLLOWING IS A TEMPORARY SWEEP MODIFICATION FOR THE DECODE SEASON, TODO: remove exception or refine implementation prior to future season use.
 
-        rotationControl.setTargetAngle(robotPosNext.get(2));
-
+        if (!shouldAimAtGoal) {
+            rotationControl.setTargetAngle(robotPosNext.get(2));
+        }
 
 //        rotationControl.setTargetAngle(90);
         setMotorPowers(posNeededX, posNeededY, odometryPacket);
         double followError = Math.hypot(robotPosNow.get(0)-odometryPacket.getX(),robotPosNow.get(1)-odometryPacket.getY());
-        telemetry.addData("FollowError", followError);
+
         // Use the look-ahead's computed rotation as the desired heading so the robot
         // points along the path of travel (instead of sampling rotation with a zero
         // look-ahead which could produce undefined/degenerate values).

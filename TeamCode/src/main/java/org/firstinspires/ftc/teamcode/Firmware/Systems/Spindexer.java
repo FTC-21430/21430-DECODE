@@ -59,6 +59,12 @@ public class Spindexer {
         intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
         intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
         intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
+        while (RUNTIME.seconds() < 0.3){
+            telemetry.addLine("SPINDEXER INIT");
+            PADDLE_SERVO.calibrateSpinny();
+            telemetry.update();
+        }
+        PADDLE_SERVO.zeroPosition();
     }
 
     private int stoppedSampling = 0;
@@ -67,6 +73,9 @@ public class Spindexer {
      * Updates the spindexer state, handling ejection and calibration timeouts.
      */
     public void updateSpindexer() {
+        telemetry.addData("CurrentIntake0", indexColors[0]);
+        telemetry.addData("CurrentIntake1", indexColors[1]);
+        telemetry.addData("CurrentIntake2", indexColors[2]);
         if (!calibrating) {
 
         } else {
@@ -75,8 +84,7 @@ public class Spindexer {
                 PADDLE_SERVO.resetEncoderPosition();
             }
         }
-            telemetry.addData("Encoder", getEncoderPosition());
-            telemetry.addData("target", PADDLE_SERVO.getTargetPosition());
+
             PADDLE_SERVO.update(); // Updates the spindexer servo position.
         // rest is based on repeated target hits, not raw velocity. this is a small debounce for state logic.
         if (PADDLE_SERVO.isAtTarget()){
@@ -207,7 +215,6 @@ public class Spindexer {
      * Recalibrates the spindexer position to the starting point.
      */
     public void recalibrateSpindexerPosition(){
-
         PADDLE_SERVO.calibrationPosition(); // Moves the spindexer to the calibration position.
         calibrating = true; // Sets the spindexer to calibration mode.
         RUNTIME.reset(); // Resets the timer for calibration timeout.

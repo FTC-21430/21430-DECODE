@@ -14,19 +14,19 @@ public class SpindexerColorSensor {
 
 // constants for color ranges. At the moment the difference is calculated based on the Hue value in the HSV color space. One tuning set for each potential color we are searching for
     private final float[] noneValues = new float[]{
-            120,
-            0,
-            0
+            105,
+        (float)0.53,
+        (float)0.023
     };
     private final float[] purpleValues = new float[]{
-            200,
-            0,
-            0
+            160,
+            (float)0.27,
+            (float)0.0176
     };
     private final float[] greenValues = new float[]{
-            150,
-            0,
-            0
+            138,
+            (float) 0.9,
+            (float)0.0137
     };
 
     // Enum return value for all colors we are detecting
@@ -40,11 +40,6 @@ public class SpindexerColorSensor {
 //    ColorSensorFirmware sensor = new ColorSensorFirmware(hardwareMap, "colorSensor1");
 //    Type name = new type(HardwareMap, configuration name);
 
-    /**
-     * Constructor for this class, uses hardwareMap to get sensor object and sets the gain of the sensor
-     * @param hardwareMap hardwareMap instance from the opMode that we are currently running
-     * @param configName the name that the sensor is saved under in the robot controller app configuration file - CASE SENSITIVE!
-     */
     public SpindexerColorSensor(HardwareMap hardwareMap, String configName1, String configName2){
         sensor1 = hardwareMap.get(NormalizedColorSensor.class, configName1);
         sensor2 = hardwareMap.get(NormalizedColorSensor.class, configName2);
@@ -71,31 +66,20 @@ public class SpindexerColorSensor {
      */
     public COLORS getDetectedColor(){
 //        Read color values and get the distances between configuration values and raw readings
-        ArrayList<Double> distances = getColorDistances();
+        float[] values = getRawData();
 
-//        search for which of the colors has the lowest value
-        int lowestIndex = 0;
-        double lowestDistance = 0;
-        for (int i = 0; i < 3; i++){
-            if (i==0){
-                lowestDistance = distances.get(i);
-            }else{
-                if (Math.abs(distances.get(i)) < lowestDistance){
-                    lowestIndex = i;
-                    lowestDistance = Math.abs(distances.get(i));
-                }
+        if (values[0] <= 115){
+            return COLORS.NONE;
+        }
+        if (values[0] >= 160){
+           return COLORS.PURPLE;
+        }else{
+            if (values[1] > 0.55){
+                return COLORS.GREEN;
+            }else if(values[1] < 0.44){
+                return COLORS.PURPLE;
             }
         }
-//          match the index of the lowest color error to one of the colors we are searching for
-        switch (lowestIndex){
-            case 0:
-                return COLORS.NONE;
-            case 1:
-                return COLORS.PURPLE;
-            case 2:
-                return COLORS.GREEN;
-        }
-//        If index is out of range
         return COLORS.NONE;
     }
 
@@ -147,13 +131,13 @@ public class SpindexerColorSensor {
         ArrayList<Double> returnValues = new ArrayList<>();
         float[] hsvValues = getRawData();
 
-        double noneDistance = hsvValues[0] - noneValues[0];
+        double noneDistance = hsvValues[0] - noneValues[0] + ((hsvValues[1] - noneValues[1]) * 2000) + ((hsvValues[2]-noneValues[2])*1);
         returnValues.add(noneDistance);
 
-        double purpleDistance = hsvValues[0] - purpleValues[0];
+        double purpleDistance = hsvValues[0] - purpleValues[0] + ((hsvValues[1] - purpleValues[1]) * 2000) + ((hsvValues[2]-purpleValues[2])*1);;
         returnValues.add(purpleDistance);
 
-        double greenDistance = hsvValues[0] - greenValues[0];
+        double greenDistance = hsvValues[0] - greenValues[0] + ((hsvValues[1] - greenValues[1]) * 2000) + ((hsvValues[2]-greenValues[2])*1);;
         returnValues.add(greenDistance);
 
         return returnValues;

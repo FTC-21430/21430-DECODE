@@ -121,8 +121,7 @@ public class Flywheel {
 
         flywheel.setVelocity(targetSpeed);
         currentSpeed = flywheel.getVelocity();
-        telemetry.addData("FLYWHEELvelocity", currentSpeed);
-    }
+           }
 
     /**
      * Checks if the flywheel is within the accuracy threshold of the target speed.

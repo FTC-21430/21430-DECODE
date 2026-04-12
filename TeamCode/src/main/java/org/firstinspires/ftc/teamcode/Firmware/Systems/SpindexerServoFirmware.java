@@ -101,7 +101,7 @@ public class SpindexerServoFirmware {
                 // after ejecting, return to the normal prep/positioning direction.
                 setDirection(true);
                 setSpindexerOffset(-5);
-                setSpindexerPosition(getEncoderPosition());
+                setSpindexerPosition(0);
             }
             return; // do not enter precise control
         }
@@ -128,10 +128,7 @@ public class SpindexerServoFirmware {
                 jamRuntime.reset();
             }
         }
-        telemetry.addData("jamCount", jamCount);
-        telemetry.addData("isJamed", isJamed);
-        telemetry.addData("movement", getMovementVelocity());
-        telemetry.addData("isAtTarget", isAtTarget());
+
 
 
 
@@ -275,11 +272,18 @@ public class SpindexerServoFirmware {
      * Moves the spindexer to the calibration position (0 degrees).
      */
     public void calibrationPosition(){
+        spindexerServo.setPosition(1);
+    }
+
+    public void zeroPosition(){
+
         // this only drives to the known pose; the outer class decides when it is safe to zero the encoder.
         spindexerServo.setPosition(pwmAtZeroDegrees);
         targetPosition = 0;
     }
-
+    public void calibrateSpinny(){
+        spindexerServo.setPosition(1);
+    }
     /**
      * Resets the encoder position to zero.
      */

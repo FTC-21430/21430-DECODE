@@ -54,7 +54,7 @@ public class LauncherGate {
      * marks the gate as stopped. This method does not move hardware — it only updates state.</p>
      */
     public void updateGate() {
-        telemetry.addData("gateStopped", isStopped);
+
         if (!isStopped && timer.seconds() >= movementTimeout) {
             isStopped = true;
         }

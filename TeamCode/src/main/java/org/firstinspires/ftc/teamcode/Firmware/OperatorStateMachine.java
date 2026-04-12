@@ -42,7 +42,7 @@ public class OperatorStateMachine {
 
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
-    public static double sortingTimeout = 0.45;
+    public static double sortingTimeout = 0.3;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
@@ -154,10 +154,8 @@ public class OperatorStateMachine {
 
     // Will call the corresponding update function to the current state
     public void updateStateMachine(){
-//        for (COLORS color : spindexer.indexColors){
-//            telemetry.addData("A Color", color);
-//        }
-//        telemetry.addData("spin target", spindexer.getTarget());
+        telemetry.addData("^^^ Current State:", currentState);
+
         if (gamepad2.left_trigger > 0.4){
             intake.setIntakePower(0.4);
         }
@@ -226,7 +224,7 @@ public class OperatorStateMachine {
     private int ballSampling = 0;
     private int switchSampling = 0;
     public static int ballSamplingThreshold = 2;
-    public static int switchSamplingThreshold = 3;
+    public static int switchSamplingThreshold = 2;
     private void intakeState (){
         if (!(gamepad2.left_trigger >= 0.4) && !gamepad2.square){
             intake.setIntakePower(-1);
@@ -440,7 +438,8 @@ public class OperatorStateMachine {
     private void idleToLaunch(){
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.LAUNCH);
         queuedLaunch = true;
-        moveToState(State.PREPPING);
+        prep();
+        moveToState(State.LAUNCH);
     }
     private void preppingToLaunch(){
         launcher.setGatePosition(true);

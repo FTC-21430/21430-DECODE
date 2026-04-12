@@ -112,11 +112,7 @@ public class Action {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
     }
     private void actionScanMotif(){
-        int tempID = robot.aprilTags.getMotifID();
-        if (tempID != 0){
-            robot.motifId = tempID;
-        }
-
+       robot.scanMotif();
     }
 
     private void actionIdle(){

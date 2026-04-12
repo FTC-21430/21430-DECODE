@@ -41,11 +41,7 @@ public class RotationControl {
     //This is used to get the speed it needs to turn
     public double getOutputPower(double currentAngle) {
         angleControler.update(currentAngle);
-
-        telemetry.addData("inputed angle", currentAngle);
-        telemetry.addData("output power", angleControler.getPower());
-        telemetry.addData("target angle", angleControler.getTarget());
-        return angleControler.getPower();
+    return angleControler.getPower();
     }
 
     //This is a setter used to set what the PID values would be

@@ -6,11 +6,14 @@ import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
+import org.openftc.easyopencv.PipelineRecordingParameters;
+
 @Autonomous
-@Disabled
+//@Disabled
 public class RedBeaver extends BaseAuto {
 
     private void sortedLaunch(boolean finalLaunch, boolean firstLaunch){
+        robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
         if (!firstLaunch) {
             robot.autoMoveTo(-15.5, 30, 195, 25);
         }
@@ -47,7 +50,8 @@ public class RedBeaver extends BaseAuto {
         waitForStart();
         runtime.reset();
         //This is the starting location of the robot
-        robot.odometry.overridePosition(-49.82,54.5782,125.08);
+        robot.odometry.overridePosition(-64.22,34.88,180);
+        robot.autoMoveTo(-50,30,180,6);
         robot.spindexer.setIndexOffset(Spindexer.INDEX_TYPE.NONE);
         robot.launcher.revFlywheel();
         robot.chill(false,0.2);

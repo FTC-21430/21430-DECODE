@@ -116,12 +116,7 @@ public class AprilTag {
         If the detection is null then the detection ID is unknown
          */
         if (detectedID.metadata != null) {
-            telemetry.addLine(String.format("\n==== (ID %d) %s", detectedID.id, detectedID.metadata.name));
-            telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detectedID.ftcPose.range, detectedID.ftcPose.bearing, detectedID.ftcPose.elevation));
-            telemetry.addData("aprilX", detectedID.robotPose.getPosition().x);
-            telemetry.addData("aprilY", detectedID.robotPose.getPosition().y);
-            telemetry.addData("aprilAngle", detectedID.robotPose.getOrientation().getYaw());
-            aprilTagID = detectedID.id;
+                      aprilTagID = detectedID.id;
         }else{
             aprilTagID = 0;
         }

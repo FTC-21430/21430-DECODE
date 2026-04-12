@@ -67,11 +67,6 @@ public class GobildaPinpointModuleFirmware {
         robotX = position.getX(DistanceUnit.INCH);
         robotY = position.getY(DistanceUnit.INCH);
         robotAngle = pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES);
-        telemetry.addLine("-------------------------");
-        telemetry.addData("UnnormalizedAngle", pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES));
-        telemetry.addData("positionAngle", position.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("NormalizedAngle", pinpoint.getHeading(AngleUnit.DEGREES));
-        telemetry.addLine("------------------------");
 
         updateVelocity();
 

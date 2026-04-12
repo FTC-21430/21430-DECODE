@@ -21,7 +21,6 @@ public class BlueDolphin extends BaseAuto {
         while (opModeInInit()){
             int tempID = robot.aprilTags.getMotifID();
             if (tempID != 0) robot.motifId = tempID;
-            telemetry.addData("CurrentMotif", robot.motifId);
             telemetry.update();
         }
         robot.setAlliance("blue");

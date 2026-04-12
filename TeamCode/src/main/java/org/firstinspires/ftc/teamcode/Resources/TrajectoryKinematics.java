@@ -83,6 +83,7 @@ public class TrajectoryKinematics {
     private double flywheelError;
 
     private Telemetry telemetry;
+    private boolean isAuto = false;
 
     /**
      * Create a TrajectoryKinematics instance.
@@ -95,6 +96,7 @@ public class TrajectoryKinematics {
         // variable here; it was removed because it was not used. Keep the
         // constructor argument for compatibility with existing callers.
         this.telemetry = telemetry;
+        this.isAuto = isAuto;
     }
 
     // the getBearingToTag is used to turn the robot so it is facing the center of the tag
@@ -129,12 +131,10 @@ public class TrajectoryKinematics {
         switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
-                tempGoalY = 52;
-                tempGoalX = -64.2;
-                if (isAuto) {
-                    tempGoalY = 50;
-                    tempGoalX = -60.2;
-                }
+
+                tempGoalY = 50;
+                tempGoalX = -59.2;
+
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
                 // center. The numbers are empirical and should be documented in design notes.
@@ -181,6 +181,9 @@ public class TrajectoryKinematics {
         tempGoalX += targetCorrectionXMag;
         tempGoalY += targetCorrectionYMag;
         distance = Math.hypot(tempGoalX-posX,tempGoalY-posY);
+        if (isAuto){
+            distance -= 3.5; // TODO: Overshooting a lot in auto??
+        }
         return distance;
     }
 

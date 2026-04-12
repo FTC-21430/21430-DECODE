@@ -20,6 +20,9 @@ public class PathPlanning {
     private int splineCount = 0;
     public static double robotSpeed = 38; // my guess of 20 inches / s
     public static double minHoldTime = 0.2;
+
+    private double previousX, previousY, previousAngle;
+
     public PathPlanning(DecodeBot bot){
         this.robotActions = new RobotActions(bot);
         this.waypoints = new ArrayList<Waypoint>();
@@ -36,21 +39,32 @@ public class PathPlanning {
         Waypoint waypoint = new Waypoint(x,y,0,speedRatio, false);
         waypoints.add(waypoint);
         splineCount ++;
+        previousX = x;
+        previousY = y;
     }
     //The spline start function is the start point for spline curve
     public void splineStart(double x, double y, double angle){
         Waypoint waypoint = new Waypoint(x,y,angle,0,true);
         waypoints.add(waypoint);
+        previousX = x;
+        previousY = y;
+        previousAngle = angle;
 
     }
     public void splineEnd(double x,double y,double angle){
         chill(x,y,angle,2);
+        previousX = x;
+        previousY = y;
+        previousAngle = angle;
     }
     //This function gets the spline to the constant angle
     public void splineToConstantAngle(double x, double y, double angle, double speedRatio){
         Waypoint waypoint = new Waypoint(x,y,angle,speedRatio,true);
         waypoints.add(waypoint);
         splineCount ++;
+        previousX = x;
+        previousY = y;
+        previousAngle = angle;
     }
     //This function resets it
     public void resetGeneration(){
@@ -68,6 +82,11 @@ public class PathPlanning {
     //This chill function is basically the wait time
     public void chill(double x, double y, double angle, double time){
         Waypoint waypoint = new Waypoint(x,y,angle,time);
+        waypoints.add(waypoint);
+        splineCount++;
+    }
+    public void chill(double time){
+        Waypoint waypoint = new Waypoint(previousX,previousY,previousAngle,time);
         waypoints.add(waypoint);
         splineCount++;
     }

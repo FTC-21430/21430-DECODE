@@ -65,7 +65,6 @@ public class RedScrimmageTeleop extends BaseTeleOp {
               //sets drive power and what gamepad does
             robot.driveTrain.setDrivePower(-gamepad1.left_stick_y, gamepad1.left_stick_x, robot.rotationControl.getOutputPower(robot.odometry.getRobotAngle()), robot.odometry.getRobotAngle());
             robot.updateRobot(false, false, false);
-            telemetry.addData("current robot heading", robot.odometry.getRobotAngle());
 
             robot.bulkSensorBucket.clearCache();
             telemetry.update();

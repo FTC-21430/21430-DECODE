@@ -43,9 +43,9 @@ public abstract class DecodeBot extends Robot{
     public static final double P_CONSTANT = 0.14;
     public static final double I_CONSTANT = 0.11;
     public static final double D_CONSTANT = 0.031;
-    public static double P_ANGLE = 0.023;
+    public static double P_ANGLE = 0.021;
     public static double I_ANGLE = 0.0005;
-    public static double D_ANGLE = 0.0006;
+    public static double D_ANGLE = 0.0004;
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
@@ -61,7 +61,7 @@ public abstract class DecodeBot extends Robot{
 
     // These odometry pod position value are just for the software testing bot
 
-    public static double SWEEP_P = 0.25;
+    public static double SWEEP_P = 0.20;
     public static double SWEEP_I = 0.0;
     public static double SWEEP_D = 0.02;
     private boolean SWEEPAimingAtGoal = false;
@@ -85,7 +85,7 @@ public abstract class DecodeBot extends Robot{
         intake = new Intake(hardwareMap, telemetry);
         spindexer = new Spindexer(hardwareMap,telemetry,resetSpindexer,isAuto);
         lifter = new Lifter(hardwareMap, telemetry);
-    rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
+        rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
         aprilTags = new AprilTag();
 
         aprilTags.init(hardwareMap,telemetry,cameraExposure);
@@ -103,6 +103,7 @@ public abstract class DecodeBot extends Robot{
         rotationControl.setTargetAngle(robotAngle);
         driveTrain.fieldCentricDriving(false);
         while(!pathFollowing.isWithinTargetTolerance(odometry.getRobotX(),odometry.getRobotY())&&opMode.opModeIsActive()){
+            odometry.updateOdometry();
             launcher.revFlywheel();
             updateRobot(false,false,false);
             pathFollowing.followPath(odometry.getRobotX(),odometry.getRobotY(),odometry.getRobotAngle());
@@ -134,10 +135,15 @@ public abstract class DecodeBot extends Robot{
     //TODO:Call updates for sensors and actuators
     //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
+        if (shouldScan){
+            motifId = aprilTags.getMotifID();
+        }
         intake.updateIntake();
         lifter.update();
-//        operatorStateMachine.updateStateMachine();
         aprilTags.clearCache();
+        if (motifId != 0) {
+            telemetry.addData("Motif ID", motifId);
+        }
     }
 
     // red or blue
@@ -169,14 +175,15 @@ public abstract class DecodeBot extends Robot{
     public void setLauncherBasedOnTags(){
         trajectoryKinematics.updateVelocities(odometry.getVelocityX(),odometry.getVelocityY());
         double distanceToGoal = trajectoryKinematics.getDistance(alliance,odometry.getRobotX(),odometry.getRobotY());
-        telemetry.addData("alliance", alliance);
-        telemetry.addData("distance", distanceToGoal);
+
         trajectoryKinematics.calculateTrajectory(distanceToGoal, launcher.getFlywheelError());
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.revFlywheel();
     }
-    public void scanMotiff(){
-        aprilTags.getMotifID();
+    private boolean shouldScan = false;
+    public void scanMotif(){
+        shouldScan = !shouldScan;
+
     }
     public static double parkPosX = 28;
     public static double parkPosY = -40;

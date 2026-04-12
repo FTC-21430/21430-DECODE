@@ -115,9 +115,7 @@ public class Lifter {
             if (getLiftPositionRight() < 0.8 || getLiftPositionLeft() < 0.8) {
                 liftLeft.setPower(loweringSpeed);
                 liftRight.setPower(loweringSpeed);
-                telemetry.addData("liftSwitch", leftHomingSwitchesPressed());
-                telemetry.addData("powerL", 0);
-                telemetry.addData("powerR",0);
+
                 checkHomingSwitches();
             }else{
                 leftLiftController.update(ticksToInches(liftLeft.getCurrentPosition()));
@@ -125,17 +123,13 @@ public class Lifter {
                 if (leftHomingSwitchesPressed()){
                     liftLeft.setPower(0);
                     liftRight.setPower(0);
-                    telemetry.addData("liftSwitch", leftHomingSwitchesPressed());
-                    telemetry.addData("powerL", 0);
-                    telemetry.addData("powerR",0);
+
                 }else{
                     double powerL = leftLiftController.getPower();
                     double powerR = leftLiftController.getPower();
                     liftLeft.setPower(powerL);
                     liftRight.setPower(powerR);
-                    telemetry.addData("liftSwitch", leftHomingSwitchesPressed());
-                    telemetry.addData("powerL", powerL);
-                    telemetry.addData("powerR",powerR);
+
                 }
             }
         }else {
@@ -172,9 +166,6 @@ public class Lifter {
             powerL += leftError * -lCon;
             powerR += rightError * -lCon;
 
-            telemetry.addData("liftSwitch", leftHomingSwitchesPressed());
-            telemetry.addData("powerL", powerL);
-            telemetry.addData("powerR",powerR);
 
             liftLeft.setPower(powerL);
             liftRight.setPower(powerR);
@@ -185,9 +176,7 @@ public class Lifter {
     public void tuningUpdate(double joyPower){
         liftLeft.setPower(joyPower);
         liftRight.setPower(joyPower);
-        telemetry.addData("LeftPos", liftLeft.getCurrentPosition());
-        telemetry.addData("RightPos", liftRight.getCurrentPosition());
-        telemetry.addData("switch", leftHomingSwitchesPressed());
+
     }
     public double ticksToInches(int ticks){
 

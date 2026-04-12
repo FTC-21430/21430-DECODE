@@ -20,8 +20,7 @@ abstract public class BaseAuto extends org.firstinspires.ftc.teamcode.Opmodes.Ge
             if (tempId != 0) {
                 robot.motifId = tempId;
             }
-            telemetry.addData("motifID", robot.motifId);
-            robot.updateRobot(false, false, false);
+               robot.updateRobot(false, false, false);
             robot.operatorStateMachine.updateStateMachine();
             robot.pathFollowing.followPath(robot.odometry.getRobotX(), robot.odometry.getRobotY(), robot.odometry.getRobotAngle());
 
