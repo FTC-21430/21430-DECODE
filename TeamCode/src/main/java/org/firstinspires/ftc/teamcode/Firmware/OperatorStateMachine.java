@@ -223,8 +223,8 @@ public class OperatorStateMachine {
 
     private int ballSampling = 0;
     private int switchSampling = 0;
-    public static int ballSamplingThreshold = 2;
-    public static int switchSamplingThreshold = 2;
+    public static int ballSamplingThreshold = 4;
+    public static int switchSamplingThreshold = 6;
     private void intakeState (){
         if (!(gamepad2.left_trigger >= 0.4) && !gamepad2.square){
             intake.setIntakePower(-1);
@@ -296,6 +296,13 @@ public class OperatorStateMachine {
         }
 
         spindexer.prepLaunch(launchSequence);
+        // check if we should be sorting our shots
+        shouldSort = false;
+        for (int i = 0; i < 3; i++){
+            if (launchQueue.get(i) != COLORS.NONE){
+                shouldSort = true;
+            }
+        }
     }
     public static double singleLaunchIncrement = 130;
     public static double fullLaunchIncrement = 400;
@@ -305,6 +312,7 @@ public class OperatorStateMachine {
     private int shotsRemaining = 0;
     private boolean launchStalled = false;
     private boolean spinning = false;
+    private boolean shouldSort = false;
 
     /**
      * The launch state update method
@@ -322,13 +330,7 @@ public class OperatorStateMachine {
         launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
 
-        // check if we should be sorting our shots
-        boolean shouldSort = false;
-        for (int i = 0; i < 3; i++){
-            if (launchQueue.get(i) != COLORS.NONE){
-                shouldSort = true;
-            }
-        }
+
 
         if (spindexer.isAtRest() && shotsRemaining > 0 && !launchStalled){
             spinning = false;
@@ -364,6 +366,7 @@ public class OperatorStateMachine {
 
         if (!spinning && shotsRemaining <= 0){
             moveToState(State.IDLE);
+            shouldSort = false;
         }
 
         if (spindexer.isAtRest() && !launchStalled){

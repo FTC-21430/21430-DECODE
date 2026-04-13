@@ -53,18 +53,21 @@ public class Spindexer {
         RUNTIME = new ElapsedTime();
         this.telemetry = telemetry;
         COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor1","colorSensor2");
-        recalibrateSpindexerPosition();
 
         intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
         intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
         intakeLimitSwitchOne.setMode(DigitalChannel.Mode.INPUT);
         intakeLimitSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
-        while (RUNTIME.seconds() < 0.3){
-            telemetry.addLine("SPINDEXER INIT");
-            PADDLE_SERVO.calibrateSpinny();
-            telemetry.update();
+        if (reset){
+            recalibrateSpindexerPosition();
+            while (RUNTIME.seconds() < 0.3){
+                telemetry.addLine("SPINDEXER INIT");
+                PADDLE_SERVO.calibrateSpinny();
+                telemetry.update();
+            }
+            PADDLE_SERVO.zeroPosition();
         }
-        PADDLE_SERVO.zeroPosition();
+
     }
 
     private int stoppedSampling = 0;

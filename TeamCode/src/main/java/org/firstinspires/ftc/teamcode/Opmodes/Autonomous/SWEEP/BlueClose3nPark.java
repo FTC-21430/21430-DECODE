@@ -28,6 +28,7 @@ public class BlueClose3nPark extends BaseAuto {
         path.splineToConstantAngle(-23, -15.5, -140, 1);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.chill(-23, -15.5, -140, 1);
+        path.addAction(RobotActions.Actions.IDLE);
         path.splineEnd(-56, -18, -90);
     }
 

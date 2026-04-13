@@ -133,7 +133,7 @@ public class TrajectoryKinematics {
                 // These are empirically set goal coordinates (inches) for the red alliance
 
                 tempGoalY = 50;
-                tempGoalX = -59.2;
+                tempGoalX = -70;
 
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
@@ -182,7 +182,9 @@ public class TrajectoryKinematics {
         tempGoalY += targetCorrectionYMag;
         distance = Math.hypot(tempGoalX-posX,tempGoalY-posY);
         if (isAuto){
-            distance -= 3.5; // TODO: Overshooting a lot in auto??
+            distance -= 4.2; // TODO: Overshooting a lot in auto??
+        }else{
+            distance -= 4;
         }
         return distance;
     }
