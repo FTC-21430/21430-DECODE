@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
-@Disabled
+
 @Autonomous
-public class Thingy extends BaseAuto {
+public class Red3and3andhide extends BaseAuto {
 
     /// Route definition methods:
     /// all units are in inches, degrees, and seconds.
@@ -17,10 +16,28 @@ public class Thingy extends BaseAuto {
     /// path.splineTo(x,y,angle,speedRatio) go through a specified point while keeping the angle of the robot at a constant.
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
-        PathPlanning path = robot.SWEEP.pathPlanner; // have a shorthand variable name to make typing this easier.
-        path.splineStart(-64.22,34.88,180); // the start of the path (0)
-
-        path.splineEnd(0,15,0);
+        PathPlanning path = robot.SWEEP.pathPlanner;
+        path.splineStart(70, 14.5, 180);
+        path.addAction(RobotActions.Actions.PREPPING);
+        path.splineToConstantAngle(62.5, 13, 180, 1);
+        path.chill(62.5, 13, 180, 1);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.splineToConstantAngle(62.5, 13, 180, 1);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.chill(62.5, 13, 180, 1);
+        path.addAction(RobotActions.Actions.INTAKE);
+        path.splineToConstantAngle(61.5, 65.5, 270, 1);
+        path.splineToConstantAngle(62.5, 8.5, 180, 1);
+        path.chill(62.5, 8.5, 180, 1);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.splineToConstantAngle(62.5, 8.5, 180, 1);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.chill(62.5, 8.5, 180, 1);
+        path.splineToConstantAngle(62.5, 8.5, 180, 1);
+        path.chill(62.5, 8.5, 180, 1);
+        path.splineEnd(64.5, 38, 18);
     }
 
     @Override
