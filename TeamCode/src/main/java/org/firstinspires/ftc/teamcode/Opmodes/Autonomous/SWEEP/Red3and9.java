@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.Waypoint;
 
 @Autonomous
 public class Red3and9 extends BaseAuto {
@@ -17,6 +18,10 @@ public class Red3and9 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
+
+        Waypoint launchPosition = path.defineNewWaypoint(-20.5, 18.5, 140, 0.75);
+        Waypoint gateOpen = path.defineNewWaypoint(-5.5, 51, 180, 0.6);
+
         path.splineStart(-64.22,34.88,180);
 
         path.addAction(RobotActions.Actions.PREPPING);
@@ -39,7 +44,7 @@ public class Red3and9 extends BaseAuto {
         path.splineToConstantAngle(-6, 30.5, 180, 0.6);
         path.chill( 0.2);
 
-        path.splineToConstantAngle(-5.5, 51, 180, 0.6); // stops intaking
+        path.splineToConstantAngle(gateOpen); // stops intaking
 
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
 
@@ -48,7 +53,7 @@ public class Red3and9 extends BaseAuto {
 
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
 
-        path.splineToConstantAngle(-20.5, 18.5, 140, 0.75);
+        path.splineToConstantAngle(launchPosition);
 
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
         path.chill( 0.3);
@@ -64,7 +69,7 @@ public class Red3and9 extends BaseAuto {
         path.chill( 0.5);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineTo(10, 30.5, 0.95);
-        path.splineToConstantAngle(-20.5, 18.5, 140, 0.75);
+        path.splineToConstantAngle(launchPosition);
 
         path.addAction(RobotActions.Actions.PREPPING);
         path.chill( 0.3);
