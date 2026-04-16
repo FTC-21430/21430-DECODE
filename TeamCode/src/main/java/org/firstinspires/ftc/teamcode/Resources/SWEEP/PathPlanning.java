@@ -81,9 +81,11 @@ public class PathPlanning {
      */
     //This chill function is basically the wait time
     public void chill(double x, double y, double angle, double time){
-        Waypoint waypoint = new Waypoint(x,y,angle,time);
+        Waypoint waypoint = new Waypoint(x,y,angle,1,true);
+        Waypoint waitpoint = new Waypoint(x,y,angle,time);
         waypoints.add(waypoint);
-        splineCount++;
+        waypoints.add(waitpoint);
+        splineCount += 2;
     }
     public void chill(double time){
         Waypoint waypoint = new Waypoint(previousX,previousY,previousAngle,time);
