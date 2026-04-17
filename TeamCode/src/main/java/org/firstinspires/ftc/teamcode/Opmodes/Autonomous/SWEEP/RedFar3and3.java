@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 
 @Autonomous
-public class BlueClose3nPark extends BaseAuto {
+public class RedFar3and3 extends BaseAuto {
 
     /// Route definition methods:
     /// all units are in inches, degrees, and seconds.
@@ -17,29 +17,38 @@ public class BlueClose3nPark extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        path.splineStart(-64, -35, -180);
-        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineStart(69, 7, 180);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.splineToConstantAngle(-23.5, -16, -140, 1);
-        path.chill(-23.5, -16, -140, 1.5);
-        path.addAction(RobotActions.Actions.LAUNCH);
-        path.splineToConstantAngle(-23.5, -16, -140, 1);
-        path.chill(-23.5, -16, -140, 1.4);
-        path.splineToConstantAngle(-23, -15.5, -140, 1);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.chill(-23, -15.5, -140, 1);
-        path.addAction(RobotActions.Actions.IDLE);
-        path.splineEnd(-56, -18, -90);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineToConstantAngle(63, 7.5, 180, 1);
+        path.chill(63, 7.5, 180, 1);
+        path.splineToConstantAngle(61, 33.5, -90, 1);
+        path.chill(61, 33.5, -90, 1);
+        path.splineToConstantAngle(63.5, 62, -90, 1);
+        path.chill(63.5, 62, -90, 1);
+        path.splineToConstantAngle(64, 7.5, 180, 1);
+        path.addAction(RobotActions.Actions.INTAKE);
+        path.chill(64, 7.5, 180, 1);
+        path.addAction(RobotActions.Actions.PREPPING);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineEnd(68, 33.5, 180);
+
     }
+
 
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true,true,true);
         defineRoute();
         waitForStart();
-        robot.setAlliance("blue");
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-64.22,-34.88,180);
+        robot.odometry.overridePosition(-64.22,34.88,180);
+        robot.setAlliance("red");
+//        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
