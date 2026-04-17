@@ -69,7 +69,7 @@ public class GlobalPositions {
             case BLUE:
                 point = MirrorWaypoint(point);
 
-            
+
 
         }
         return point;
