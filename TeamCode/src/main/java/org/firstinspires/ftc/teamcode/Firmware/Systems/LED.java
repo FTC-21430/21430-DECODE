@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class LED {
-    //Hardware
+    //Classes
     private Servo led = null;
-    //Time
     private ElapsedTime elapsedTime = null;
     private double lastTime;
+    private double allianceColor;
     //Disco
     boolean discoParty = false;
     //Colors
@@ -20,6 +20,7 @@ public class LED {
     private final double ORANGE = 0.333;
     private final double YELLOW = 0.388;
     private final double GREEN = 0.472;
+    private final double BLUE = 0.611;
     public static double discoRate = 0.5;
     public LED(HardwareMap hardwareMap) {
         led = hardwareMap.get(Servo.class, "LED");
@@ -61,6 +62,16 @@ public class LED {
         boolean discoParty = true;
         elapsedTime.reset();
         setLedColor(color);
+    }
+    public void setLedAlliance(){
+        setLedColor(allianceColor);
+    }
+    public void setAllianceColor(String alliance){
+        if (alliance.equals("red")){
+            allianceColor =RED;
+        } else {
+            allianceColor =BLUE;
+        }
     }
 
 }

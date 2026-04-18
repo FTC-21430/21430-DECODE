@@ -4,14 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.LED;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
-import org.firstinspires.ftc.teamcode.Firmware.Systems.LauncherRamp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
@@ -144,6 +143,8 @@ public abstract class DecodeBot extends Robot{
         lifter.update();
         aprilTags.clearCache();
         led.setLed(spindexer.getNumberOfArtifacts());
+        led.setAllianceColor(alliance);
+        led.update();
         if (motifId != 0) {
             telemetry.addData("Motif ID", motifId);
         }

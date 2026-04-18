@@ -15,8 +15,6 @@ import java.util.Arrays;
  */
 @Config
 public class Spindexer {
-    private LED led = null;
-
     private final SpindexerServoFirmware PADDLE_SERVO; // Firmware for controlling the spindexer servo.
 
     private final SpindexerColorSensor COLOR_SENSOR;
@@ -55,7 +53,6 @@ public class Spindexer {
         RUNTIME = new ElapsedTime();
         this.telemetry = telemetry;
         COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor1","colorSensor2");
-        led = new LED(hardwareMap);
 
         intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
         intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
@@ -98,7 +95,6 @@ public class Spindexer {
         }else{
             stoppedSampling = 0;
         }
-        led.update();
     }
 
     public void eject(double degrees){

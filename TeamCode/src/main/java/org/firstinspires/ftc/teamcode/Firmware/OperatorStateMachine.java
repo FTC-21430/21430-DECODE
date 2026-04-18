@@ -213,6 +213,7 @@ public class OperatorStateMachine {
         launcher.retractRamp();
         launcher.update();
         spindexer.updateSpindexer();
+        bot.led.setLedAlliance();
     }
 
     /**
@@ -238,6 +239,8 @@ public class OperatorStateMachine {
 
         launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
         launcher.update();
+        bot.led.setLed(spindexer.getNumberOfArtifacts());
+        bot.led.update();
 
         if (spindexer.getColorInIntake() != COLORS.NONE && spindexer.isAtRest() && (spindexer.getIntakeSwitch()) || ballSampling >= ballSamplingThreshold || switchSampling > switchSamplingThreshold){
             spindexer.storeColorAtIndex();
@@ -280,6 +283,7 @@ public class OperatorStateMachine {
             moveToState(State.LAUNCH);
             queuedLaunch = false;
         }
+        bot.led.setLedAlliance();
     }
     private boolean queuedLaunch = false;
     private void prep(){
@@ -375,6 +379,7 @@ public class OperatorStateMachine {
 
         launcher.update();
         spindexer.updateSpindexer();
+        bot.led.setLedAlliance();
     }
 
     /**
