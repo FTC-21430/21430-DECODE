@@ -44,7 +44,7 @@ public class GlobalPositions {
         positions.put(POS.INTAKE_START_1,new Waypoint(-12,24,270,1,true));
         positions.put(POS.INTAKE_END_1,new Waypoint(-12,48,270,1,true));
         positions.put(POS.INTAKE_START_2,new Waypoint(12,  24,270,1,true));
-        positions.put(POS.INTAKE_END_2,new Waypoint(-18,52,270,1,true));
+        positions.put(POS.INTAKE_END_2,new Waypoint(12,52,270,1,true));
         positions.put(POS.INTAKE_START_3,new Waypoint(36,18,270,1,true));
         positions.put(POS.INTAKE_END_3,new Waypoint(36,52,270,1,true));
         positions.put(POS.GATE_PREP,new Waypoint(-6,30,180,1,true));
