@@ -308,9 +308,6 @@ public class Spindexer {
     private void setPaddleDirection(boolean clockwise){
         PADDLE_SERVO.setDirection(clockwise);
     }
-<<<<<<< Updated upstream
-}
-=======
 
     public int getNumberOfArtifacts(){
         int count = 0;
@@ -322,4 +319,4 @@ public class Spindexer {
         return count;
     }
 }
->>>>>>> Stashed changes
+

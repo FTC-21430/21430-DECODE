@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 

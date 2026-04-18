@@ -10,7 +10,7 @@ public class LED {
     //Hardware
     private Servo led = null;
     //Time
-    ElapsedTime elapsedTime = null;
+    private ElapsedTime elapsedTime = null;
     private double lastTime;
     //Disco
     boolean discoParty = false;
@@ -23,7 +23,7 @@ public class LED {
     public static double discoRate = 0.5;
     public LED(HardwareMap hardwareMap) {
         led = hardwareMap.get(Servo.class, "LED");
-        ElapsedTime time = new ElapsedTime();
+        this.elapsedTime = new ElapsedTime();
     }
     public void setLed(int numbOfArtifacts){
         switch (numbOfArtifacts){

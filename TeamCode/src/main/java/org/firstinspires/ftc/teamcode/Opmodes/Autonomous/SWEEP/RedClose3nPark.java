@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 
 @Autonomous
 public class RedClose3nPark extends BaseAuto {
@@ -17,24 +18,23 @@ public class RedClose3nPark extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        path.splineStart(-64, 35, -180);
+        path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.splineToConstantAngle(-23.5, 16, 140, 1);
-        path.chill(-23.5, 16, 140, 1.5);
+        path.splineToConstantAngle(POS.CLOSE_3);
+        path.chill(1.5);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.splineToConstantAngle(-23.5, 16, 140, 1);
-        path.chill(-23.5, 16, 140, 1.4);
-        path.splineToConstantAngle(-23, 15.5, 140, 1);
-        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.chill(-23, 15.5, 140, 1);
+        path.chill(1.4);
+        path.chill(1);
         path.addAction(RobotActions.Actions.IDLE);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineEnd(-56, 18, 90);
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true,true,true);
+        robot.setAlliance("red");
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
