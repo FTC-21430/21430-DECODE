@@ -17,25 +17,23 @@ public class BlueFar3and3 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        path.splineStart(69, -7, -180);
+        path.splineStart(POS.FAR_START);
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.chill(1);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(63, -7.5, -180, 1);
-        path.chill(63, -7.5, -180, 1);
-        path.splineToConstantAngle(61, -33.5, 90, 1);
-        path.chill(61, -33.5, 90, 1);
-        path.splineToConstantAngle(63.5, -62, 90, 1);
-        path.chill(63.5, -62, 90, 1);
-        path.splineToConstantAngle(64, -7.5, -180, 1);
+        path.splineToConstantAngle(POS.INTAKE_START_CORNER);
+        path.splineToConstantAngle(POS.INTAKE_END_CORNER);
+        path.chill(0.5);
         path.addAction(RobotActions.Actions.INTAKE);
-        path.chill(64, -7.5, -180, 1);
         path.addAction(RobotActions.Actions.PREPPING);
+        path.splineToConstantAngle(POS.FAR_3);
+        path.chill(1);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineEnd(68, -33.5, -180);
+        path.splineEnd(POS.FAR_END);
     }
 
 

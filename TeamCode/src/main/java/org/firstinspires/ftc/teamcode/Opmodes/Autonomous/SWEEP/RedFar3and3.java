@@ -33,7 +33,7 @@ public class RedFar3and3 extends BaseAuto {
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineEnd(68, 33.5, 180);
+        path.splineEnd(POS.FAR_END);
     }
 
 
