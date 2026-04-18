@@ -18,6 +18,7 @@ public class Lifter {
     //TODO: Comments
     private HardwareMap hardwareMap = null;
     private Telemetry telemetry = null;
+    private LED led = null;
 
     //TODO: Find and tune values
     //TODO: Find height values. These are not even guestimates! RANDOM NUMBERS!
@@ -66,6 +67,7 @@ public class Lifter {
         LiftLimitSwitch2 = hardwareMap.get(DigitalChannel.class, "liftLimitSwitch2");
         servos = new Servo[]{liftLeftLatch, liftRightLatch};
         lifts = new DcMotor[]{liftLeft, liftRight};
+        led = new LED(hardwareMap);
         for (DcMotor lift : lifts) {
             lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -224,6 +226,7 @@ private boolean testDropping = false;
     }
     public void lift(){
         setLiftPosition(PARKING_HEIGHT);
+        led.discoParty();
     }
     public void defence(){
         setLiftPosition(DEFENCE_HEIGHT);

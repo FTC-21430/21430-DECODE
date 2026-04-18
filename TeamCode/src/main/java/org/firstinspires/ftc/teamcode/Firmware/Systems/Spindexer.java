@@ -15,6 +15,7 @@ import java.util.Arrays;
  */
 @Config
 public class Spindexer {
+    private LED led = null;
 
     private final SpindexerServoFirmware PADDLE_SERVO; // Firmware for controlling the spindexer servo.
 
@@ -44,6 +45,7 @@ public class Spindexer {
         NONE
     }
 
+
     /**
      * Constructor initializes the spindexer components.
      * @param hardwareMap Hardware map to retrieve hardware instances.
@@ -53,6 +55,7 @@ public class Spindexer {
         RUNTIME = new ElapsedTime();
         this.telemetry = telemetry;
         COLOR_SENSOR = new SpindexerColorSensor(hardwareMap, "colorSensor1","colorSensor2");
+        led = new LED(hardwareMap);
 
         intakeLimitSwitchOne = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchOne");
         intakeLimitSwitchTwo = hardwareMap.get(DigitalChannel.class, "intakeLimitSwitchTwo");
@@ -95,6 +98,7 @@ public class Spindexer {
         }else{
             stoppedSampling = 0;
         }
+        led.update();
     }
 
     public void eject(double degrees){
@@ -304,4 +308,18 @@ public class Spindexer {
     private void setPaddleDirection(boolean clockwise){
         PADDLE_SERVO.setDirection(clockwise);
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    public int getNumberOfArtifacts(){
+        int count = 0;
+        for (COLORS slot : indexColors){
+            if (slot != COLORS.NONE){
+                count ++;
+            }
+        }
+        return count;
+    }
+}
+>>>>>>> Stashed changes

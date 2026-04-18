@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.AprilTag;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.GobildaPinpointModuleFirmware;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
+import org.firstinspires.ftc.teamcode.Firmware.Systems.LED;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.LauncherRamp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
@@ -33,6 +33,7 @@ public abstract class DecodeBot extends Robot{
     public AprilTag aprilTags = null;
     public TrajectoryKinematics trajectoryKinematics;
     public Lifter lifter = null;
+    public LED led = null;
     //Setting the alliance
     //TODO: This is only used in decode bot, should we make private?
     public String alliance = "red";
@@ -87,6 +88,7 @@ public abstract class DecodeBot extends Robot{
         lifter = new Lifter(hardwareMap, telemetry);
         rotationControl = new RotationControl(0.3,P_ANGLE,I_ANGLE,D_ANGLE,robotAngle,telemetry);
         aprilTags = new AprilTag();
+        led = new LED(hardwareMap);
 
         aprilTags.init(hardwareMap,telemetry,cameraExposure);
         bulkSensorBucket.clearCache();
@@ -141,6 +143,7 @@ public abstract class DecodeBot extends Robot{
         intake.updateIntake();
         lifter.update();
         aprilTags.clearCache();
+        led.setLed(spindexer.getNumberOfArtifacts());
         if (motifId != 0) {
             telemetry.addData("Motif ID", motifId);
         }
