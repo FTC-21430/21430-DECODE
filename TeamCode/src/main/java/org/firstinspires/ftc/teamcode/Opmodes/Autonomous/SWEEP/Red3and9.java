@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.Waypoint;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 
 @Autonomous
 public class Red3and9 extends BaseAuto {

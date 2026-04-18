@@ -26,7 +26,9 @@ public class GlobalPositions {
         INTAKE_END_CORNER,
         FAR_1,
         FAR_2,
-        FAR_3
+        FAR_3,
+        CLOSE_START,
+        FAR_START
     }
 
     private final Dictionary<POS,Waypoint> positions;
@@ -52,6 +54,8 @@ public class GlobalPositions {
         positions.put(POS.FAR_1,new Waypoint(48,0,175,1,true));
         positions.put(POS.FAR_2,new Waypoint(52,8,178,1,true));
         positions.put(POS.FAR_3,new Waypoint(60,18,173,1,true));
+        positions.put(POS.CLOSE_START, new Waypoint(-64.22,34.88,180,1,true));
+        positions.put(POS.FAR_START, new Waypoint(63.5, 20.5, 0, 1, true));
     }
 
 
@@ -61,16 +65,13 @@ public class GlobalPositions {
 
     public Waypoint get(POS position){
         Waypoint point = positions.get(position);
-
         switch (targetAlliance){
             case RED:
                 // Points are default
                 break;
             case BLUE:
                 point = MirrorWaypoint(point);
-
-
-
+                break;
         }
         return point;
     }
