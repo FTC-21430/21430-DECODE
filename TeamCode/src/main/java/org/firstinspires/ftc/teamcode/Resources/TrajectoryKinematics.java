@@ -77,8 +77,10 @@ public class TrajectoryKinematics {
     public static double velocityScalarXMag = 0.925;
     public static double velocityScalarYMag = 0.7;
 
-    public static double goalX = -60.5;
-    public static double goalY = 63.0;
+    public static double goalXBlue = -60.5;
+    public static double goalYBlue = -63.0;
+    public static double goalXRed = -67;
+    public static double goalYRed = 63.0;
     public static double flywheelErrorToAngle = -0.03;
     private double flywheelError;
 
@@ -124,17 +126,16 @@ public class TrajectoryKinematics {
         double coordinate_correction_offset = 90;
         // small angular offset to account for the flywheel being offset from the robot center
         double FLYWHEEL_OFFSET = 0;
-        double tempGoalX = goalX;
-        double tempGoalY = goalY;
+        double tempGoalX = goalXBlue;
+        double tempGoalY = goalYBlue;
 
 
         switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
 
-                tempGoalY = 50;
-                tempGoalX = -70;
-
+                tempGoalX = goalXRed;
+                tempGoalY = goalYRed;
                 // Geometry: Math.atan(5/123.5) represents a small angular offset due to
                 // the flywheel's vertical/horizontal displacement relative to the robot
                 // center. The numbers are empirical and should be documented in design notes.
@@ -142,7 +143,8 @@ public class TrajectoryKinematics {
                 break;
             case "blue":
                 // Empirically determined goal coordinates (inches) for the blue alliance
-                tempGoalY *= -1;
+                tempGoalX = goalXBlue;
+                tempGoalY = goalYBlue;
 //                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
                 break;
         }
@@ -165,17 +167,24 @@ public class TrajectoryKinematics {
         double distance = 0.0;
         double posX = x;
         double posY = y;
-        double tempGoalX = goalX;
-        double tempGoalY = goalY;
+        double tempGoalX = goalXBlue;
+        double tempGoalY = goalYBlue;
         switch (mode) {
             case "red":
                 // These are empirically set goal coordinates (inches) for the red alliance
 
+                tempGoalX = goalXRed;
+                tempGoalY = goalYRed;
+                // Geometry: Math.atan(5/123.5) represents a small angular offset due to
+                // the flywheel's vertical/horizontal displacement relative to the robot
+                // center. The numbers are empirical and should be documented in design notes.
+//                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
                 break;
             case "blue":
                 // Empirically determined goal coordinates (inches) for the blue alliance
-
-                tempGoalY *= -1;
+                tempGoalX = goalXBlue;
+                tempGoalY = goalYBlue;
+//                FLYWHEEL_OFFSET = Math.toDegrees(Math.atan(5 / 123.5));
                 break;
         }
         tempGoalX += targetCorrectionXMag;

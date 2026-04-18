@@ -224,8 +224,8 @@ public class OperatorStateMachine {
 
     private int ballSampling = 0;
     private int switchSampling = 0;
-    public static int ballSamplingThreshold = 4;
-    public static int switchSamplingThreshold = 6;
+    public static int ballSamplingThreshold = 7;
+    public static int switchSamplingThreshold = 7;
     private void intakeState (){
         if (!(gamepad2.left_trigger >= 0.4) && !gamepad2.square){
             intake.setIntakePower(-1);

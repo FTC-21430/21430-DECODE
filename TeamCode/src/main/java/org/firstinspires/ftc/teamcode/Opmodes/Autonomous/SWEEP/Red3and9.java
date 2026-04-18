@@ -19,15 +19,11 @@ public class Red3and9 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-
-        Waypoint launchPosition = path.defineNewWaypoint(-20.5, 18.5, 140, 0.75);
-        Waypoint gateOpen = path.defineNewWaypoint(-5.5, 51, 180, 0.6);
-
-        path.splineStart(-64.22,34.88,180);
+        path.splineStart(POS.CLOSE_START);
 
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(-20.5, 14.5, 140, 0.6);
+        path.splineToConstantAngle(POS.CLOSE_3);
         // get to launch position
         path.chill(0.3); // stablize rotation
 
@@ -39,22 +35,23 @@ public class Red3and9 extends BaseAuto {
         path.addAction(RobotActions.Actions.INTAKE);
 
         // go for the first set
-        path.splineToConstantAngle(-14, 10, 270, 0.6);
-        path.splineToConstantAngle(-14.5, 45.5, 270, 0.62);
+        path.splineToConstantAngle(POS.INTAKE_START_1, 0.6);
+        path.chill(0.5);
+        path.splineToConstantAngle(POS.INTAKE_END_1, 0.62);
         path.chill( 0.8);
-        path.splineToConstantAngle(-6, 30.5, 180, 0.6);
+        path.splineToConstantAngle(POS.GATE_PREP, 0.6);
         path.chill( 0.2);
 
-        path.splineToConstantAngle(gateOpen); // stops intaking
+        path.splineToConstantAngle(POS.GATE_OPEN); // stops intaking
 
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
 
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill( 1); // holding gate
+        path.chill( 2); // holding gate
 
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
 
-        path.splineToConstantAngle(launchPosition);
+        path.splineToConstantAngle(POS.CLOSE_3);
 
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
         path.chill( 0.3);
@@ -65,12 +62,12 @@ public class Red3and9 extends BaseAuto {
         path.addAction(RobotActions.Actions.INTAKE);
 
         // go for the second set
-        path.splineToConstantAngle(12.5, 10, 270, 0.95);
-        path.splineToConstantAngle(12.5, 58.5, 270, 0.62);
+        path.splineToConstantAngle(POS.INTAKE_START_2, 0.8);
+        path.splineToConstantAngle(POS.INTAKE_END_2, 0.62);
         path.chill( 0.5);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineTo(10, 30.5, 0.95);
-        path.splineToConstantAngle(launchPosition);
+        path.splineToConstantAngle(POS.CLOSE_3);
 
         path.addAction(RobotActions.Actions.PREPPING);
         path.chill( 0.3);
@@ -83,8 +80,8 @@ public class Red3and9 extends BaseAuto {
 
         // go for the third set
         path.splineTo(20,15,1);
-        path.splineToConstantAngle(39, 12, 270, 0.85);
-        path.splineToConstantAngle(39, 58.5, 270, 0.62);
+        path.splineToConstantAngle(POS.INTAKE_START_3, 0.85);
+        path.splineToConstantAngle(POS.INTAKE_END_3, 0.62);
         path.chill( 0.6);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
 
@@ -100,7 +97,7 @@ public class Red3and9 extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,true,true);
+        initialize(true,true,true, "red");
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();

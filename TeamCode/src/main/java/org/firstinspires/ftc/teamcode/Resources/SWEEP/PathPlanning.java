@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class PathPlanning {
     private RobotActions robotActions;
     private ArrayList<Waypoint> waypoints;
-    private GlobalPositions GP = null;
+    public GlobalPositions GP = null;
 
     // spline count goes up with every new spline that is going to exist. One waypoint is not enough. splines = waypoints - 1. 0 indexed
     private int splineCount = 0;
@@ -67,6 +67,14 @@ public class PathPlanning {
     public void splineTo(GlobalPositions.POS position){
         Waypoint definedWaypoint = GP.get(position);
         Waypoint waypoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),definedWaypoint.getSpeed(), false);
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+    }
+    public void splineTo(GlobalPositions.POS position, double speedRatio){
+        Waypoint definedWaypoint = GP.get(position);
+        Waypoint waypoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),speedRatio, false);
         waypoints.add(definedWaypoint);
         splineCount ++;
         previousX = definedWaypoint.getX();
@@ -133,6 +141,15 @@ public class PathPlanning {
     }
     public void splineToConstantAngle(GlobalPositions.POS position){
         Waypoint definedWaypoint = GP.get(position);
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
+    }
+    public void splineToConstantAngle(GlobalPositions.POS position, double speedRatio){
+        Waypoint definedWaypoint = GP.get(position);
+        definedWaypoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),speedRatio,true);
         waypoints.add(definedWaypoint);
         splineCount ++;
         previousX = definedWaypoint.getX();

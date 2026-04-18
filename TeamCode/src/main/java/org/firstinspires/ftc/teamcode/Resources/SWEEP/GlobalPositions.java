@@ -39,16 +39,16 @@ public class GlobalPositions {
         //TODO: These coordinates are approximate, please tune in - Tobin - (hiding in the tech booth while the show starts in 10 minutes
         positions.put(POS.CLOSE_1, new Waypoint(-0,0,150,1,true));
         positions.put(POS.CLOSE_2,new Waypoint(-12,12,155,1,true));
-        positions.put(POS.CLOSE_3,new Waypoint(-24,24,155,1,true));
-        positions.put(POS.END,new Waypoint(24,24,175,1,true));
-        positions.put(POS.INTAKE_START_1,new Waypoint(-12,24,270,1,true));
-        positions.put(POS.INTAKE_END_1,new Waypoint(-12,48,270,1,true));
-        positions.put(POS.INTAKE_START_2,new Waypoint(12,  24,270,1,true));
-        positions.put(POS.INTAKE_END_2,new Waypoint(12,52,270,1,true));
-        positions.put(POS.INTAKE_START_3,new Waypoint(36,18,270,1,true));
-        positions.put(POS.INTAKE_END_3,new Waypoint(36,52,270,1,true));
-        positions.put(POS.GATE_PREP,new Waypoint(-6,30,180,1,true));
-        positions.put(POS.GATE_OPEN,new Waypoint(-6,46,180,1,true));
+        positions.put(POS.CLOSE_3,new Waypoint(-30,30,155,1,true));
+        positions.put(POS.END,new Waypoint(24,34,175,1,true));
+        positions.put(POS.INTAKE_START_1,new Waypoint(-13.3, 20, 270,1,true));
+        positions.put(POS.INTAKE_END_1,new Waypoint(-13.3, 49.5, 270,1,true));
+        positions.put(POS.INTAKE_START_2,new Waypoint(12.5, 20, 270,1,true));
+        positions.put(POS.INTAKE_END_2,new Waypoint(12.5, 58.5, 270,1,true));
+        positions.put(POS.INTAKE_START_3,new Waypoint(39, 20, 270,1,true));
+        positions.put(POS.INTAKE_END_3,new Waypoint(39, 58.5, 270,1,true));
+        positions.put(POS.GATE_PREP,new Waypoint(-6, 36.5, 180,1,true));
+        positions.put(POS.GATE_OPEN,new Waypoint(-5.5, 52, 180,1,true));
         positions.put(POS.INTAKE_START_CORNER,new Waypoint(56,36,270,1,true));
         positions.put(POS.INTAKE_END_CORNER,new Waypoint(56,52,270,1,true));
         positions.put(POS.FAR_1,new Waypoint(48,0,175,1,true));
@@ -57,8 +57,9 @@ public class GlobalPositions {
         positions.put(POS.CLOSE_START, new Waypoint(-64.22,34.88,180,1,true));
         positions.put(POS.FAR_START, new Waypoint(63.5, 20.5, 0, 1, true));
     }
-
-
+    public void setAlliance(ALLIANCE alliance){
+        this.targetAlliance = alliance;
+    }
     private Waypoint MirrorWaypoint(Waypoint waypoint){
         return new Waypoint(waypoint.getX(),waypoint.getY() * -1, waypoint.getAngle() * -1 , waypoint.getSpeed(), true);
     }

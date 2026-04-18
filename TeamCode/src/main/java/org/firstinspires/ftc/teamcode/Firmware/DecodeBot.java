@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Resources.PathFollowing;
 import org.firstinspires.ftc.teamcode.Resources.RotationControl;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.SWEEP;
 import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
@@ -95,6 +96,15 @@ public abstract class DecodeBot extends Robot{
         // for the last parameter of the operatorStateMachine Constructor, note that this:: means to provide a runnable reference as the value. This way, The operator state machine can run the function without needing to 'have' a DecodeBot,
         // which would completely break the intended structure of our repository.
         operatorStateMachine = new OperatorStateMachine(launcher,spindexer,intake,telemetry,this::setLauncherBasedOnTags,gamepad2, trajectoryKinematics, this);
+        switch (alliance){
+            case "red":
+                SWEEP.pathPlanner.GP.setAlliance(GlobalPositions.ALLIANCE.RED);
+                break;
+            case "blue":
+                SWEEP.pathPlanner.GP.setAlliance(GlobalPositions.ALLIANCE.BLUE);
+                break;
+        }
+
     }
 
     //the function used to move to a spot on the field during auto
