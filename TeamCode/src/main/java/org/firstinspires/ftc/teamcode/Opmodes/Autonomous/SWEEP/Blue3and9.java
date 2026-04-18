@@ -18,46 +18,33 @@ public class Blue3and9 extends BaseAuto {
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
         path.splineStart(-64.22,-34.88,-180);
-
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineToConstantAngle(-20.5, -14.5, -140, 0.6);
         // get to launch position
         path.chill(0.3); // stablize rotation
-
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(0.7);
-
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-
         path.addAction(RobotActions.Actions.INTAKE);
-
         // go for the first set
         path.splineToConstantAngle(-14, -10, -270, 0.6);
         path.splineToConstantAngle(-14.5, -45.5, -270, 0.62);
         path.chill( 0.8);
         path.splineToConstantAngle(-6, -30.5, -180, 0.6);
         path.chill( 0.2);
-
         path.splineToConstantAngle(-5.5, -52.5, -180, 0.6); // stops intaking
-
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
-
         path.addAction(RobotActions.Actions.PREPPING);
         path.chill( 1); // holding gate
-
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-
         path.splineToConstantAngle(-20.5, -18.5, -140, 0.75);
-
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
         path.chill( 0.3);
         path.addAction(RobotActions.Actions.LAUNCH);
-
         path.chill(1.5);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
-
         // go for the second set
         path.splineToConstantAngle(12.5, -10, -270, 0.95);
         path.splineToConstantAngle(12.5, -58.5, -270, 0.62);
@@ -65,23 +52,18 @@ public class Blue3and9 extends BaseAuto {
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineTo(10, -30.5, 0.95);
         path.splineToConstantAngle(-20.5, -18.5, -140, 0.75);
-
         path.addAction(RobotActions.Actions.PREPPING);
         path.chill( 0.3);
         path.addAction(RobotActions.Actions.LAUNCH);
-
         path.chill(1.5);
-
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
-
         // go for the third set
         path.splineTo(15,-15,1);
         path.splineToConstantAngle(34, -12, -270, 0.85);
         path.splineToConstantAngle(39, -58.5, -270, 0.62);
         path.chill( 0.6);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-
         path.splineToConstantAngle(-43, -13, -90, 0.9);
         path.addAction(RobotActions.Actions.PREPPING);
         path.chill( 0.3);

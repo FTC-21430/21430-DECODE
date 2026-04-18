@@ -28,7 +28,8 @@ public class GlobalPositions {
         FAR_2,
         FAR_3,
         CLOSE_START,
-        FAR_START
+        FAR_START,
+        FAR_END
     }
 
     private final Dictionary<POS,Waypoint> positions;
@@ -49,13 +50,14 @@ public class GlobalPositions {
         positions.put(POS.INTAKE_END_3,new Waypoint(39, 58.5, 270,1,true));
         positions.put(POS.GATE_PREP,new Waypoint(-6, 36.5, 180,1,true));
         positions.put(POS.GATE_OPEN,new Waypoint(-5.5, 52, 180,1,true));
-        positions.put(POS.INTAKE_START_CORNER,new Waypoint(56,36,270,1,true));
-        positions.put(POS.INTAKE_END_CORNER,new Waypoint(56,52,270,1,true));
+        positions.put(POS.INTAKE_START_CORNER,new Waypoint(62,38.5,270,1,true));
+        positions.put(POS.INTAKE_END_CORNER,new Waypoint(62,59,270,1,true));
         positions.put(POS.FAR_1,new Waypoint(48,0,175,1,true));
         positions.put(POS.FAR_2,new Waypoint(52,8,178,1,true));
         positions.put(POS.FAR_3,new Waypoint(60,18,173,1,true));
         positions.put(POS.CLOSE_START, new Waypoint(-64.22,34.88,180,1,true));
         positions.put(POS.FAR_START, new Waypoint(63.5, 20.5, 0, 1, true));
+        positions.put(POS.FAR_END,new Waypoint(61.5, 34, 180,1,true));
     }
     public void setAlliance(ALLIANCE alliance){
         this.targetAlliance = alliance;

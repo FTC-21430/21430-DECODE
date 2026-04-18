@@ -29,13 +29,13 @@ public class LED {
     public void setLed(int numbOfArtifacts){
         switch (numbOfArtifacts){
             case 0:
-                setLedColor(GREEN);
+                setLedColor(RED);
                 break;
             case 1:
-                setLedColor(YELLOW);
+                setLedColor(ORANGE);
                 break;
             case 2:
-                setLedColor(ORANGE);
+                setLedColor(GREEN);
                 break;
             default:
                 setLedColor(RED);
@@ -57,8 +57,6 @@ public class LED {
         }
     }
     public void discoParty(){
-
-
         boolean discoParty = true;
         elapsedTime.reset();
         setLedColor(color);
