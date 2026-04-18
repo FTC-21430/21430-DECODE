@@ -88,7 +88,7 @@ public class RedFar6and9 extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(0,0,0);
+        robot.odometry.overridePosition(63.5, 20.5, 0);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();

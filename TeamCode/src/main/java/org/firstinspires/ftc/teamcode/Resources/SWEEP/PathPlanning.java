@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class PathPlanning {
     private RobotActions robotActions;
     private ArrayList<Waypoint> waypoints;
+    private GlobalPositions GP = null;
 
     // spline count goes up with every new spline that is going to exist. One waypoint is not enough. splines = waypoints - 1. 0 indexed
     private int splineCount = 0;
@@ -26,6 +27,20 @@ public class PathPlanning {
     public PathPlanning(DecodeBot bot){
         this.robotActions = new RobotActions(bot);
         this.waypoints = new ArrayList<Waypoint>();
+        switch (bot.alliance){
+            case "red":
+                this.GP = new GlobalPositions(GlobalPositions.ALLIANCE.RED);
+            case "blue":
+                this.GP = new GlobalPositions(GlobalPositions.ALLIANCE.BLUE);
+        }
+
+    }
+
+    public Waypoint defineNewWaypoint(double x, double y, double angle){
+        return new Waypoint(x,y,angle,1,true);
+    }
+    public Waypoint defineNewWaypoint(double x, double y, double angle, double speedRatio){
+        return new Waypoint(x,y,angle,speedRatio,true);
     }
 
     /**
@@ -42,6 +57,21 @@ public class PathPlanning {
         previousX = x;
         previousY = y;
     }
+    public void splineTo(Waypoint definedWaypoint){
+        Waypoint waypoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),definedWaypoint.getSpeed(), false);
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+    }
+    public void splineTo(GlobalPositions.POS position){
+        Waypoint definedWaypoint = GP.get(position);
+        Waypoint waypoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),definedWaypoint.getSpeed(), false);
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+    }
     //The spline start function is the start point for spline curve
     public void splineStart(double x, double y, double angle){
         Waypoint waypoint = new Waypoint(x,y,angle,0,true);
@@ -51,11 +81,39 @@ public class PathPlanning {
         previousAngle = angle;
 
     }
+    public void splineStart(GlobalPositions.POS position){
+        Waypoint definedWaypoint = GP.get(position);
+        waypoints.add(definedWaypoint);
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
+
+    }
+    public void splineStart(Waypoint definedWaypoint){
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
+    }
     public void splineEnd(double x,double y,double angle){
         chill(x,y,angle,2);
         previousX = x;
         previousY = y;
         previousAngle = angle;
+    }
+    public void splineEnd(Waypoint definedWaypoint){
+        chill(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),2);
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
+    }
+    public void splineEnd(GlobalPositions.POS position){
+        Waypoint definedWaypoint = GP.get(position);
+        chill(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),2);
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
     }
     //This function gets the spline to the constant angle
     public void splineToConstantAngle(double x, double y, double angle, double speedRatio){
@@ -65,6 +123,21 @@ public class PathPlanning {
         previousX = x;
         previousY = y;
         previousAngle = angle;
+    }
+    public void splineToConstantAngle(Waypoint definedWaypoint){
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
+    }
+    public void splineToConstantAngle(GlobalPositions.POS position){
+        Waypoint definedWaypoint = GP.get(position);
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
     }
     //This function resets it
     public void resetGeneration(){
@@ -81,9 +154,18 @@ public class PathPlanning {
      */
     //This chill function is basically the wait time
     public void chill(double x, double y, double angle, double time){
-        Waypoint waypoint = new Waypoint(x,y,angle,time);
+        Waypoint waypoint = new Waypoint(x,y,angle,1,true);
+        Waypoint waitpoint = new Waypoint(x,y,angle,time);
         waypoints.add(waypoint);
-        splineCount++;
+        waypoints.add(waitpoint);
+        splineCount += 2;
+    }
+    public void chill(GlobalPositions.POS position, double time){
+        Waypoint definedWaypoint = GP.get(position);
+        Waypoint waitpoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),time);
+        waypoints.add(definedWaypoint);
+        waypoints.add(waitpoint);
+        splineCount += 2;
     }
     public void chill(double time){
         Waypoint waypoint = new Waypoint(previousX,previousY,previousAngle,time);
