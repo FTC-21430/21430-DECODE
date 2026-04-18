@@ -80,7 +80,7 @@ public class TrajectoryKinematics {
     public static double goalXBlue = -60.5;
     public static double goalYBlue = -63.0;
     public static double goalXRed = -67;
-    public static double goalYRed = 63.0;
+    public static double goalYRed = 67.67;
     public static double flywheelErrorToAngle = -0.03;
     private double flywheelError;
 
