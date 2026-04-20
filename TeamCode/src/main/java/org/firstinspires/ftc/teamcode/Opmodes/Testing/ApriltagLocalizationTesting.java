@@ -13,11 +13,14 @@ public class ApriltagLocalizationTesting extends BaseTeleOp {
         initialize(true, false,false);
         robot.odometry.recalibrateIMU();
         waitForStart();
-        robot.odometry.overridePosition(0, 0, 0);
+        robot.odometry.overridePosition(-62.22,38.5,180);
         robot.setAlliance("red");
         while (opModeIsActive()) {
             robot.odometry.updateOdometry();
-            robot.updateOdometryOnTags(false);
+            robot.aprilTags.updateAprilValues(robot.odometry.getRobotX(), robot.odometry.getRobotY(),robot.odometry.getRobotAngle(),true, "red");
+            robot.telemetry.addData("aprilX", robot.aprilTags.getRobotX());
+            robot.telemetry.addData("aprilY", robot.aprilTags.getRobotY());
+            robot.telemetry.addData("aprilYaw", robot.aprilTags.getRobotAngle());
             robot.telemetry.addData("odomX", robot.odometry.getRobotX());
             robot.telemetry.addData("odomY",robot.odometry.getRobotY());
             robot.telemetry.addData("odomAngle", robot.odometry.getRobotAngle());

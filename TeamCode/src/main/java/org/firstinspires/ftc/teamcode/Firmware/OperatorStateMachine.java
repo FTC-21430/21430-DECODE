@@ -49,7 +49,7 @@ public class OperatorStateMachine {
     private TrajectoryKinematics trajectoryKinematics = null;
     private String alliance;
     private DecodeBot bot;
-
+    private boolean isAutonomous = false;
 
     // Will Trigger the transition from one state to the next
 
@@ -74,6 +74,7 @@ public class OperatorStateMachine {
         this.alliance = alliance;
         this.trajectoryKinematics = trajectoryKinematics;
         this.bot = bot;
+        this.isAutonomous = bot.isAuto;
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
@@ -204,10 +205,19 @@ public class OperatorStateMachine {
         }
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
 
-        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+        if (!isAutonomous && gamepad2.triangle) {
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
 
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        }
+        if (isAutonomous){
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+
+            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        }
         launcher.update();
 
         launcher.retractRamp();
@@ -224,8 +234,8 @@ public class OperatorStateMachine {
 
     private int ballSampling = 0;
     private int switchSampling = 0;
-    public static int ballSamplingThreshold = 7;
-    public static int switchSamplingThreshold = 7;
+    public static int ballSamplingThreshold = 4;
+    public static int switchSamplingThreshold = 5;
     private void intakeState (){
         if (!(gamepad2.left_trigger >= 0.4) && !gamepad2.square){
             intake.setIntakePower(-1);
@@ -234,10 +244,19 @@ public class OperatorStateMachine {
         }
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
 
-        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+        if (!isAutonomous && gamepad2.triangle) {
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
 
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        }
+        if (isAutonomous){
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+
+            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        }
         launcher.update();
         bot.led.setLed(spindexer.getNumberOfArtifacts());
         bot.led.update();
@@ -272,11 +291,20 @@ public class OperatorStateMachine {
     public static double preppingTimeout = 0.1;
     private void preppingState(){
 
-        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
+        if (!isAutonomous && gamepad2.triangle) {
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
 
-        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        }
+        if (isAutonomous){
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+
+            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        }
         launcher.update();
         spindexer.updateSpindexer();
         if (queuedLaunch && preppingTimer.seconds() >= preppingTimeout){

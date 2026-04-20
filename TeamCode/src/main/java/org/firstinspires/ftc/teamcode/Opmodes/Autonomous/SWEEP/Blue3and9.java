@@ -21,27 +21,27 @@ public class Blue3and9 extends BaseAuto {
         path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(POS.CLOSE_3);
+        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
         // get to launch position
-        path.chill(0.3); // stablize rotation
+        path.chill(0.6); // stablize rotation
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(0.7);
+        path.chill(0.8);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
         // go for the first set
-        path.splineToConstantAngle(POS.INTAKE_START_1, 0.6);
+        path.splineToConstantAngle(POS.INTAKE_START_1, 0.8);
         path.chill(0.5);
-        path.splineToConstantAngle(POS.INTAKE_END_1, 0.62);
-        path.chill(0.8);
-        path.splineToConstantAngle(POS.GATE_PREP, 0.6);
-        path.chill(0.2);
-        path.splineToConstantAngle(POS.GATE_OPEN); // stops intaking
-        path.chill(2); // holding gate
+        path.splineToConstantAngle(POS.INTAKE_END_1, 0.5);
+        path.chill(0.35);
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
-        path.addAction(RobotActions.Actions.PREPPING);
+        path.splineToConstantAngle(POS.GATE_PREP, 0.8);
+        path.chill(0.2);
+        path.splineToConstantAngle(POS.GATE_OPEN, 0.68); // stops intaking
+        path.chill(1.5); // holding gate
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(POS.CLOSE_3);
-        path.chill(0.3);
+        path.splineToConstantAngle(-43, -18, -90, 0.7);
+        path.chill(0.5);
+        path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(1.5);
@@ -49,42 +49,41 @@ public class Blue3and9 extends BaseAuto {
         path.addAction(RobotActions.Actions.INTAKE);
         // go for the second set
         path.splineToConstantAngle(POS.INTAKE_START_2, 0.8);
-        path.splineToConstantAngle(POS.INTAKE_END_2, 0.62);
-        path.chill(0.5);
+        path.splineToConstantAngle(POS.INTAKE_END_2, 0.63);
+        path.chill(0.6);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineTo(10, -30.5, 0.95);
-        path.splineToConstantAngle(POS.CLOSE_3);
-        path.chill(0.3);
+        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
+        path.chill(0.5);
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(1.5);
+        path.chill(1.2);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
-        path.splineTo(-17.5, -24.5, 1);
         // go for the third set
-        path.splineToConstantAngle(20, -15, 90, 1);
+        path.splineToConstantAngle(20, -12, 90, 1);
         path.splineToConstantAngle(POS.INTAKE_START_3, 0.85);
-        path.splineToConstantAngle(POS.INTAKE_END_3, 0.62);
+        path.splineToConstantAngle(POS.INTAKE_END_3, 0.63);
+        path.chill(0.7);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.chill(0.6);
-        path.splineTo(24.5, -24.5, 1);
-        path.splineToConstantAngle(-43, -21, -90, 0.9);
+        path.splineTo(5, -24.5, 1);
+        path.splineToConstantAngle(-43, -18, -90, 0.7);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.addAction(RobotActions.Actions.LAUNCH);
-        path.addAction(RobotActions.Actions.IDLE);
         path.chill(0.3);
+        path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(1.3);
-        path.splineEnd(-43, -21, -90);
+        path.addAction(RobotActions.Actions.IDLE);
+        path.splineEnd(-46, -21, -90);
     }
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,true,true);
+        initialize(true,true,true,"blue");
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-64.22,-34.88,-180);
+        robot.odometry.overridePosition(-62.22,-38.5,-180);
         robot.setAlliance("blue");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();

@@ -113,11 +113,7 @@ public class BlueTeleop extends BaseTeleOp {
                         robot.spindexer.clearColor(i);
                     }
                 }
-                if (gamepad2.triangle){
-                    robot.launcher.revFlywheel();
-                } else if(robot.operatorStateMachine.getCurrentState() != OperatorStateMachine.State.LAUNCH){
-                    robot.launcher.idleFlywheel();
-                }
+
 
                 robot.operatorStateMachine.updateStateMachine();
             }
@@ -125,6 +121,7 @@ public class BlueTeleop extends BaseTeleOp {
 
             if (gamepad2.leftBumperWasPressed()){
                 robot.lifter.lift();
+                robot.led.discoParty();
             }
 
             if (gamepad1.left_bumper){

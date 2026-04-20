@@ -13,7 +13,6 @@ public class GlobalPositions {
         CLOSE_3,
         CLOSE_2,
         CLOSE_1,
-        END,
         INTAKE_START_1,
         INTAKE_END_1,
         INTAKE_START_2,
@@ -38,24 +37,23 @@ public class GlobalPositions {
         targetAlliance = alliance;
         positions = new Hashtable<POS, Waypoint>();
         //TODO: These coordinates are approximate, please tune in - Tobin - (hiding in the tech booth while the show starts in 10 minutes
-        positions.put(POS.CLOSE_1, new Waypoint(-0,0,150,1,true));
-        positions.put(POS.CLOSE_2,new Waypoint(-12,12,155,1,true));
-        positions.put(POS.CLOSE_3,new Waypoint(-30,30,155,1,true));
-        positions.put(POS.END,new Waypoint(24,34,175,1,true));
-        positions.put(POS.INTAKE_START_1,new Waypoint(-13.3, 20, 270,1,true));
-        positions.put(POS.INTAKE_END_1,new Waypoint(-13.3, 49.5, 270,1,true));
-        positions.put(POS.INTAKE_START_2,new Waypoint(12.5, 20, 270,1,true));
-        positions.put(POS.INTAKE_END_2,new Waypoint(12.5, 58.5, 270,1,true));
-        positions.put(POS.INTAKE_START_3,new Waypoint(39, 20, 270,1,true));
-        positions.put(POS.INTAKE_END_3,new Waypoint(39, 58.5, 270,1,true));
-        positions.put(POS.GATE_PREP,new Waypoint(-6, 36.5, 180,1,true));
-        positions.put(POS.GATE_OPEN,new Waypoint(-5.5, 52, 180,1,true));
+        positions.put(POS.CLOSE_1, new Waypoint(2,1,150,1,true));
+        positions.put(POS.CLOSE_2,new Waypoint(-10,18,155,1,true));
+        positions.put(POS.CLOSE_3,new Waypoint(-28,31,155,1,true));
+        positions.put(POS.INTAKE_START_1,new Waypoint(-11.3, 18, 270,1,true));
+        positions.put(POS.INTAKE_END_1,new Waypoint(-11.3, 50.6, 270,1,true));
+        positions.put(POS.INTAKE_START_2,new Waypoint(16.5, 18, 270,1,true));
+        positions.put(POS.INTAKE_END_2,new Waypoint(16.5, 58, 270,1,true));
+        positions.put(POS.INTAKE_START_3,new Waypoint(39, 18, 270,1,true));
+        positions.put(POS.INTAKE_END_3,new Waypoint(39, 58, 270,1,true));
+        positions.put(POS.GATE_PREP,new Waypoint(-6, 34.5, 180,1,true));
+        positions.put(POS.GATE_OPEN,new Waypoint(-4.5, 53.3, 180,1,true));
         positions.put(POS.INTAKE_START_CORNER,new Waypoint(58,36,270,1,true));
         positions.put(POS.INTAKE_END_CORNER,new Waypoint(64.5,64,270,1,true));
         positions.put(POS.FAR_1,new Waypoint(48,0,175,1,true));
         positions.put(POS.FAR_2,new Waypoint(52,8,178,1,true));
-        positions.put(POS.FAR_3,new Waypoint(60,18,173,1,true));
-        positions.put(POS.CLOSE_START, new Waypoint(-64.22,34.88,180,1,true));
+        positions.put(POS.FAR_3,new Waypoint(58,18,173,1,true));
+        positions.put(POS.CLOSE_START, new Waypoint(-62.22,38.5,180,1,true));
         positions.put(POS.FAR_START, new Waypoint(59.466, 13.50, 180, 1, true));
         positions.put(POS.FAR_END, new Waypoint(60.5, 40, 180,1,true));
     }

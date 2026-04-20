@@ -26,7 +26,7 @@ public class IntakeGate {
     public static double openPos = 0.3;
 
     /**
-     * Time in seconds to wait after commanding a motion before considering the gate stopped.
+     * Time in seconds to wait after commanding  a motion before considering the gate stopped.
      * Typically a small value like 0.02 - 0.1 seconds depending on your servo and motion.
      */
     public static double movementTimeout = 0.03;

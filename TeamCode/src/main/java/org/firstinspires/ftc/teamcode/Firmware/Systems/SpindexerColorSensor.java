@@ -68,7 +68,7 @@ public class SpindexerColorSensor {
 //        Read color values and get the distances between configuration values and raw readings
         float[] values = getRawData();
 
-        if (values[0] <= 115){
+        if (values[0] <= 135.1){
             return COLORS.NONE;
         }
         if (values[0] >= 160){

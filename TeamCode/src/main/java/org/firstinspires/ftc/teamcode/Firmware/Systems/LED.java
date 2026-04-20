@@ -27,6 +27,7 @@ public class LED {
         this.elapsedTime = new ElapsedTime();
     }
     public void setLed(int numbOfArtifacts){
+        if (discoParty) return;
         switch (numbOfArtifacts){
             case 0:
                 setLedColor(RED);
@@ -65,6 +66,7 @@ public class LED {
         setLedColor(allianceColor);
     }
     public void setAllianceColor(String alliance){
+        if (discoParty) return;
         if (alliance.equals("red")){
             allianceColor =RED;
         } else {

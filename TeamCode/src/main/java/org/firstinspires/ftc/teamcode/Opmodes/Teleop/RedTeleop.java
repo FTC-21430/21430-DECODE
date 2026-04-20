@@ -118,10 +118,8 @@ public class RedTeleop extends BaseTeleOp {
                         robot.spindexer.clearColor(i);
                     }
                 }
-                if (gamepad2.triangle){
-                    robot.launcher.revFlywheel();
-                } else if(robot.operatorStateMachine.getCurrentState() != OperatorStateMachine.State.LAUNCH){
-                    robot.launcher.idleFlywheel();
+                if (gamepad1.left_stick_button){
+                    robot.odometry.overridePosition(-64.22,34.88,180);
                 }
 
                 robot.operatorStateMachine.updateStateMachine();
@@ -130,6 +128,7 @@ public class RedTeleop extends BaseTeleOp {
 
             if (gamepad2.leftBumperWasPressed() && gamepad2.dpad_down){
                 robot.lifter.lift();
+                robot.led.discoParty();
             }
 
             if (gamepad1.left_trigger > 0.2){

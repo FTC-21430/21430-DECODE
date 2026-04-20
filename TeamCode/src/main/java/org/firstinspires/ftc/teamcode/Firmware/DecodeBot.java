@@ -50,7 +50,7 @@ public abstract class DecodeBot extends Robot{
     public static double yOffset = 2.78;
     public static double xOffset = 4.9574;
     public static long cameraExposure = 10;
-    private boolean isAuto;
+    public boolean isAuto;
     public static double closeSpeed = 1200;
     public static double midSpeed = 1400;
     public static double farSpeed = 1750;

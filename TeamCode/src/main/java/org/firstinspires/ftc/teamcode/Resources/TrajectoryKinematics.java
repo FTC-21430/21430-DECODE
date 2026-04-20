@@ -72,15 +72,15 @@ public class TrajectoryKinematics {
     // provided velocity by these scalars to compute a small offset to the aim point.
     // The units and meaning of velocityX/velocityY should be consistent with the
     // chosen scalars (for example inches per second * seconds-of-lag -> inches).
-    public static double velocityScalarXAngle = 0.62;
-    public static double velocityScalarYAngle = 0.62;
+    public static double velocityScalarXAngle = 0.8;
+    public static double velocityScalarYAngle = 0.9;
     public static double velocityScalarXMag = 0.925;
     public static double velocityScalarYMag = 0.7;
 
-    public static double goalXBlue = -60.5;
+    public static double goalXBlue = -65;
     public static double goalYBlue = -63.0;
-    public static double goalXRed = -67;
-    public static double goalYRed = 67.67;
+    public static double goalXRed = -69.5;
+    public static double goalYRed = 67;
     public static double flywheelErrorToAngle = -0.03;
     private double flywheelError;
 
@@ -191,9 +191,9 @@ public class TrajectoryKinematics {
         tempGoalY += targetCorrectionYMag;
         distance = Math.hypot(tempGoalX-posX,tempGoalY-posY);
         if (isAuto){
-            distance -= 4.2; // TODO: Overshooting a lot in auto??
+            distance -= 4.6 ; // TODO: Overshooting a lot in auto??
         }else{
-            distance -= 4;
+            distance -= 6;
         }
         return distance;
     }
