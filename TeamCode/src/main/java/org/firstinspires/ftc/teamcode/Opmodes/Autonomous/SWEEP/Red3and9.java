@@ -31,7 +31,7 @@ public class Red3and9 extends BaseAuto {
                         // go for the first set
                         path.splineToConstantAngle(POS.INTAKE_START_1, 0.8);
                         path.chill(0.5);
-                        path.splineToConstantAngle(POS.INTAKE_END_1, 0.5);
+                        path.splineToConstantAngle(POS.INTAKE_END_1, 0.63);
                         path.addAction(RobotActions.Actions.SCAN_MOTIF);
                         path.chill(0.35);
                         path.splineToConstantAngle(POS.GATE_PREP, 0.8);

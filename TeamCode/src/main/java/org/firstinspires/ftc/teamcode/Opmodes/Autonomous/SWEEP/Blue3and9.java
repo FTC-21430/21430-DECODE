@@ -21,9 +21,9 @@ public class Blue3and9 extends BaseAuto {
         path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
+        path.splineToConstantAngle(POS.CLOSE_3,0.7);
         // get to launch position
-        path.chill(0.6); // stablize rotation
+        path.chill(POS.CLOSE_3,0.6); // stablize rotation
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(0.8);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
@@ -31,17 +31,19 @@ public class Blue3and9 extends BaseAuto {
         // go for the first set
         path.splineToConstantAngle(POS.INTAKE_START_1, 0.8);
         path.chill(0.5);
-        path.splineToConstantAngle(POS.INTAKE_END_1, 0.5);
-        path.chill(0.35);
+        path.splineToConstantAngle(POS.INTAKE_END_1, 0.58);
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
+        path.chill(0.35);
         path.splineToConstantAngle(POS.GATE_PREP, 0.8);
         path.chill(0.2);
-        path.splineToConstantAngle(POS.GATE_OPEN, 0.68); // stops intaking
+        path.splineToConstantAngle(POS.GATE_OPEN,0.68); // stops intaking
         path.chill(1.5); // holding gate
+
+
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(-43, -18, -90, 0.7);
-        path.chill(0.5);
+        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
         path.addAction(RobotActions.Actions.PREPPING);
+        path.chill(0.5);
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(1.5);
@@ -53,22 +55,25 @@ public class Blue3and9 extends BaseAuto {
         path.chill(0.6);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineTo(10, -30.5, 0.95);
-        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
-        path.chill(0.5);
+        path.splineToConstantAngle(POS.CLOSE_3,0.7);
         path.addAction(RobotActions.Actions.PREPPING);
+        path.chill(0.5);
+
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(1.2);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
         // go for the third set
-        path.splineToConstantAngle(20, -12, 90, 1);
+        path.splineToConstantAngle(20, -12, -270, 1);
         path.splineToConstantAngle(POS.INTAKE_START_3, 0.85);
         path.splineToConstantAngle(POS.INTAKE_END_3, 0.63);
         path.chill(0.7);
+
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineTo(5, -24.5, 1);
-        path.splineToConstantAngle(-43, -18, -90, 0.7);
         path.addAction(RobotActions.Actions.PREPPING);
+        path.splineToConstantAngle(-43, -18, -90, 0.7);
+
         path.chill(0.3);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(1.3);
@@ -85,7 +90,6 @@ public class Blue3and9 extends BaseAuto {
         robot.SWEEP.computeSplines();
         robot.odometry.overridePosition(-62.22,-38.5,-180);
         robot.setAlliance("blue");
-//        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();

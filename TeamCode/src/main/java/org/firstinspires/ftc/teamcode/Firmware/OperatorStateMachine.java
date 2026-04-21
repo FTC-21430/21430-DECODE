@@ -290,7 +290,7 @@ public class OperatorStateMachine {
 
     public static double preppingTimeout = 0.1;
     private void preppingState(){
-
+        intake.setIntakePower(1);
         if (!isAutonomous && gamepad2.triangle) {
             trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
             trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());

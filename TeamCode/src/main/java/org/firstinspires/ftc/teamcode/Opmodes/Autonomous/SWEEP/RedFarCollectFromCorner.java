@@ -20,21 +20,22 @@ public class RedFarCollectFromCorner extends BaseAuto {
         PathPlanning path = robot.SWEEP.pathPlanner;
         path.splineStart(GlobalPositions.POS.FAR_START);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(1);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.chill(GlobalPositions.POS.FAR_3, 1.5);
+        path.splineToConstantAngle(GlobalPositions.POS.FAR_3, 0.4);
+        path.chill(GlobalPositions.POS.FAR_3, 1.2);
+
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(0.8);
+        path.chill(GlobalPositions.POS.FAR_3,0.8);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         for (int i = 0; i < 5; i++) {
             path.addAction(RobotActions.Actions.INTAKE);
             path.splineToConstantAngle(GlobalPositions.POS.INTAKE_START_CORNER);
             path.splineToConstantAngle(GlobalPositions.POS.INTAKE_END_CORNER, 0.8);
-            path.chill(0.3);
+            path.chill(0.65);
             path.splineToConstantAngle(GlobalPositions.POS.FAR_3, 0.75);
             path.addAction(RobotActions.Actions.PREPPING);
             path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-            path.chill(0.6);
+            path.chill(0.5);
             path.addAction(RobotActions.Actions.LAUNCH);
             path.chill(0.9);
             path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
