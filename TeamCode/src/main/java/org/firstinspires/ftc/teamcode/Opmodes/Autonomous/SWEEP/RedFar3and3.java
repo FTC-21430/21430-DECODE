@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 
-@Autonomous
+@Autonomous(name = "RedFar3+3", group = "RedAutonomous", preselectTeleOp = "RedTeleopPostAuto")
 public class RedFar3and3 extends BaseAuto {
 
     /// Route definition methods:
@@ -18,32 +18,33 @@ public class RedFar3and3 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-                path.splineStart(POS.FAR_START);
-                path.addAction(RobotActions.Actions.PREPPING);
-                path.chill(1);
-                path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-                path.chill(POS.FAR_3, 1.5);
-                path.addAction(RobotActions.Actions.LAUNCH);
-                path.chill(0.8);
-                path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-                path.addAction(RobotActions.Actions.INTAKE);
-                path.splineToConstantAngle(POS.INTAKE_START_CORNER);
-                path.splineToConstantAngle(POS.INTAKE_END_CORNER, 0.6);
-                path.chill(0.8);
-                path.splineToConstantAngle(POS.FAR_3, 0.8);
-                path.addAction(RobotActions.Actions.PREPPING);
-                path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-                path.chill(0.4);
-                path.addAction(RobotActions.Actions.LAUNCH);
-                path.chill(1);
-                path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-                path.splineEnd(POS.FAR_END);
+        path.splineStart(POS.FAR_START);
+        path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_FAR);
+        path.addAction(RobotActions.Actions.PREPPING);
+        path.chill(1);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.chill(POS.FAR_3, 1.5);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.chill(0.8);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.addAction(RobotActions.Actions.INTAKE);
+        path.splineToConstantAngle(POS.INTAKE_START_CORNER);
+        path.splineToConstantAngle(POS.INTAKE_END_CORNER, 0.6);
+        path.chill(0.8);
+        path.splineToConstantAngle(POS.FAR_3, 0.8);
+        path.addAction(RobotActions.Actions.PREPPING);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.chill(0.4);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.chill(1);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineEnd(POS.FAR_END);
     }
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true,true,true);
+        initialize(true,true,true,"red");
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();

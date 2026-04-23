@@ -37,7 +37,7 @@ public class Action {
         switch (triggerMode) {
             case SPLINE_ORDER:
                 if (splineID >= triggerSplineOrder) {
-                    
+
                     return true;
                 }
                 break;
@@ -82,6 +82,19 @@ public class Action {
                 break;
             case TOGGLE_GOAL_AIMING:
                 actionToggleGoalAiming();
+                break;
+            case SET_CONSTANT_TRAJECTORY_CLOSE:
+                actionSetConstantTrajectoryClose();
+                break;
+            case SET_CONSTANT_TRAJECTORY_FAR:
+                actionSetConstantTrajectoryFar();
+                break;
+            case SET_CONSTANT_TRAJECTORY_DEFAULT:
+                actionSetConstantTrajectoryDefault();
+                break;
+            case SET_CONSTANT_TRAJECTORY_GOAL:
+                actionSetConstantTrajectoryGate();
+                break;
         }
     }
 
@@ -90,54 +103,78 @@ public class Action {
     private void actionIntake() {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.INTAKE);
     }
-    private void actionLaunch(){
+
+    private void actionLaunch() {
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
     }
-    private void actionPrep(){
-        if (robot.motifId == 21){
+
+    private void actionPrep() {
+        if (robot.motifId == 21) {
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
+
         }
-        if (robot.motifId == 22){
+        if (robot.motifId == 22) {
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
         }
-        if (robot.motifId == 23){
+        if (robot.motifId == 23) {
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
         }
         robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
     }
-    private void actionScanMotif(){
-       robot.scanMotif();
+
+    private void actionScanMotif() {
+        robot.scanMotif();
     }
 
-    private void actionIdle(){
+    private void actionIdle() {
         robot.intake.turnOff();
     }
-    private void actionReadyRamp(){
-        robot.trajectoryKinematics.calculateTrajectory(robot.trajectoryKinematics.getDistance(robot.alliance,robot.odometry.getRobotX(),robot.odometry.getRobotY()), robot.launcher.getFlywheelError());
+
+    private void actionReadyRamp() {
+        robot.trajectoryKinematics.calculateTrajectory(robot.trajectoryKinematics.getDistance(robot.alliance, robot.odometry.getRobotX(), robot.odometry.getRobotY()), robot.launcher.getFlywheelError());
         robot.launcher.setLaunchAngle(robot.trajectoryKinematics.getInitialAngle());
     }
-    private void actionRevFar(){
-        robot.trajectoryKinematics.calculateTrajectory(95,0);
+
+    private void actionRevFar() {
+        robot.trajectoryKinematics.calculateTrajectory(95, 0);
         robot.launcher.setSpeed(robot.trajectoryKinematics.getLaunchMagnitude());
     }
-    private void actionRevClose(){
-        robot.trajectoryKinematics.calculateTrajectory(30,0);
+
+    private void actionRevClose() {
+        robot.trajectoryKinematics.calculateTrajectory(30, 0);
         robot.launcher.setSpeed(robot.trajectoryKinematics.getLaunchMagnitude());
     }
-    private void actionSetLauncher(){
-        robot.trajectoryKinematics.updateVelocities(robot.odometry.getVelocityX(),robot.odometry.getVelocityY());
-        robot.trajectoryKinematics.calculateTrajectory(robot.trajectoryKinematics.getDistance(robot.alliance,robot.odometry.getRobotX(),robot.odometry.getRobotY()), robot.launcher.getFlywheelError());
+
+    private void actionSetLauncher() {
+        robot.trajectoryKinematics.updateVelocities(robot.odometry.getVelocityX(), robot.odometry.getVelocityY());
+        robot.trajectoryKinematics.calculateTrajectory(robot.trajectoryKinematics.getDistance(robot.alliance, robot.odometry.getRobotX(), robot.odometry.getRobotY()), robot.launcher.getFlywheelError());
         robot.launcher.setSpeed(robot.trajectoryKinematics.getLaunchMagnitude());
         robot.launcher.setLaunchAngle(robot.trajectoryKinematics.getInitialAngle());
     }
-    private void actionToggleGoalAiming(){
+
+    private void actionToggleGoalAiming() {
         // toggles the aiming flag. should not impact the existent SWEEP rotation code unless this action is called.
         robot.setSweepAimingAtGoal(!robot.shouldSWEEPAimAtGoal());
+    }
+
+    private void actionSetConstantTrajectoryClose() {
+        robot.operatorStateMachine.setAutonomousConstantLaunchMode(OperatorStateMachine.AutonomousConstantLaunchMode.CLOSE);
+    }
+
+    private void actionSetConstantTrajectoryFar() {
+        robot.operatorStateMachine.setAutonomousConstantLaunchMode(OperatorStateMachine.AutonomousConstantLaunchMode.FAR);
+    }
+
+    private void actionSetConstantTrajectoryDefault() {
+        robot.operatorStateMachine.setAutonomousConstantLaunchMode(OperatorStateMachine.AutonomousConstantLaunchMode.NONE);
+    }
+    private void actionSetConstantTrajectoryGate(){
+        robot.operatorStateMachine.setAutonomousConstantLaunchMode(OperatorStateMachine.AutonomousConstantLaunchMode.GATE_LOAD_POS);
     }
 }

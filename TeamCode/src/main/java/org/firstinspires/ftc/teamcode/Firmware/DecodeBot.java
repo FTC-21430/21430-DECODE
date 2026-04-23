@@ -147,7 +147,10 @@ public abstract class DecodeBot extends Robot{
     //Updates all necessary classes together to compact code in teleop/auto
     public void updateRobot(boolean holdPosition, boolean autoSpeedChange, boolean isAuto){
         if (shouldScan){
-            motifId = aprilTags.getMotifID();
+            int tempMotifId = aprilTags.getMotifID();
+            if (tempMotifId >= 21 && tempMotifId <= 23){
+                motifId = tempMotifId;
+            }
         }
         intake.updateIntake();
         lifter.update();

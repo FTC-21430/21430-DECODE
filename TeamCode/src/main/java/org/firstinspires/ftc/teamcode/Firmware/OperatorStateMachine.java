@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Launcher;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Spindexer;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor.COLORS;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.Waypoint;
 import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class OperatorStateMachine {
 
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
-    public static double sortingTimeout = 0.3;
+    public static double sortingTimeout = 0.26;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
@@ -50,6 +52,16 @@ public class OperatorStateMachine {
     private String alliance;
     private DecodeBot bot;
     private boolean isAutonomous = false;
+
+    public enum AutonomousConstantLaunchMode {
+        NONE,
+        CLOSE,
+        FAR,
+        GATE_LOAD_POS
+    }
+    private AutonomousConstantLaunchMode currentConstantLaunchMode = AutonomousConstantLaunchMode.NONE;
+    public static double AUTO_CLOSE_CONSTANT_DISTANCE = 40;
+    public static double AUTO_FAR_CONSTANT_DISTANCE = 110;
 
     // Will Trigger the transition from one state to the next
 
@@ -78,7 +90,13 @@ public class OperatorStateMachine {
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
+        currentConstantLaunchMode = AutonomousConstantLaunchMode.NONE;
     }
+
+    public void setAutonomousConstantLaunchMode(AutonomousConstantLaunchMode mode){
+        this.currentConstantLaunchMode = mode;
+    }
+
     public void moveToState(State state){
         State lastState = currentState;
         currentState = state;
@@ -213,7 +231,23 @@ public class OperatorStateMachine {
         }
         if (isAutonomous){
             trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
-            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+            switch (this.currentConstantLaunchMode){
+                case NONE:
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+                    break;
+                case CLOSE:
+                    Waypoint closePoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.CLOSE_3);
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, closePoint.getX(), closePoint.getY()),launcher.getFlywheelError());
+                    break;
+                case FAR:
+                    Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
+                    break;
+                case GATE_LOAD_POS:
+                    Waypoint gatePoint = new Waypoint(-11,18,155,1,true);
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, gatePoint.getX(), gatePoint.getY()),launcher.getFlywheelError());
+                    break;
+            }
 
             launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
             launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
@@ -252,7 +286,19 @@ public class OperatorStateMachine {
         }
         if (isAutonomous){
             trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
-            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+            switch (this.currentConstantLaunchMode){
+                case NONE:
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+                    break;
+                case CLOSE:
+                    Waypoint closePoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.CLOSE_3);
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, closePoint.getX(), closePoint.getY()),launcher.getFlywheelError());
+                    break;
+                case FAR:
+                    Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
+                    break;
+            }
 
             launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
             launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
@@ -300,7 +346,19 @@ public class OperatorStateMachine {
         }
         if (isAutonomous){
             trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
-            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+            switch (this.currentConstantLaunchMode){
+                case NONE:
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+                    break;
+                case CLOSE:
+                    Waypoint closePoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.CLOSE_3);
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, closePoint.getX(), closePoint.getY()),launcher.getFlywheelError());
+                    break;
+                case FAR:
+                    Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
+                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
+                    break;
+            }
 
             launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
             launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());

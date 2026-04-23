@@ -56,7 +56,7 @@ public class LauncherRamp {
      * @param angleUpFromHorizontal degrees above Horizontal the tangent line of the hood should be.
      */
     public void setLaunchAngle(double angleUpFromHorizontal){
-        angleUpFromHorizontal = Range.clip(angleUpFromHorizontal, minRampAngle, MAX_RAMP_ANGLE);
+        angleUpFromHorizontal = Range.clip(angleUpFromHorizontal, minRampAngle, MAX_RAMP_ANGLE-6);
 
         if (Math.abs(rampServo.getServoPos() - rampAngleToServo(angleUpFromHorizontal)) > WIGGLE_TOLERANCE){
             movementTimeout.reset();

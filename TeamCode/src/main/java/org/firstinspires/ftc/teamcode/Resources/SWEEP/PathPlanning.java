@@ -30,7 +30,7 @@ public class PathPlanning {
         switch (bot.alliance){
             case "red":
                 this.GP = new GlobalPositions(GlobalPositions.ALLIANCE.RED);
-            case "blue":
+            default:
                 this.GP = new GlobalPositions(GlobalPositions.ALLIANCE.BLUE);
         }
 

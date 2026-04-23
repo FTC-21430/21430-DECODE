@@ -22,6 +22,10 @@ public class RobotActions {
         REV_CLOSE,
         SET_LAUNCHER,
         TOGGLE_GOAL_AIMING,
+        SET_CONSTANT_TRAJECTORY_CLOSE,
+        SET_CONSTANT_TRAJECTORY_FAR,
+        SET_CONSTANT_TRAJECTORY_DEFAULT,
+        SET_CONSTANT_TRAJECTORY_GOAL
     }
 
     private ArrayList<Action> actions;

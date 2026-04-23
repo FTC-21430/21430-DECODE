@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
 
+import androidx.core.content.res.FontResourcesParserCompat;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
-import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 
-@Autonomous
+@Autonomous(name = "BlueClose3", group = "BlueAutonomous", preselectTeleOp = "BlueTeleopPostAuto")
 public class BlueClose3nPark extends BaseAuto {
 
     /// Route definition methods:
@@ -18,15 +18,15 @@ public class BlueClose3nPark extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        path.splineStart(GlobalPositions.POS.CLOSE_START);
-        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineStart(POS.CLOSE_START);
+        path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.splineToConstantAngle(GlobalPositions.POS.CLOSE_3);
-        path.chill(1.5);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineToConstantAngle(POS.CLOSE_3,0.7);
+        // get to launch position
+        path.chill(0.3); // stablize rotation
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(1.4);
-        path.chill(1);
-        path.addAction(RobotActions.Actions.IDLE);
+        path.chill(0.8);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineEnd(-56, -18, -90);
     }
@@ -34,9 +34,9 @@ public class BlueClose3nPark extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true,true,true,"blue");
+        robot.setAlliance("blue");
         defineRoute();
         waitForStart();
-        robot.setAlliance("blue");
         robot.SWEEP.computeSplines();
         robot.odometry.overridePosition(-64.22,-34.88,180);
         robot.SWEEP.startPath();

@@ -19,11 +19,12 @@ public class Red3and9 extends BaseAuto {
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
                         path.splineStart(POS.CLOSE_START);
+                        path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
                         path.addAction(RobotActions.Actions.PREPPING);
                         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
                         path.splineToConstantAngle(POS.CLOSE_3,0.7);
                         // get to launch position
-                        path.chill(0.6); // stablize rotation
+                        path.chill(0.3); // stablize rotation
                         path.addAction(RobotActions.Actions.LAUNCH);
                         path.chill(0.8);
                         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
@@ -41,12 +42,12 @@ public class Red3and9 extends BaseAuto {
 
 
                         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-                        path.splineToConstantAngle(-43, 18, 90, 0.7);
+                        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
                         path.addAction(RobotActions.Actions.PREPPING);
-                        path.chill(0.5);
+                        path.chill(0.3);
                         path.addAction(RobotActions.Actions.SCAN_MOTIF);
                         path.addAction(RobotActions.Actions.LAUNCH);
-                        path.chill(1.5);
+                        path.chill(1.4);
                         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
                         path.addAction(RobotActions.Actions.INTAKE);
                         // go for the second set
@@ -57,10 +58,10 @@ public class Red3and9 extends BaseAuto {
                         path.splineTo(10, 30.5, 0.95);
                         path.splineToConstantAngle(POS.CLOSE_3,0.7);
                         path.addAction(RobotActions.Actions.PREPPING);
-                        path.chill(0.5);
+                        path.chill(0.3);
 
                         path.addAction(RobotActions.Actions.LAUNCH);
-                        path.chill(1.2);
+                        path.chill(1.48);
                         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
                         path.addAction(RobotActions.Actions.INTAKE);
                         // go for the third set
@@ -72,11 +73,12 @@ public class Red3and9 extends BaseAuto {
                         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
                         path.splineTo(5, 24.5, 1);
                         path.addAction(RobotActions.Actions.PREPPING);
-                        path.splineToConstantAngle(-43, 18, 90, 0.7);
+                        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
 
                         path.chill(0.3);
                         path.addAction(RobotActions.Actions.LAUNCH);
                         path.chill(1.3);
+                        path.splineToConstantAngle(-43, 18, 90,0.8);
                         path.addAction(RobotActions.Actions.IDLE);
                         path.splineEnd(-46, 21, 90);
     }
