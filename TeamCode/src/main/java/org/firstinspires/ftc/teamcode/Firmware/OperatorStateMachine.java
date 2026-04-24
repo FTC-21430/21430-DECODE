@@ -334,7 +334,7 @@ public class OperatorStateMachine {
 
     }
 
-    public static double preppingTimeout = 0.1;
+    public static double preppingTimeout = 0.03;
     private void preppingState(){
         intake.setIntakePower(1);
         if (!isAutonomous && gamepad2.triangle) {

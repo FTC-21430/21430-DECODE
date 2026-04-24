@@ -13,15 +13,15 @@ public class LED {
     private double lastTime;
     private double allianceColor;
     //Disco
-    boolean discoParty = false;
+    private boolean discoParty = false;
     //Colors
-    double color = 0.277;
+    public double color = 0.277;
     private final double RED = 0.277;
     private final double ORANGE = 0.333;
     private final double YELLOW = 0.388;
     private final double GREEN = 0.472;
     private final double BLUE = 0.611;
-    public static double discoRate = 0.5;
+    public static double discoRate = 0.2;
     public LED(HardwareMap hardwareMap) {
         led = hardwareMap.get(Servo.class, "LED");
         this.elapsedTime = new ElapsedTime();
@@ -51,15 +51,14 @@ public class LED {
         lastTime=elapsedTime.seconds();
         if (discoParty){
             color += discoRate*deltaTime;
-            if (color>0.722) {
-                color = 0.277;
+            if (color>0.724) {
+                color = 0.27;
             }
             setLedColor(color);
         }
     }
     public void discoParty(){
-        boolean discoParty = true;
-        elapsedTime.reset();
+        discoParty = true;
         setLedColor(color);
     }
     public void setLedAlliance(){

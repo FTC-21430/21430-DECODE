@@ -84,7 +84,7 @@ public class RedTeleopPostAuto extends BaseTeleOp {
                 if (gamepad1.crossWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.LAUNCH);
                 }
-                if (gamepad2.triangleWasPressed()){
+                if (gamepad2.rightBumperWasPressed()){
                     robot.operatorStateMachine.moveToState(OperatorStateMachine.State.PREPPING);
                 }
                 if (gamepad1.circleWasPressed()){
@@ -125,6 +125,7 @@ public class RedTeleopPostAuto extends BaseTeleOp {
 
             if (gamepad2.leftBumperWasPressed()){
                 robot.lifter.lift();
+                robot.led.discoParty();
             }
 
             if (gamepad1.left_bumper){

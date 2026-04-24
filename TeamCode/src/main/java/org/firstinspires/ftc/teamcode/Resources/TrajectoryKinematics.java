@@ -72,10 +72,10 @@ public class TrajectoryKinematics {
     // provided velocity by these scalars to compute a small offset to the aim point.
     // The units and meaning of velocityX/velocityY should be consistent with the
     // chosen scalars (for example inches per second * seconds-of-lag -> inches).
-    public static double velocityScalarXAngle = 0.9;
-    public static double velocityScalarYAngle = 0.94;
+    public static double velocityScalarXAngle = 0.93;
+    public static double velocityScalarYAngle = 0.97;
     public static double velocityScalarXMag = 0.94;
-    public static double velocityScalarYMag = 0.7;
+    public static double velocityScalarYMag = 0.83;
 
     public static double goalXBlue = -65;
     public static double goalYBlue = -69.0;

@@ -155,7 +155,6 @@ public abstract class DecodeBot extends Robot{
         intake.updateIntake();
         lifter.update();
         aprilTags.clearCache();
-        led.setLed(spindexer.getNumberOfArtifacts());
         led.setAllianceColor(alliance);
         led.update();
         if (motifId != 0) {
