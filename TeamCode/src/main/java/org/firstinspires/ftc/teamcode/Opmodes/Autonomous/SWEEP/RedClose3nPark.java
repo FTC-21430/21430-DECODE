@@ -24,10 +24,11 @@ public class RedClose3nPark extends BaseAuto {
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineToConstantAngle(POS.CLOSE_3,0.7);
         // get to launch position
-        path.chill(0.3); // stablize rotation
+        path.chill(0.6); // stablize rotation
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(0.8);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.addAction(RobotActions.Actions.IDLE);
         path.splineEnd(-56, 18, 90);
     }
 
@@ -38,9 +39,10 @@ public class RedClose3nPark extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-64.22,34.88,180);
+        robot.odometry.overridePosition(-62.22,38.5,180);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
+            robot.motifId = 21;
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());
             robot.updateRobot(false,false,false);

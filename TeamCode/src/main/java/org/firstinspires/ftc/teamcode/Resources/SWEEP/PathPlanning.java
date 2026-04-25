@@ -171,7 +171,8 @@ public class PathPlanning {
      */
     //This chill function is basically the wait time
     public void chill(double x, double y, double angle, double time){
-        Waypoint waypoint = new Waypoint(x,y,angle,1,true);
+        Waypoint waypoint = new Waypoint(x,y,angle,0.7,true);
+        splineToConstantAngle(waypoint);
         Waypoint waitpoint = new Waypoint(x,y,angle,time);
         waypoints.add(waypoint);
         waypoints.add(waitpoint);
@@ -179,8 +180,8 @@ public class PathPlanning {
     }
     public void chill(GlobalPositions.POS position, double time){
         Waypoint definedWaypoint = GP.get(position);
+        splineToConstantAngle(definedWaypoint);
         Waypoint waitpoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),time);
-        waypoints.add(definedWaypoint);
         waypoints.add(waitpoint);
         splineCount += 2;
     }

@@ -77,8 +77,8 @@ public class TrajectoryKinematics {
     public static double velocityScalarXMag = 0.94;
     public static double velocityScalarYMag = 0.83;
 
-    public static double goalXBlue = -65;
-    public static double goalYBlue = -69.0;
+    public static double goalXBlue = -63;
+    public static double goalYBlue = -66.0;
     public static double goalXRed = -69.5;
     public static double goalYRed = 68.6;
     public static double flywheelErrorToAngle = -0.03;

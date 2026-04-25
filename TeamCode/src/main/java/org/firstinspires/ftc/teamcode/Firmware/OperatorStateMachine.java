@@ -44,7 +44,7 @@ public class OperatorStateMachine {
 
     // A queue that should hold up to three colors that we will shoot. in this case, Purple will launch Purple, Green will launch Green, and NONE will just shoot what ever is next
     private List<COLORS> launchQueue = new ArrayList<>();
-    public static double sortingTimeout = 0.26;
+    public static double sortingTimeout = 0.23;
     private Gamepad gamepad2 = null;
     private ElapsedTime launchTimer = null;
     private ElapsedTime preppingTimer = null;
@@ -241,8 +241,12 @@ public class OperatorStateMachine {
                     break;
                 case FAR:
                     Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
-                    trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
-                    break;
+                    if (bot.alliance == "blue") {
+                        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-3,launcher.getFlywheelError());
+                    }else{
+                        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-0.4,launcher.getFlywheelError());
+                    }
+                      break;
                 case GATE_LOAD_POS:
                     Waypoint gatePoint = new Waypoint(-11,18,155,1,true);
                     trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, gatePoint.getX(), gatePoint.getY()),launcher.getFlywheelError());
@@ -518,6 +522,7 @@ public class OperatorStateMachine {
      * Transition from launch to intake
      */
     private void launchToIntake(){
+        queuedLaunch = false;
         launcher.setGatePosition(false);
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         for (int i = 0; i < 3; i++) {
@@ -536,13 +541,16 @@ public class OperatorStateMachine {
         moveToState(State.LAUNCH);
     }
     private void preppingToLaunch(){
+        queuedLaunch = false;
         launcher.setGatePosition(true);
         shotsRemaining = 3;
     }
     private void preppingToIdle(){
+        queuedLaunch = false;
         // nothing really needed
     }
     private void preppingToIntake(){
+        queuedLaunch = false;
         spindexer.setIndexOffset(Spindexer.INDEX_TYPE.INTAKE);
         for (int i = 0; i < 3; i++){
             spindexer.clearColor(i);
@@ -559,6 +567,7 @@ public class OperatorStateMachine {
         prep();
     }
     private void intakeToPrepping(){
+        queuedLaunch = false;
         intake.turnOff();
         intake.closeGate();
         prep();

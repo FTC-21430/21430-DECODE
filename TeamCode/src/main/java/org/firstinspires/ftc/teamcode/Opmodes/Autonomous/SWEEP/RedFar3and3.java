@@ -20,23 +20,28 @@ public class RedFar3and3 extends BaseAuto {
         PathPlanning path = robot.SWEEP.pathPlanner;
         path.splineStart(POS.FAR_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_FAR);
+        path.addAction(RobotActions.Actions.SCAN_MOTIF);
+
+        path.chill(1.4);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+
+        path.splineToConstantAngle(POS.FAR_3, 0.7);
         path.addAction(RobotActions.Actions.PREPPING);
         path.chill(1);
-        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.chill(POS.FAR_3, 1.5);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(0.8);
+        path.chill(2);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
+        path.addAction(RobotActions.Actions.SCAN_MOTIF);
         path.splineToConstantAngle(POS.INTAKE_START_CORNER);
         path.splineToConstantAngle(POS.INTAKE_END_CORNER, 0.6);
-        path.chill(0.8);
+        path.chill(0.9);
         path.splineToConstantAngle(POS.FAR_3, 0.8);
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.chill(0.4);
+        path.chill(1.5);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(1);
+        path.chill(2);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.splineEnd(POS.FAR_END);
     }
@@ -48,10 +53,11 @@ public class RedFar3and3 extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(63.5, 20.5, 180);
+        robot.odometry.overridePosition(63.5, 18.5, 180);
         robot.setAlliance("red");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
+        robot.motifId = 21;
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());

@@ -22,12 +22,13 @@ public class BlueClose3nPark extends BaseAuto {
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(POS.CLOSE_3,0.7);
+        path.splineToConstantAngle(POS.CLOSE_3,0.6);
         // get to launch position
-        path.chill(0.3); // stablize rotation
+        path.chill(0.6); // stablize rotation
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(0.8);
+        path.chill(1);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.addAction(RobotActions.Actions.IDLE);
         path.splineEnd(-56, -18, -90);
     }
 
@@ -38,8 +39,9 @@ public class BlueClose3nPark extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-64.22,-34.88,180);
+        robot.odometry.overridePosition(-62.22,-38.5,180);
         robot.SWEEP.startPath();
+        robot.motifId = 21;
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());

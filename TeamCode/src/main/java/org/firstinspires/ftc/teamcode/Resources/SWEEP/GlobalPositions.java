@@ -51,13 +51,13 @@ public class GlobalPositions {
         positions.put(POS.INTAKE_END_3,new Waypoint(39, 60, 270,1,true));
         positions.put(POS.GATE_PREP,new Waypoint(-6, 39.5, 180,1,true));
         positions.put(POS.GATE_OPEN,new Waypoint(-4.5, 55.3, 180,1,true));
-        positions.put(POS.INTAKE_START_CORNER,new Waypoint(50,20,270,1,true));
-        positions.put(POS.INTAKE_END_CORNER,new Waypoint(63.5,62,270,1,true));
-        positions.put(POS.FAR_1,new Waypoint(48,0,175,1,true));
-        positions.put(POS.FAR_2,new Waypoint(52,8,178,1,true));
-        positions.put(POS.FAR_3,new Waypoint(58,27,173,1,true));
+        positions.put(POS.INTAKE_START_CORNER,new Waypoint(50,18,270,1,true));
+        positions.put(POS.INTAKE_END_CORNER,new Waypoint(64.3,62.5,270,1,true));
+        positions.put(POS.FAR_1,new Waypoint(48,-2,175,1,true));
+        positions.put(POS.FAR_2,new Waypoint(52,6,178,1,true));
+        positions.put(POS.FAR_3,new Waypoint(58,25,173,1,true));
         positions.put(POS.CLOSE_START, new Waypoint(-62.22,38.5,180,1,true));
-        positions.put(POS.FAR_START, new Waypoint(63.5, 20.5, 180, 1, true));
+        positions.put(POS.FAR_START, new Waypoint(63.5, 18.5, 180, 1, true));
         positions.put(POS.FAR_END, new Waypoint(60.5, 40, 180,1,true));
         positions.put(POS.GATE_COLLECT, new Waypoint(15, 59, -90, 1,true));
 
@@ -73,14 +73,14 @@ public class GlobalPositions {
         bluePositions.put(POS.INTAKE_END_3,new Waypoint(35, -59, -270,1,true));
         bluePositions.put(POS.GATE_PREP,new Waypoint(-6, -34.5, -180,1,true));
         bluePositions.put(POS.GATE_OPEN,new Waypoint(-4.5, -57.5, -180,1,true));
-        bluePositions.put(POS.INTAKE_START_CORNER,new Waypoint(50,-36,-270,1,true));
-        bluePositions.put(POS.INTAKE_END_CORNER,new Waypoint(62.8,-59,-270,1,true));
-        bluePositions.put(POS.FAR_1,new Waypoint(48,0,-175,1,true));
-        bluePositions.put(POS.FAR_2,new Waypoint(52,-8,-178,1,true));
-        bluePositions.put(POS.FAR_3,new Waypoint(58,-27,-173,1,true));
+        bluePositions.put(POS.INTAKE_START_CORNER,new Waypoint(47,-23,-270,1,true));
+        bluePositions.put(POS.INTAKE_END_CORNER,new Waypoint(61.3,-64.5,-270,1,true));
+        bluePositions.put(POS.FAR_1,new Waypoint(48,3,-175,1,true));
+        bluePositions.put(POS.FAR_2,new Waypoint(52,-5,-178,1,true));
+        bluePositions.put(POS.FAR_3,new Waypoint(54,-26,-173,1,true));
         bluePositions.put(POS.CLOSE_START, new Waypoint(-62.22,-38.5,-180,1,true));
-        bluePositions.put(POS.FAR_START, new Waypoint(63.5, -20.5, -180, 1, true));
-        bluePositions.put(POS.FAR_END, new Waypoint(60.5, -40, -180,1,true));
+        bluePositions.put(POS.FAR_START, new Waypoint(60.5, -21.5, -180, 1, true));
+        bluePositions.put(POS.FAR_END, new Waypoint(60.5, -42, -180,1,true));
         bluePositions.put(POS.GATE_COLLECT, new Waypoint(15, -59, -90, 1,true));
     }
     public void setAlliance(ALLIANCE alliance){

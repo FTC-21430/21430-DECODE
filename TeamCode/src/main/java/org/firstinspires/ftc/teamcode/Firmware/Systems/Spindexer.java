@@ -23,9 +23,9 @@ public class Spindexer {
 
     // Stored by intake index, not by launch order.
     public COLORS[] indexColors = {
-      COLORS.NONE,
-      COLORS.NONE,
-      COLORS.NONE
+      COLORS.GREEN,
+      COLORS.PURPLE,
+      COLORS.PURPLE
     };
 
     private final ElapsedTime RUNTIME; // Timer for managing ejection and calibration timeouts.

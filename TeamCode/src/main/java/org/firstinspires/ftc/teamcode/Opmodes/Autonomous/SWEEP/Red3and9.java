@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.Waypoint;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 
-@Autonomous
+@Autonomous(name = "RedClose3+9", group = "RedAutonomous", preselectTeleOp = "RedTeleopPostAuto")
 public class Red3and9 extends BaseAuto {
 
     /// Route definition methods:
@@ -18,7 +20,7 @@ public class Red3and9 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-                        path.splineStart(POS.CLOSE_START);
+                        path.splineStart(-63.22,37.5,180);
                         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
                         path.addAction(RobotActions.Actions.PREPPING);
                         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
@@ -90,7 +92,7 @@ public class Red3and9 extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-62.22,38.5,180);
+        robot.odometry.overridePosition(-63.22,37.5,180);
         robot.setAlliance("red");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
