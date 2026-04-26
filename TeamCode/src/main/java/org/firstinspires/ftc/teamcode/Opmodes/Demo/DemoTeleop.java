@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Demo;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
+@Disabled
 public class DemoTeleop extends BaseTeleOp {
 
     // The main code that runs during init

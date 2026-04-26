@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
-@TeleOp
+@TeleOp(name = "GetOffFieldLIFT", group = "Tools")
 public class GetOffFieldLIFT extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

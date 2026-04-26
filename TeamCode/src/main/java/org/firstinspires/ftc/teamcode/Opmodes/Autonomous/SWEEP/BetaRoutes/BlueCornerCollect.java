@@ -1,13 +1,15 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP.BetaRoutes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
-import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 
 @Autonomous
-public class RedFar6and9 extends BaseAuto {
+@Disabled
+public class BlueCornerCollect extends BaseAuto {
 
 
     /// Route definition methods:
@@ -18,13 +20,28 @@ public class RedFar6and9 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner; // have a shorthand variable name to make typing this easier.
-        path.splineStart(GlobalPositions.POS.FAR_START);
+        //TODO: All positions are guessed with a slightly large auto pather, where goes off the map, fine tune!!!!!!
+        path.splineStart(63.5, -20.5, 0);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.splineToConstantAngle(GlobalPositions.POS.FAR_1);
+        //Wait to rev flywheel
+        path.splineTo(56.5, -11.5, 0.7);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        //Wait to launch balls
+        path.splineTo(57, -19.5, 0.7);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.addAction(RobotActions.Actions.INTAKE);
+        path.splineToConstantAngle(63.5, -65.5, 90, 0.7);
+        path.splineTo(64.5, -47.5, 0.7);
+        //Wait to intake artifacts
+        path.addAction(RobotActions.Actions.PREPPING);
+        path.splineTo(66, -15, 0.7);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.splineEnd(GlobalPositions.POS.FAR_2);
+        //Wait to launch
+        path.splineTo(67.5, -26, 0.7);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineEnd(68.5, -41, 0);
     }
 
     @Override
@@ -33,7 +50,7 @@ public class RedFar6and9 extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(63.5, 20.5, 0);
+        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();

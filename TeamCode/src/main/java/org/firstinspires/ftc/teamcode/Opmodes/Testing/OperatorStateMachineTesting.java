@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
-//@Disabled
+@Disabled
 public class OperatorStateMachineTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {

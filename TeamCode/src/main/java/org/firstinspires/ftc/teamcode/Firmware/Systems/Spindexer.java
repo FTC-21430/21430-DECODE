@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class Spindexer {
     private final SpindexerServoFirmware PADDLE_SERVO; // Firmware for controlling the spindexer servo.
 
-    private final SpindexerColorSensor COLOR_SENSOR;
+    public final SpindexerColorSensor COLOR_SENSOR;
     private DigitalChannel intakeLimitSwitchOne = null;
     private DigitalChannel intakeLimitSwitchTwo = null;
 
@@ -314,5 +314,13 @@ public class Spindexer {
         }
         return count;
     }
+
+    public boolean getIntakeSwitch1(){
+        return intakeLimitSwitchOne.getState();
+    }
+    public boolean getIntakeSwitch2(){
+        return intakeLimitSwitchTwo.getState();
+    }
+
 }
 

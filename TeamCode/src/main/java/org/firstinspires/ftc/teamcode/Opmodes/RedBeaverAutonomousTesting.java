@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.Opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous
+@Disabled
 public class RedBeaverAutonomousTesting extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Resources.TrajectoryKinematics;
 //@Disabled
 
 // Used for testing the functionality of the launcher ramp
-@TeleOp
+@TeleOp(group = "Tools")
 public class LauncherRampTesting extends BaseTeleOp {
 
     Launcher launcher;

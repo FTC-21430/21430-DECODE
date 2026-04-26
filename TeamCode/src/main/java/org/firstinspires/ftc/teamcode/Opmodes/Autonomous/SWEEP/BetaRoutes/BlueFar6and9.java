@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP.BetaRoutes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 
 @Autonomous
+@Disabled
 public class BlueFar6and9 extends BaseAuto {
 
 

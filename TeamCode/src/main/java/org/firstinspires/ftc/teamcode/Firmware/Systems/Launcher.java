@@ -144,6 +144,9 @@ public class Launcher {
         GATE.updateGate();
         FLYWHEEL.updateSpeedControl();
     }
+    public void SoftUpdate(){
+        FLYWHEEL.currentSpeed = FLYWHEEL.flywheel.getVelocity();
+    }
 
     /**
      * Set the angle of the ramp.

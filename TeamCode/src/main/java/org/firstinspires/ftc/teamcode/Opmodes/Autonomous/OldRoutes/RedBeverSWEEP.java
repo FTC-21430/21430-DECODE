@@ -1,11 +1,8 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
-
-import androidx.core.content.res.FontResourcesParserCompat;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.OldRoutes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;

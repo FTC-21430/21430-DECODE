@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
-@TeleOp
+@TeleOp(name = "RedTeleop", group = "RedTeleop")
 public class RedTeleop extends BaseTeleOp {
 
     private boolean manualMode = false;

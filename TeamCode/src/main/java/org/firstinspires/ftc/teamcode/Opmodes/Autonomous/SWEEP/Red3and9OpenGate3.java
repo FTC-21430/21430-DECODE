@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.Waypoint;
 
 @Autonomous(name="Red3and9OpenGate3", group="RedAutonomous", preselectTeleOp = "RedTeleopPostAuto")
-public class Red3and9OpenGate4 extends BaseAuto {
+public class Red3and9OpenGate3 extends BaseAuto {
 
     /// Route definition methods:
     /// all units are in inches, degrees, and seconds.

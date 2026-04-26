@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Firmware.Systems.Lifter;
 
-@TeleOp
+@TeleOp(group = "Tools")
 public class LifterTeleop extends LinearOpMode {
 private Lifter lift = null;
     @Override
@@ -14,7 +14,7 @@ private Lifter lift = null;
         waitForStart();
         while (opModeIsActive()) {
             lift.updateConstants();
-            if (gamepad1.squareWasPressed()) {
+            if (gamepad2.leftBumperWasPressed()) {
                 //lift
                 lift.lift();
             }

@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 // Disable this class by default, but when you want to mess with it, then comment out line 14
 //@Disabled
-@TeleOp
+@TeleOp(group = "Tools")
 @Config
 public class ServoTuningTesting extends LinearOpMode {
     private Servo servo;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP.BetaRoutes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -6,8 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
+
 @Autonomous
-public class Red3and12 extends BaseAuto {
+@Disabled
+public class RedCornerCollect extends BaseAuto {
+
 
     /// Route definition methods:
     /// all units are in inches, degrees, and seconds.
@@ -16,24 +19,29 @@ public class Red3and12 extends BaseAuto {
     /// path.splineTo(x,y,angle,speedRatio) go through a specified point while keeping the angle of the robot at a constant.
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
-        PathPlanning path = robot.SWEEP.pathPlanner;
-        path.splineStart(-64.22, 34.88, 180);
-        path.splineToConstantAngle(-48.75, 21.49, 124, 0.5);
+        PathPlanning path = robot.SWEEP.pathPlanner; // have a shorthand variable name to make typing this easier.
+        //TODO: All positions are guessed with a slightly large auto pather, where goes off the map, fine tune!!!!!!
+        path.splineStart(63.5, 20.5, 0);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(-48.75, 21.49, 124, 1);
+        //Wait to rev flywheel
+        path.splineTo(56.5, 11.5, 0.7);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(-48.75, 21.49, 124, 2);
-        path.splineToConstantAngle(-11.2, 25.6, 270, 0.5);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        //Wait to launch balls
+        path.splineTo(57, 19.5, 0.7);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
-        path.splineToConstantAngle(-2.2, 49.5, 270, 0.3);
-        path.splineToConstantAngle(-1.191, 49.73, 270, 0.3);
+        path.splineToConstantAngle(63.5, 65.5, 270, 0.7);
+        //Wait to intake artifacts
+        path.splineTo(64.5, 47.5, 0.7);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(-1.7, 53.6, 270, 0.25);
-        path.splineToConstantAngle(-21.36, 17.65, 133.8, 1);
-        path.chill(-21.36, 17.65, 133.8, 1);
+        path.splineTo(66, 15, 0.7);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(-21.36, 17.65, 136.8, 1);
-        path.chill(-21.36, 17.65, 136.8, 2);
+        //Wait to launch
+        path.splineTo(67.5, 26, 0.7);
+        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.splineEnd(68.5, 41, 0);
     }
 
     @Override
@@ -42,13 +50,12 @@ public class Red3and12 extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-64.22,34.88,180);
+        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());
-            robot.updateRobot(false,false,false);
-            robot.operatorStateMachine.updateStateMachine();
+            //TODO: update robot system loops
             robot.driveTrain.setDrivePower(robot.SWEEP.getForwardPower(),robot.SWEEP.getSidePower(),robot.SWEEP.getRotationPower(),robot.odometry.getRobotAngle());
             telemetry.update();
             robot.bulkSensorBucket.clearCache();

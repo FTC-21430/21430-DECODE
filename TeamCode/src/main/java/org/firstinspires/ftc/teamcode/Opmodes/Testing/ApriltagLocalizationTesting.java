@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
-@TeleOp
+@TeleOp(group = "Tools")
 //@Disabled
 public class ApriltagLocalizationTesting extends BaseTeleOp {
     @Override

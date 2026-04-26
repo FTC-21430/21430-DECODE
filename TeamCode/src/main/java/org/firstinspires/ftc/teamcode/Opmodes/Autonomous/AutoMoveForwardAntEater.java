@@ -1,11 +1,12 @@
-package org.firstinspires.ftc.teamcode.Opmodes;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous
+import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
+
+@Autonomous(name = "HAILMARY-Move-Off-Line", group = "BackupRoutes")
 //@Disabled
-public class AutoMoveForwardAntEater extends BaseAuto{
+public class AutoMoveForwardAntEater extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize(true, true,false);;

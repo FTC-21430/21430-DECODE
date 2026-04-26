@@ -247,4 +247,10 @@ private boolean testDropping = false;
         leftLiftController.updatePIDFConstants(pCon,iCon,dCon,fCon);
         rightLiftController.updatePIDFConstants(pCon,iCon,dCon,fCon);
     }
+    public boolean liftSwitchOne(){
+        return LiftLimitSwitch1.getState();
+    }
+    public boolean liftSwitchTwo(){
+        return LiftLimitSwitch2.getState();
+    }
 }
