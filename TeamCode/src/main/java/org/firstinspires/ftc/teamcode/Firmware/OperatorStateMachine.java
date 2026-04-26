@@ -253,9 +253,16 @@ public class OperatorStateMachine {
                     trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, gatePoint.getX(), gatePoint.getY()),launcher.getFlywheelError());
                     break;
             }
+            if (SUPER_FAR_MODE){
+                Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
+                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-2.5);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            }else {
 
-            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            }
         }
         launcher.update();
 
@@ -305,8 +312,16 @@ public class OperatorStateMachine {
                     break;
             }
 
-            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            if (SUPER_FAR_MODE){
+                Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
+                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-2.5);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            }else {
+
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            }
         }
         launcher.update();
         bot.led.setLed(spindexer.getNumberOfArtifacts());
@@ -364,9 +379,16 @@ public class OperatorStateMachine {
                     trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
                     break;
             }
+            if (SUPER_FAR_MODE){
+                Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
+                trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-3);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            }else {
 
-            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            }
         }
         launcher.update();
         spindexer.updateSpindexer();
@@ -421,9 +443,10 @@ public class OperatorStateMachine {
         }
         if (SUPER_FAR_MODE){
             Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
-            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-3,launcher.getFlywheelError()/2);
-        }
-        else {
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
+            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-4);
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        } else {
             setLauncherBasedOnTags.run();
             trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
             trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());

@@ -19,33 +19,29 @@ public class RedFarCollectFromCorner extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        Waypoint corner = new Waypoint(66.3,62.5,270,1,true);
+        Waypoint corner = new Waypoint(66.3,61.5,270,1,true);
         path.splineStart(GlobalPositions.POS.FAR_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_FAR);
 
-        path.chill(0.7);
-        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+        path.chill(1.9);
 
-        path.splineToConstantAngle(GlobalPositions.POS.FAR_3, 1);
+        path.splineToConstantAngle(52,24,157.3, 1);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(0.4);
+        path.chill(0.6);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(0.8);
-        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        for (int i = 0; i < 7; i++){
+        for (int i = 0; i < 5; i++){
             path.addAction(RobotActions.Actions.INTAKE);
             path.splineToConstantAngle(64.3,56.5,270,1);
             path.splineToConstantAngle(corner, 1);
-            path.chill(0.35);
-            path.splineToConstantAngle(64.3,62.5,270, 1);
-            path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-            path.splineToConstantAngle(GlobalPositions.POS.FAR_3, 1);
+            path.chill(0.8);
+            path.splineToConstantAngle(64.3,62.5,270, 0.85);
+            path.splineToConstantAngle(56,25,156.55, 0.9);
             path.addAction(RobotActions.Actions.PREPPING);
 
-            path.chill(0.5);
+            path.chill(1.05);
             path.addAction(RobotActions.Actions.LAUNCH);
-            path.chill(0.9);
-            path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
+            path.chill(0.75);
         }
         path.addAction(RobotActions.Actions.IDLE);
         path.splineEnd(GlobalPositions.POS.FAR_END);
@@ -62,7 +58,7 @@ public class RedFarCollectFromCorner extends BaseAuto {
         robot.setAlliance("red");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
-        robot.rotationControl.setPIDController(0.0201,0.0005,0.0007);
+        robot.rotationControl.setPIDController(0.0202,0.0005,0.00076);
         robot.operatorStateMachine.SUPER_FAR_MODE = true;
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
