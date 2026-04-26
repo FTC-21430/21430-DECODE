@@ -87,6 +87,7 @@ public class OperatorStateMachine {
         this.alliance = alliance;
         this.trajectoryKinematics = trajectoryKinematics;
         this.bot = bot;
+        this.SUPER_FAR_MODE = false;
         this.isAutonomous = bot.isAuto;
         addToQueue(COLORS.NONE);
         addToQueue(COLORS.NONE);
@@ -256,8 +257,8 @@ public class OperatorStateMachine {
             if (SUPER_FAR_MODE){
                 Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
                 trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
-                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-2.5);
-                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-8);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()-80);
             }else {
 
                 launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
@@ -315,8 +316,8 @@ public class OperatorStateMachine {
             if (SUPER_FAR_MODE){
                 Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
                 trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
-                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-2.5);
-                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-8);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()-80);
             }else {
 
                 launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
@@ -379,11 +380,11 @@ public class OperatorStateMachine {
                     trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
                     break;
             }
-            if (SUPER_FAR_MODE){
+            if (SUPER_FAR_MODE&&isAutonomous){
                 Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
                 trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
-                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-3);
-                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-10);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()-80);
             }else {
 
                 launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
@@ -444,7 +445,7 @@ public class OperatorStateMachine {
         if (SUPER_FAR_MODE){
             Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
             trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
-            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()-4);
+            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
             launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
         } else {
             setLauncherBasedOnTags.run();

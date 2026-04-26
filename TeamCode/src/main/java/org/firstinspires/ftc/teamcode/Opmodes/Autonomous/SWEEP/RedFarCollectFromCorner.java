@@ -19,29 +19,29 @@ public class RedFarCollectFromCorner extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        Waypoint corner = new Waypoint(66.3,61.5,270,1,true);
+        Waypoint corner = new Waypoint(66.3,60,270,1,true);
         path.splineStart(GlobalPositions.POS.FAR_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_FAR);
 
         path.chill(1.9);
 
-        path.splineToConstantAngle(52,24,157.3, 1);
+        path.splineToConstantAngle(52,24,160, 1);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(0.6);
+        path.chill(0.8);
         path.addAction(RobotActions.Actions.LAUNCH);
         path.chill(0.8);
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 4; i++){
             path.addAction(RobotActions.Actions.INTAKE);
-            path.splineToConstantAngle(64.3,56.5,270,1);
+            path.splineToConstantAngle(64.3,54.5,270,1);
             path.splineToConstantAngle(corner, 1);
-            path.chill(0.8);
-            path.splineToConstantAngle(64.3,62.5,270, 0.85);
-            path.splineToConstantAngle(56,25,156.55, 0.9);
+            path.chill(1.85);
+            path.splineToConstantAngle(64.0,55,270, 0.7);
+            path.splineToConstantAngle(56,25,160.3, 0.9);
             path.addAction(RobotActions.Actions.PREPPING);
 
-            path.chill(1.05);
+            path.chill(1.4);
             path.addAction(RobotActions.Actions.LAUNCH);
-            path.chill(0.75);
+            path.chill(1);
         }
         path.addAction(RobotActions.Actions.IDLE);
         path.splineEnd(GlobalPositions.POS.FAR_END);

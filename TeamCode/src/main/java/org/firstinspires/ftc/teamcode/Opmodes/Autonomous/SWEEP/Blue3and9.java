@@ -90,7 +90,7 @@ public class Blue3and9 extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-64.62,-38.5,180);
+        robot.odometry.overridePosition(-62.22,-38.5,180);
         robot.setAlliance("blue");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();

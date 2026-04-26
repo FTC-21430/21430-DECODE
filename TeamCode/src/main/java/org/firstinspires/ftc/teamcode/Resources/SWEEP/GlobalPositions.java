@@ -80,7 +80,7 @@ public class GlobalPositions {
         bluePositions.put(POS.FAR_3,new Waypoint(54,-26,-173,1,true));
         bluePositions.put(POS.CLOSE_START, new Waypoint(-64.62,-40.5,180,1,true));
         bluePositions.put(POS.FAR_START, new Waypoint(60.5, -21.5, -180, 1, true));
-        bluePositions.put(POS.FAR_END, new Waypoint(60.5, -42, -180,1,true));
+        bluePositions.put(POS.FAR_END, new Waypoint(55.5, -45.5, -180,1,true));
         bluePositions.put(POS.GATE_COLLECT, new Waypoint(15, -59, -90, 1,true));
     }
     public void setAlliance(ALLIANCE alliance){
