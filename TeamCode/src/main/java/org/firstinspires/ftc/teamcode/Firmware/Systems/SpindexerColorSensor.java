@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.Firmware.Systems;
 
 import android.graphics.Color;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import java.util.ArrayList;
+@Config
 
 public class SpindexerColorSensor {
 
@@ -36,6 +39,8 @@ public class SpindexerColorSensor {
         GREEN,
     }
 
+    public static float sensorGain = (float)110.9137;
+
 //    Example initialization:
 //    ColorSensorFirmware sensor = new ColorSensorFirmware(hardwareMap, "colorSensor1");
 //    Type name = new type(HardwareMap, configuration name);
@@ -45,7 +50,7 @@ public class SpindexerColorSensor {
         sensor2 = hardwareMap.get(NormalizedColorSensor.class, configName2);
 
 //        constant value for gain of the sensor. for gain: higher the number, higher the values / the difference between different colors.
-        final float sensorGain = 10;
+//        final float sensorGain = 30;
         sensor1.setGain(sensorGain);
         sensor2.setGain(sensorGain);
     }
@@ -68,18 +73,16 @@ public class SpindexerColorSensor {
 //        Read color values and get the distances between configuration values and raw readings
         float[] values = getRawData();
 
-        if (values[0] <= 134){
+        if (values[0] <= 130){
             return COLORS.NONE;
         }
-        if (values[0] >= 157){
+        if (values[0] >= 182){
            return COLORS.PURPLE;
         }else{
-            if (values[1] > 0.42 && values[1] < 0.6){
+            if (values[1] > 0.35) {
                 return COLORS.GREEN;
-            }else if(values[1] > 0.32){
+            }else{
                 return COLORS.PURPLE;
-            }else {
-                return COLORS.NONE;
             }
         }
 
@@ -109,20 +112,15 @@ public class SpindexerColorSensor {
 
         Color.colorToHSV(colors1.toColor(), hsvValues1);
         Color.colorToHSV((colors2.toColor()), hsvValues2);
-        // if Color sensor has an ESD event, it will start returning only 0.0. If this is the case, simple only count on the other one! (lets pray that both don't go out.)
-        if (hsvValues1[0] == 0.0) hsvValues1 = hsvValues2;
-        if (hsvValues2[0] == 0.0) hsvValues2 = hsvValues1;
 
-        float[] averageHsvValues = new float[3];
-        for (int i = 0; i < 3; i++){
-            // get the average of both channels
-            averageHsvValues[i] = ((hsvValues1[i]+hsvValues2[i]) / 2);
+        // if Color sensor has an ESD event, it will start returning only 0.0. If this is the case, simple only count on the other one! (lets pray that both don't go out.)
+        if (hsvValues1[2] >= hsvValues2[2]){
+            return hsvValues1;
+        }else{
+            return hsvValues2;
         }
 
-        // If it gets so bad where both sensors are out, than just return None and pray that the switch gets it!.
-        if (averageHsvValues[0] == 0.0) averageHsvValues[0] = 50;
 
-        return averageHsvValues;
     }
 
     /**
