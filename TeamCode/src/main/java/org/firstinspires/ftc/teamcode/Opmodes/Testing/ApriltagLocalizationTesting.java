@@ -10,14 +10,14 @@ import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 public class ApriltagLocalizationTesting extends BaseTeleOp {
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize(true, false,false);
+        initialize(true, false,false,"blue");
         robot.odometry.recalibrateIMU();
         waitForStart();
-        robot.odometry.overridePosition(-62.22,38.5,180);
-        robot.setAlliance("red");
+        robot.odometry.overridePosition(-64.62,-40.5,180);
+        robot.setAlliance("blue");
         while (opModeIsActive()) {
             robot.odometry.updateOdometry();
-            robot.aprilTags.updateAprilValues(robot.odometry.getRobotX(), robot.odometry.getRobotY(),robot.odometry.getRobotAngle(),true, "red");
+            robot.aprilTags.updateAprilValues(robot.odometry.getRobotX(), robot.odometry.getRobotY(),robot.odometry.getRobotAngle(),true, "blue");
             robot.telemetry.addData("aprilX", robot.aprilTags.getRobotX());
             robot.telemetry.addData("aprilY", robot.aprilTags.getRobotY());
             robot.telemetry.addData("aprilYaw", robot.aprilTags.getRobotAngle());

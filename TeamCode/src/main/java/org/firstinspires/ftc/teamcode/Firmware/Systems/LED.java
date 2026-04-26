@@ -16,7 +16,7 @@ public class LED {
     private boolean discoParty = false;
     //Colors
     public double color = 0.277;
-    private final double RED = 0.277;
+    private final double RED = 0.28;
     private final double ORANGE = 0.333;
     private final double YELLOW = 0.388;
     private final double GREEN = 0.472;

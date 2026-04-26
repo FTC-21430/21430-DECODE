@@ -33,7 +33,7 @@ public class Spindexer {
     private boolean calibrating = false; // Indicates if the spindexer is in calibration mode.
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
-    public static double intakeOffSet = -8;
+    public static double intakeOffSet = -4;
     public static double launchOffSet = -5;
     public static double idleOffSet = 0;
 

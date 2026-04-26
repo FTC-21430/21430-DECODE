@@ -25,7 +25,8 @@ public class RobotActions {
         SET_CONSTANT_TRAJECTORY_CLOSE,
         SET_CONSTANT_TRAJECTORY_FAR,
         SET_CONSTANT_TRAJECTORY_DEFAULT,
-        SET_CONSTANT_TRAJECTORY_GOAL
+        SET_CONSTANT_TRAJECTORY_GOAL,
+        APRILTAG_CALIBRATE
     }
 
     private ArrayList<Action> actions;

@@ -139,6 +139,14 @@ public class PathPlanning {
         previousY = definedWaypoint.getY();
         previousAngle = definedWaypoint.getAngle();
     }
+    public void splineToConstantAngle(Waypoint definedWaypoint, double speedRatio){
+        definedWaypoint = new Waypoint(definedWaypoint.getX(),definedWaypoint.getY(),definedWaypoint.getAngle(),speedRatio,true);
+        waypoints.add(definedWaypoint);
+        splineCount ++;
+        previousX = definedWaypoint.getX();
+        previousY = definedWaypoint.getY();
+        previousAngle = definedWaypoint.getAngle();
+    }
     public void splineToConstantAngle(GlobalPositions.POS position){
         Waypoint definedWaypoint = GP.get(position);
         waypoints.add(definedWaypoint);

@@ -95,6 +95,9 @@ public class Action {
             case SET_CONSTANT_TRAJECTORY_GOAL:
                 actionSetConstantTrajectoryGate();
                 break;
+            case APRILTAG_CALIBRATE:
+                actionAprilTagCalibrate();
+                break;
         }
     }
 
@@ -176,5 +179,8 @@ public class Action {
     }
     private void actionSetConstantTrajectoryGate(){
         robot.operatorStateMachine.setAutonomousConstantLaunchMode(OperatorStateMachine.AutonomousConstantLaunchMode.GATE_LOAD_POS);
+    }
+    private void actionAprilTagCalibrate(){
+        robot.updateOdometryOnTags(true);
     }
 }

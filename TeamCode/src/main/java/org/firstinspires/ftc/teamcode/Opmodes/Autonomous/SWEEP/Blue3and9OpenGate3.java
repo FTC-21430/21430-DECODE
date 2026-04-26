@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.Waypoint;
-import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 
-@Autonomous(name = "BlueClose3+9", group = "BlueAutonomous", preselectTeleOp = "BlueTeleopPostAuto")
-public class Blue3and9 extends BaseAuto {
+@Autonomous(name="Blue3and9OpenGate3", group="BlueAutonomous", preselectTeleOp = "BlueTeleopPostAuto")
+public class Blue3and9OpenGate3 extends BaseAuto {
 
     /// Route definition methods:
     /// all units are in inches, degrees, and seconds.
@@ -18,69 +19,73 @@ public class Blue3and9 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
+        Waypoint launchPOS = new Waypoint(-20,-20,-155,1,true);
         path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
         path.addAction(RobotActions.Actions.PREPPING);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(POS.CLOSE_3,0.7);
+        path.splineToConstantAngle(-22,-22,-155,0.6);
         // get to launch position
-        path.chill(0.5); // stablize rotation
+        path.chill(0.3); // stablize rotation
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(0.92);
+        path.chill(0.8);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
         // go for the first set
         path.splineToConstantAngle(POS.INTAKE_START_1, 0.8);
-        path.chill(0.05);
-        path.splineToConstantAngle(POS.INTAKE_END_1, 0.63);
-        path.addAction(RobotActions.Actions.SCAN_MOTIF);
-        path.chill(0.45);
+        path.splineToConstantAngle(POS.INTAKE_END_1, 0.35);
+        path.chill(0.35);
         path.splineToConstantAngle(POS.GATE_PREP, 0.8);
         path.chill(0.2);
-        path.splineToConstantAngle(POS.GATE_OPEN,0.68); // stops intaking
-        path.chill(1.5); // holding gate
+        path.splineToConstantAngle(POS.GATE_OPEN,0.5); // stops intaking
+        path.chill(0.6); // holding gate
 
 
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
+        path.splineToConstantAngle(launchPOS, 0.7);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(0.4);
-        path.addAction(RobotActions.Actions.SCAN_MOTIF);
+        path.chill(0.3);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(1.5);
+        path.chill(0.8);
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
         // go for the second set
         path.splineToConstantAngle(POS.INTAKE_START_2, 0.8);
-        path.splineToConstantAngle(POS.INTAKE_END_2, 0.63);
+        path.splineToConstantAngle(POS.INTAKE_END_2, 0.57);
         path.chill(0.6);
+        path.splineToConstantAngle(-1, -57.3, -190, 0.6);
+        path.chill(0.6);
+
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineTo(10, -30.5, 0.95);
-        path.splineToConstantAngle(POS.CLOSE_3,0.7);
+        path.splineToConstantAngle(launchPOS,0.7);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.chill(0.5);
+        path.chill(0.3);
 
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(1.48);
+        path.chill(0.8);
+//        path.addAction(RobotActions.Actions.APRILTAG_CALIBRATE);
+
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
         path.addAction(RobotActions.Actions.INTAKE);
         // go for the third set
         path.splineToConstantAngle(20, -12, -270, 1);
-        path.splineToConstantAngle(POS.INTAKE_START_3, 0.85);
-        path.splineToConstantAngle(POS.INTAKE_END_3, 0.63);
+        path.splineToConstantAngle(POS.INTAKE_START_3, 0.75);
+        path.splineToConstantAngle(POS.INTAKE_END_3, 0.55);
         path.chill(0.7);
-
-        path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
-        path.splineTo(5, -24.5, 1);
+        path.splineToConstantAngle(-1, -58.5, -190,0.5); // stops intaking
+        path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_DEFAULT);
+        path.addAction(RobotActions.Actions.SCAN_MOTIF);
+        path.chill(0.6); // holding gate
+        path.addAction(RobotActions.Actions.SCAN_MOTIF);
         path.addAction(RobotActions.Actions.PREPPING);
-        path.splineToConstantAngle(POS.CLOSE_3, 0.7);
 
-        path.chill(0.55);
+        path.splineToConstantAngle(-43, -16, -115.2, 0.7); // Hard coded aiming
+
+        path.chill(0.3);
         path.addAction(RobotActions.Actions.LAUNCH);
-        path.chill(1.3);
-        path.splineToConstantAngle(-43, -18, -90,0.8);
+        path.chill(1.2);
         path.addAction(RobotActions.Actions.IDLE);
-        path.splineEnd(-46, -21, -90);
+        path.splineEnd(-43, -16, -115.2);
     }
 
 
@@ -90,7 +95,7 @@ public class Blue3and9 extends BaseAuto {
         defineRoute();
         waitForStart();
         robot.SWEEP.computeSplines();
-        robot.odometry.overridePosition(-64.62,-38.5,180);
+        robot.odometry.overridePosition(-63.22,-37.5,-180);
         robot.setAlliance("blue");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();

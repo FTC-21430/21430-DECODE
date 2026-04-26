@@ -62,6 +62,7 @@ public class OperatorStateMachine {
     private AutonomousConstantLaunchMode currentConstantLaunchMode = AutonomousConstantLaunchMode.NONE;
     public static double AUTO_CLOSE_CONSTANT_DISTANCE = 40;
     public static double AUTO_FAR_CONSTANT_DISTANCE = 110;
+    public boolean SUPER_FAR_MODE = false;
 
     // Will Trigger the transition from one state to the next
 
@@ -244,7 +245,7 @@ public class OperatorStateMachine {
                     if (bot.alliance == "blue") {
                         trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-3,launcher.getFlywheelError());
                     }else{
-                        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-0.4,launcher.getFlywheelError());
+                        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-4,launcher.getFlywheelError());
                     }
                       break;
                 case GATE_LOAD_POS:
@@ -399,7 +400,7 @@ public class OperatorStateMachine {
         }
     }
     public static double singleLaunchIncrement = 130;
-    public static double fullLaunchIncrement = 400;
+    public static double fullLaunchIncrement = 450;
     public static double launchJamThreshold = 0.01;
     public static int launchJamSampleThresh = 24;
     private int launchJamSampling = 0;
@@ -418,14 +419,17 @@ public class OperatorStateMachine {
         }else if(gamepad2.square){
             intake.setIntakePower(0);
         }
-        setLauncherBasedOnTags.run();
-        trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(),bot.odometry.getVelocityY());
-        trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance,bot.odometry.getRobotX(),bot.odometry.getRobotY()), launcher.getFlywheelError());
-        launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-        launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
-
-
-
+        if (SUPER_FAR_MODE){
+            Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.FAR_3);
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-3,launcher.getFlywheelError()/2);
+        }
+        else {
+            setLauncherBasedOnTags.run();
+            trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
+            trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
+            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+        }
         if (spindexer.isAtRest() && shotsRemaining > 0 && !launchStalled){
             spinning = false;
             if (shouldSort){

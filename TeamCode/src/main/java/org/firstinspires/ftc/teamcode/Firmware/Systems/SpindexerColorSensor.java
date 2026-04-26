@@ -68,19 +68,21 @@ public class SpindexerColorSensor {
 //        Read color values and get the distances between configuration values and raw readings
         float[] values = getRawData();
 
-        if (values[0] <= 135.1){
+        if (values[0] <= 134){
             return COLORS.NONE;
         }
-        if (values[0] >= 160){
+        if (values[0] >= 157){
            return COLORS.PURPLE;
         }else{
-            if (values[1] > 0.55){
+            if (values[1] > 0.42 && values[1] < 0.6){
                 return COLORS.GREEN;
-            }else if(values[1] < 0.44){
+            }else if(values[1] > 0.32){
                 return COLORS.PURPLE;
+            }else {
+                return COLORS.NONE;
             }
         }
-        return COLORS.NONE;
+
     }
 
     /**
@@ -117,8 +119,8 @@ public class SpindexerColorSensor {
             averageHsvValues[i] = ((hsvValues1[i]+hsvValues2[i]) / 2);
         }
 
-        // If it gets so bad where both sensors are out, than just return purple and pray.
-        if (averageHsvValues[0] == 0.0) averageHsvValues[0] = 240;
+        // If it gets so bad where both sensors are out, than just return None and pray that the switch gets it!.
+        if (averageHsvValues[0] == 0.0) averageHsvValues[0] = 50;
 
         return averageHsvValues;
     }
