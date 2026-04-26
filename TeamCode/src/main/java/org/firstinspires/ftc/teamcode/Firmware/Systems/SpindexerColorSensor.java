@@ -74,7 +74,7 @@ public class SpindexerColorSensor {
         if (values[0] >= 157){
            return COLORS.PURPLE;
         }else{
-            if (values[1] > 0.42 && values[1] < 0.75){
+            if (values[1] > 0.42 && values[1] < 0.6){
                 return COLORS.GREEN;
             }else if(values[1] > 0.32){
                 return COLORS.PURPLE;
