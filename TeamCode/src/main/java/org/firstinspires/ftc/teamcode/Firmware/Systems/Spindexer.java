@@ -119,11 +119,11 @@ public class Spindexer {
     public void prepLaunch(COLORS[] launchSequence){
         setPaddleDirection(false);
         int launchIndex = getSortedIndex(launchSequence, getCurrentIndexInLaunch());
-        // Move to the target slot first (using whatever offset is currently active),
-        // then apply the LAUNCH offset. setSpindexerOffset adjusts targetPosition by the
-        // offset delta, which physically moves the servo to the launch-aligned position.
-        // If we set the offset first, its built-in compensation would cancel out the
-        // physical shift — especially in the edge case where the slot doesn't change.
+        // Move to the target slot, then apply the LAUNCH offset.
+        // setSpindexerOffset shifts targetPosition by the offset delta, physically moving
+        // the servo to the launch-aligned position (the ejector "flex").
+        // Calling setIndexOffset unconditionally here ensures the flex is applied even in
+        // the edge case where getSortedIndex returns the same slot we are already on.
         moveIndexToLaunch(launchIndex);
         setIndexOffset(INDEX_TYPE.LAUNCH);
     }
@@ -171,7 +171,8 @@ public class Spindexer {
                 }
             }
         }
-        if (bestIndex == -1 || bestIndex == currentIdx){
+        // bestIndex == currentIdx % 3 means the current slot is already the best starting point.
+        if (bestIndex == -1 || bestIndex == currentIdx % 3){
             needsToBackSpinFirst = true;
         }else{
             needsToBackSpinFirst = false;
@@ -182,11 +183,8 @@ public class Spindexer {
             return currentIdx % 3;
         }
 
-        // returns the best result. If all Nones were passed or some other strange launch sequence
-         bestIndex -= 1;
-        if (bestIndex < 0) bestIndex = 2;
-        if (bestIndex > 2) bestIndex = 0;
-
+        // bestIndex = i%3 already maps directly to moveIndexToLaunch(bestIndex) → logical bestIndex×120°.
+        // No offset adjustment is needed here; adding or subtracting 1 shifts to the wrong slot.
         return bestIndex;
      }
 
