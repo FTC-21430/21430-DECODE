@@ -20,7 +20,7 @@ public class CloseOpenGateALotBlue extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        Waypoint launchPOS = new Waypoint(-16,-16,-134,1,true);
+        Waypoint launchPOS = new Waypoint(-22,-22,-134,1,true);
         path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
         path.addAction(RobotActions.Actions.PREPPING);

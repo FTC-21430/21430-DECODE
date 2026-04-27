@@ -34,7 +34,8 @@ public class Spindexer {
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     public static double intakeOffSet = -4;
-    public static double launchOffSet = -5;
+    public static double launchOffSet = -0;
+
     public static double idleOffSet = 0;
 
     public enum INDEX_TYPE{
@@ -116,15 +117,20 @@ public class Spindexer {
         }
     }
     public void prepLaunch(COLORS[] launchSequence){
-        int launchIndex = getSortedIndex(launchSequence, getCurrentIndexInLaunch());
-        // prep should be the non-eject direction so the passive ejector folds in instead of pushing a ball out.
         setPaddleDirection(false);
-        setIndexOffset(INDEX_TYPE.LAUNCH);
+        int launchIndex = getSortedIndex(launchSequence, getCurrentIndexInLaunch());
+        // Move to the target slot first (using whatever offset is currently active),
+        // then apply the LAUNCH offset. setSpindexerOffset adjusts targetPosition by the
+        // offset delta, which physically moves the servo to the launch-aligned position.
+        // If we set the offset first, its built-in compensation would cancel out the
+        // physical shift — especially in the edge case where the slot doesn't change.
         moveIndexToLaunch(launchIndex);
+        setIndexOffset(INDEX_TYPE.LAUNCH);
     }
     public double getVelocity(){
         return PADDLE_SERVO.getMovementVelocity();
     }
+    private boolean needsToBackSpinFirst = false;
 
     /**
      * Algorithm for determining the best launch order, will return the index that should move to the launch position. NOTE: reference to the launch slot of the spindexer, while other parts use the intake!!!
@@ -165,6 +171,11 @@ public class Spindexer {
                 }
             }
         }
+        if (bestIndex == -1 || bestIndex == currentIdx){
+            needsToBackSpinFirst = true;
+        }else{
+            needsToBackSpinFirst = false;
+        }
 
         if (bestIndex == -1){
             // all NONE or no useful match: keep the current launch slot instead of inventing a new one.
@@ -172,9 +183,10 @@ public class Spindexer {
         }
 
         // returns the best result. If all Nones were passed or some other strange launch sequence
-         bestIndex += 1;
+         bestIndex -= 1;
         if (bestIndex < 0) bestIndex = 2;
         if (bestIndex > 2) bestIndex = 0;
+
         return bestIndex;
      }
 

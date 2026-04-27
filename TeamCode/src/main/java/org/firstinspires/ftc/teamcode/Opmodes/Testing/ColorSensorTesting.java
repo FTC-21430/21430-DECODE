@@ -10,11 +10,11 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @Config
-@Disabled
+//@Disabled
 @TeleOp
 public class ColorSensorTesting extends LinearOpMode {
 
-    public static float gain = 10;
+    public static float gain = 80;
 
     @Override
     public void runOpMode() throws InterruptedException {

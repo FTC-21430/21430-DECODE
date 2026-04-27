@@ -116,7 +116,6 @@ public class Action {
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.GREEN);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);
-
         }
         if (robot.motifId == 22) {
             robot.operatorStateMachine.addToQueue(SpindexerColorSensor.COLORS.PURPLE);

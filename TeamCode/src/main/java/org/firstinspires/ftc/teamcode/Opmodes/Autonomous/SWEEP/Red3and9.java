@@ -96,6 +96,7 @@ public class Red3and9 extends BaseAuto {
         robot.setAlliance("red");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
+        robot.rotationControl.setPIDController(0.0202,0.0005,0.00076);
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());

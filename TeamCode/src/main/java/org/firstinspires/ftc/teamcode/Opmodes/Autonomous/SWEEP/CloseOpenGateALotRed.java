@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Firmware.OperatorStateMachine;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions.POS;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
 import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
@@ -20,7 +21,7 @@ public class CloseOpenGateALotRed extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        Waypoint launchPOS = new Waypoint(-16,16,140,1,true);
+        Waypoint launchPOS = new Waypoint(-22,22,139,0.9,true);
         path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
         path.addAction(RobotActions.Actions.PREPPING);

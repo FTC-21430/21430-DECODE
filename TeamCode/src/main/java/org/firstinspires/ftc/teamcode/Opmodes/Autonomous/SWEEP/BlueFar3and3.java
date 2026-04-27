@@ -25,6 +25,7 @@ public class BlueFar3and3 extends BaseAuto {
         path.addAction(RobotActions.Actions.SCAN_MOTIF);
 
         path.chill(1.4);
+//        path.chill(16.5);//Possible wait
         path.addAction(RobotActions.Actions.TOGGLE_GOAL_AIMING);
 
         path.splineToConstantAngle(launchPoint, 0.7);

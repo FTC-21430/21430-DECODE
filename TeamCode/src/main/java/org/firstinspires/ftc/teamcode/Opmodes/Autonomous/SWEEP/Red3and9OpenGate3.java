@@ -19,7 +19,7 @@ public class Red3and9OpenGate3 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        Waypoint launchPOS = new Waypoint(-20,20,155,1,true);
+        Waypoint launchPOS = new Waypoint(-22,22,137,1,true);
         path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
         path.addAction(RobotActions.Actions.PREPPING);
@@ -100,6 +100,7 @@ public class Red3and9OpenGate3 extends BaseAuto {
         robot.setAlliance("red");
 //        robot.odometry.overridePosition(0,0,0);
         robot.SWEEP.startPath();
+        robot.rotationControl.setPIDController(0.0202,0.0005,0.00076);
         while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
             robot.odometry.updateOdometry();
             robot.SWEEP.update(robot.odometry.getOdometryPacket());

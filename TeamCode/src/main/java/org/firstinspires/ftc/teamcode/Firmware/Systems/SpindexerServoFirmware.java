@@ -360,13 +360,12 @@ public class SpindexerServoFirmware {
 
     }
     private double getAngleDisplacement(double a, double b){
-        // shortest wrapped distance only. sign is ignored on purpose.
-        a = Math.abs(a);
-        b = Math.abs(b);
-        double rawError = a - b;
+        // shortest wrapped circular distance between two angles.
         final double degreesInRotation = 360;
-        double normalizedError = Math.abs((rawError+180) % degreesInRotation -180);
-        return normalizedError;
+        double rawError = a - b;
+        // Normalize to [-180, 180] range using proper modulo (handles negatives)
+        double normalizedError = ((rawError % degreesInRotation) + degreesInRotation + 180) % degreesInRotation - 180;
+        return Math.abs(normalizedError);
     }
     public boolean isOverSlot(){
         //TODO Make this happen, we are depricating this feature to do TIME CRUNCH!!!

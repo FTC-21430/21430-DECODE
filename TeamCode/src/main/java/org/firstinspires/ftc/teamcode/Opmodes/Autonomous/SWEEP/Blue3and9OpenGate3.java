@@ -19,7 +19,7 @@ public class Blue3and9OpenGate3 extends BaseAuto {
     /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
     private void defineRoute(){
         PathPlanning path = robot.SWEEP.pathPlanner;
-        Waypoint launchPOS = new Waypoint(-20,-20,-155,1,true);
+        Waypoint launchPOS = new Waypoint(-22,-22,-138,1,true);
         path.splineStart(POS.CLOSE_START);
         path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_CLOSE);
         path.addAction(RobotActions.Actions.PREPPING);
