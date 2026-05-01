@@ -320,8 +320,8 @@ public class OperatorStateMachine {
                 launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()-80);
             }else {
 
-                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()+0.5);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()+60);
             }
         }
         launcher.update();
@@ -388,7 +388,7 @@ public class OperatorStateMachine {
             }else {
 
                 launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()-80);
             }
         }
         launcher.update();
@@ -458,8 +458,13 @@ public class OperatorStateMachine {
             setLauncherBasedOnTags.run();
             trajectoryKinematics.updateVelocities(bot.odometry.getVelocityX(), bot.odometry.getVelocityY());
             trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY()), launcher.getFlywheelError());
-            launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
-            launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
+            if (trajectoryKinematics.getDistance(bot.alliance, bot.odometry.getRobotX(), bot.odometry.getRobotY())<60){
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()-130);
+            }else{
+                launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle()+1.4);
+                launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude()+40);
+          }
         }
         if (spindexer.isAtRest() && shotsRemaining > 0 && !launchStalled){
             spinning = false;

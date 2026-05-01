@@ -25,7 +25,7 @@ public class BlueFarCollectFromCorner extends BaseAuto {
 
         path.chill(1.9);
 
-        path.splineToConstantAngle(52,-24,-158, 1);
+        path.splineToConstantAngle(56,-25,-158.3, 0.9);
         path.addAction(RobotActions.Actions.PREPPING);
         path.chill(0.8);
         path.addAction(RobotActions.Actions.LAUNCH);

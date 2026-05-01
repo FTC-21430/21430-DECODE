@@ -34,7 +34,7 @@ public class Spindexer {
     private double calibrationTimeout = 0.6; // Timeout duration for calibration in seconds.
     private Telemetry telemetry; // telemetry instance stored from constructor, helps for debugging and quick testing. Not required for base function but is still useful
     public static double intakeOffSet = -4;
-    public static double launchOffSet = -0;
+    public static double launchOffSet = -26;
 
     public static double idleOffSet = 0;
 
@@ -118,6 +118,7 @@ public class Spindexer {
     }
     public void prepLaunch(COLORS[] launchSequence){
         setPaddleDirection(false);
+        setIndexOffset(INDEX_TYPE.LAUNCH);
         int launchIndex = getSortedIndex(launchSequence, getCurrentIndexInLaunch());
         // Move to the target slot first (using whatever offset is currently active),
         // then apply the LAUNCH offset. setSpindexerOffset adjusts targetPosition by the
@@ -125,7 +126,7 @@ public class Spindexer {
         // If we set the offset first, its built-in compensation would cancel out the
         // physical shift — especially in the edge case where the slot doesn't change.
         moveIndexToLaunch(launchIndex);
-        setIndexOffset(INDEX_TYPE.LAUNCH);
+
     }
     public double getVelocity(){
         return PADDLE_SERVO.getMovementVelocity();
