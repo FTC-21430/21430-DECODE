@@ -73,7 +73,7 @@ public class GlobalPositions {
         bluePositions.put(POS.INTAKE_END_3,new Waypoint(33, -59.1, -270,1,true));
         bluePositions.put(POS.GATE_PREP,new Waypoint(-6, -34.5, -180,1,true));
         bluePositions.put(POS.GATE_OPEN,new Waypoint(-4.5, -57.5, -180,1,true));
-        bluePositions.put(POS.INTAKE_START_CORNER,new Waypoint(47,-23,-270,1,true));
+        bluePositions.put(POS.INTAKE_START_CORNER,new Waypoint(62,-23,-270,1,true));
         bluePositions.put(POS.INTAKE_END_CORNER,new Waypoint(61.3,-64.5,-270,1,true));
         bluePositions.put(POS.FAR_1,new Waypoint(48,3,-175,1,true));
         bluePositions.put(POS.FAR_2,new Waypoint(52,-5,-178,1,true));

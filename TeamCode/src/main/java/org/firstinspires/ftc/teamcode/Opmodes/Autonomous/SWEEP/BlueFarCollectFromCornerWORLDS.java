@@ -1,0 +1,99 @@
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.SWEEP;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.Opmodes.BaseAuto;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.GlobalPositions;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.PathPlanning;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.RobotActions;
+import org.firstinspires.ftc.teamcode.Resources.SWEEP.Waypoint;
+
+@Autonomous(name = "PLAYOFFBlueFar3+15Corner", group = "BlueAutonomous", preselectTeleOp = "BlueTeleopPostAuto")
+public class BlueFarCollectFromCornerWORLDS extends BaseAuto {
+
+    /// Route definition methods:
+    /// all units are in inches, degrees, and seconds.
+    /// path.splineStart(x,y,angle) the start of the path, call once
+    /// path.splineTo(x,y,speedRatio) go through this point and the angle will be the direction the robot is travelling
+    /// path.splineTo(x,y,angle,speedRatio) go through a specified point while keeping the angle of the robot at a constant.
+    /// path.chill(x,y,angle,duration) Wait at a specified position with a given time in seconds
+    private void defineRoute(){
+        PathPlanning path = robot.SWEEP.pathPlanner;
+        Waypoint corner = new Waypoint(66.3,-60,-270,1,true);
+        path.splineStart(GlobalPositions.POS.FAR_START);
+        path.addAction(RobotActions.Actions.SET_CONSTANT_TRAJECTORY_FAR);
+
+        path.chill(1.9);
+
+        path.splineToConstantAngle(56,-25,-158.3, 0.9);
+        path.addAction(RobotActions.Actions.PREPPING);
+        path.chill(0.8);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.chill(0.8);
+        for (int i = 0; i < 1; i++){
+            path.addAction(RobotActions.Actions.INTAKE);
+            path.splineToConstantAngle(64.3,-54.5,-270,1);
+            path.splineToConstantAngle(corner, 1);
+            path.chill(1.85);
+            path.splineToConstantAngle(64.0,-55,-270, 0.7);
+            path.splineToConstantAngle(56,-25,-158.3, 0.9);
+            path.addAction(RobotActions.Actions.PREPPING);
+
+            path.chill(1.4);
+            path.addAction(RobotActions.Actions.LAUNCH);
+            path.chill(1);
+        }
+        path.addAction(RobotActions.Actions.INTAKE);
+        path.splineToConstantAngle(42,-23, -270, 0.85);
+        path.splineToConstantAngle(42,-64.5,-270, 0.63);
+        path.chill(0.7);
+//        path.splineToConstantAngle(64.0,-55,-270, 0.7);
+        path.splineToConstantAngle(56,-25,-158.3, 0.9);
+        path.addAction(RobotActions.Actions.PREPPING);
+
+        path.chill(1.4);
+        path.addAction(RobotActions.Actions.LAUNCH);
+        path.chill(1);
+
+        for (int i = 0; i < 2; i++){
+            path.addAction(RobotActions.Actions.INTAKE);
+            path.splineToConstantAngle(64.3,-54.5,-270,1);
+            path.splineToConstantAngle(corner, 1);
+            path.chill(1.3);
+            path.splineToConstantAngle(64.0,-55,-270, 0.7);
+            path.splineToConstantAngle(56,-25,-158.3, 0.9);
+            path.addAction(RobotActions.Actions.PREPPING);
+
+            path.chill(1.4);
+            path.addAction(RobotActions.Actions.LAUNCH);
+            path.chill(0.8);
+        }
+
+        path.addAction(RobotActions.Actions.IDLE);
+        path.splineEnd(GlobalPositions.POS.FAR_END);
+    }
+
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initialize(true,true,true,"blue");
+        defineRoute();
+        waitForStart();
+        robot.SWEEP.computeSplines();
+        robot.odometry.overridePosition(63.5, -18.5, -180);
+        robot.setAlliance("blue");
+//        robot.odometry.overridePosition(0,0,0);
+        robot.SWEEP.startPath();
+        robot.rotationControl.setPIDController(0.0202,0.0005,0.00076);
+        robot.operatorStateMachine.SUPER_FAR_MODE = true;
+        while (opModeIsActive() && !robot.SWEEP.isPathComplete()){
+            robot.odometry.updateOdometry();
+            robot.SWEEP.update(robot.odometry.getOdometryPacket());
+            robot.updateRobot(false,false,false);
+            robot.operatorStateMachine.updateStateMachine();
+            robot.driveTrain.setDrivePower(robot.SWEEP.getForwardPower(),robot.SWEEP.getSidePower(),robot.SWEEP.getRotationPower(),robot.odometry.getRobotAngle());
+            telemetry.update();
+            robot.bulkSensorBucket.clearCache();
+        }
+    }
+}
