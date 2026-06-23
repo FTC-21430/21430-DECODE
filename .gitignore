@@ -82,3 +82,6 @@ lint/tmp/
 
 #virtual environment
 .venv/
+
+# tobin's on computer AI stuff
+.ollamassist/
