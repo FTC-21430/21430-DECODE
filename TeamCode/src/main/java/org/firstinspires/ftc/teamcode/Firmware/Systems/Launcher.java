@@ -32,9 +32,9 @@ public class Launcher {
     public double closeSpeed = 1200;
     public double midSpeed = 1400;
     public double farSpeed = 1750;
-    public double closeRamp = 56;
-    public double midRamp = 55;
-    public double farRamp = 52;
+    public double closeRamp = 80;
+    public double midRamp = 65;
+    public double farRamp = 40;
     public static enum LAUNCH_STATES{
             NONE,
             CLOSE,
@@ -103,15 +103,15 @@ public class Launcher {
             switch (current_state){
                 case CLOSE:
                     setSpeed(closeSpeed);
-                    setLaunchAngle(closeRamp);
+                    setLaunchAngle(closeRamp,true);
                     break;
                 case MID:
                     setSpeed(midSpeed);
-                    setLaunchAngle(midRamp);
+                    setLaunchAngle(midRamp,true);
                     break;
                 case FAR:
                     setSpeed(farSpeed);
-                    setLaunchAngle(farRamp);
+                    setLaunchAngle(farRamp,true);
                     break;
             }
         }
@@ -158,11 +158,20 @@ public class Launcher {
         }
         RAMP.setLaunchAngle(angle);
     }
+    public void setLaunchAngle(double angle,boolean bypassProtectionFlag){
+        if (bypassProtectionFlag){
+            RAMP.setLaunchAngle(angle);
+        }
+
+    }
 
     /**
      * Bring the ramp as close to robot or as low a launch angle as possible
      */
     public void retractRamp(){
+        if (current_state != LAUNCH_STATES.NONE){
+            return;
+        }
         RAMP.retract();
     }
 
@@ -170,6 +179,9 @@ public class Launcher {
      * Steepest preset launch angle
      */
     public void fullyExtendRamp(){
+        if (current_state != LAUNCH_STATES.NONE){
+            return;
+        }
         RAMP.extendFull();
     }
 
@@ -177,6 +189,9 @@ public class Launcher {
      * preset directly in the middle of all possible launch angles
      */
     public void halfExtendRamp(){
+        if (current_state != LAUNCH_STATES.NONE){
+            return;
+        }
         RAMP.midAngle();
     }
     public boolean rampReady(){

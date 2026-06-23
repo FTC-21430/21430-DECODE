@@ -448,7 +448,8 @@ public class OperatorStateMachine {
             trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY()),launcher.getFlywheelError());
             launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());
             launcher.setSpeed(trajectoryKinematics.getLaunchMagnitude());
-        } if (currentConstantLaunchMode == AutonomousConstantLaunchMode.CLOSE) {
+        }
+        if (currentConstantLaunchMode == AutonomousConstantLaunchMode.CLOSE) {
             Waypoint farPoint = bot.SWEEP.pathPlanner.GP.get(GlobalPositions.POS.CLOSE_3);
             trajectoryKinematics.calculateTrajectory(trajectoryKinematics.getDistance(bot.alliance, farPoint.getX(), farPoint.getY())-4,launcher.getFlywheelError());
             launcher.setLaunchAngle(trajectoryKinematics.getInitialAngle());

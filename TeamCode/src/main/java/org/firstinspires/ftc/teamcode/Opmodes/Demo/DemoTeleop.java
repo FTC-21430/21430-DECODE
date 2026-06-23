@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Firmware.Systems.SpindexerColorSensor;
 import org.firstinspires.ftc.teamcode.Opmodes.BaseTeleOp;
 
 @TeleOp
-@Disabled
+//@Disabled
 public class DemoTeleop extends BaseTeleOp {
 
     // The main code that runs during init
@@ -67,26 +67,24 @@ public class DemoTeleop extends BaseTeleOp {
                     robot.spindexer.clearColor(i);
                 }
             }
-            //Different launch places that driver calls
-            if (gamepad1.dpad_left){
-                robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.MID);
-            }
-            //Launch ball from the close zone
-            if (gamepad1.dpad_down){
+
+            if (gamepad1.dpadDownWasPressed()){
                 robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.CLOSE);
             }
-            //launch ball from the far side
-            if (gamepad1.dpad_up){
+            if (gamepad1.dpadLeftWasPressed()){
+                robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.MID);
+            }
+            if(gamepad1.dpadUpWasPressed()){
                 robot.launcher.setLaunchState(Launcher.LAUNCH_STATES.FAR);
             }
-            //Ramping up flywheel
-            if (gamepad2.triangle){
-                robot.launcher.revFlywheel();
-            } else if(robot.operatorStateMachine.getCurrentState() != OperatorStateMachine.State.LAUNCH){
-                robot.launcher.idleFlywheel();
+            if (gamepad2.leftBumperWasPressed() && gamepad2.dpad_down){
+                robot.lifter.lift();
+                robot.led.discoParty();
             }
 
+
             robot.operatorStateMachine.updateStateMachine();
+            robot.lifter.update();
 
             // end of automated mode code
 
@@ -98,6 +96,8 @@ public class DemoTeleop extends BaseTeleOp {
 
             robot.updateRobot(false, false, false);
 
+            //Ramping up flywheel
+            robot.launcher.revFlywheel();
             robot.bulkSensorBucket.clearCache();
             telemetry.update();
         }
